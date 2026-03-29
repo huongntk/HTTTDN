@@ -32,9 +32,6 @@ public class PnBanHang extends javax.swing.JPanel {
             tabQLBanHang.addTab("Bán hàng", pnBanHang);
         }
 
-        if (phanQuyen.isBhThongKeSanPham() || phanQuyen.isBhThongKeLoiNhuan()) {
-            tabQLBanHang.addTab("Thống kê", new PnThongKe(phanQuyen));
-        }
 
         if (phanQuyen.isBhLapPhieuXuat()) {
             tabQLBanHang.addTab("Hóa đơn", pnHoaDon);

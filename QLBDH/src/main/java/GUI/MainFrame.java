@@ -67,6 +67,7 @@ public class MainFrame extends javax.swing.JFrame {
         btnQuanLyLuong.setVisible(phanQuyen.isNsXemLuongCaNhan() || phanQuyen.isNsTinhLuong() || phanQuyen.isNsInBangLuong());
         btnDuyetNghi.setVisible(phanQuyen.isNsDuyetNghi());
         btnChucVu.setVisible(phanQuyen.isNsThayDoiChucVu());
+        
         // 7. Refresh lại giao diện thanh menu sau khi ẩn/hiện các nút
         pnMenu.revalidate();
         pnMenu.repaint();
@@ -96,7 +97,7 @@ public class MainFrame extends javax.swing.JFrame {
         btnDoiMatKhau = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Quản lý bán điện thoại\n");
+        setTitle("Quản lý bán đồng hồ cơ\n\n");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
         pnContent.setLayout(new java.awt.CardLayout());

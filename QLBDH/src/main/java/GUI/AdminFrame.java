@@ -41,15 +41,23 @@ public class AdminFrame extends JFrame {
         pnlMenu.add(lblWelcome);
 
         // Các nút chức năng
-        JButton btnTaiKhoan = createMenuButton("Quản lý tài khoản", "/icon/account.png");
-        JButton btnPhanQuyen = createMenuButton("Phân quyền", "/icon/role.png");
-        JButton btnThongKe = createMenuButton("Báo cáo tổng hợp", "/icon/report.png");
+         JButton btnNhanSu = createMenuButton("Quản lý nhân sự", "/icon/multiple-users.png");
+        JButton btnKho = createMenuButton("Quản lý kho", "/icon/boxes.png");
+        JButton btnBanHang = createMenuButton("Quản lý bán hàng", "/icon/pay.png");
+        JButton btnTaiKhoan = createMenuButton("Quản lý tài khoản", "/icon/user.png");
+        JButton btnPhanQuyen = createMenuButton("Phân quyền", "/icon/account.png");
+        JButton btnThongKe = createMenuButton("Báo cáo tổng hợp", "/icon/bar-char.png");
+        JButton btnDoiMatKhau = createMenuButton("Đổi mật khẩu", "/icon/undo.png");
         JButton btnDangXuat = createMenuButton("Đăng xuất", "/icon/logout.png");
 
+        pnlMenu.add(btnNhanSu);
+        pnlMenu.add(btnKho);
+        pnlMenu.add(btnBanHang);
         pnlMenu.add(btnTaiKhoan);
         pnlMenu.add(btnPhanQuyen);
         pnlMenu.add(btnThongKe);
-        pnlMenu.add(Box.createVerticalGlue()); // Đẩy nút đăng xuất xuống dưới
+        pnlMenu.add(Box.createVerticalGlue()); // Đẩy nút đăng xuất xuống 
+        pnlMenu.add(btnDoiMatKhau);
         pnlMenu.add(btnDangXuat);
 
         add(pnlMenu, BorderLayout.WEST);
@@ -60,15 +68,22 @@ public class AdminFrame extends JFrame {
         add(pnlContent, BorderLayout.CENTER);
 
         // Thêm các panel chức năng (cần đảm bảo các panel này đã tồn tại)
+        pnlContent.add(new PnNhanVien(phanQuyen), "nhanSu");
+        pnlContent.add(new PnNhapHang(phanQuyen), "kho");
+        pnlContent.add(new PnBanHang(phanQuyen), "banHang");
         pnlContent.add(new PnTaiKhoan(phanQuyen), "taiKhoan");
         // PnPhanQuyen cần nhận PhanQuyen, nhưng admin có thể truyền null và xử lý trong panel
         pnlContent.add(new PnPhanQuyen(phanQuyen), "phanQuyen");
         pnlContent.add(new PnThongKe(phanQuyen), "thongKe");
 
         // ===== Sự kiện các nút =====
+        btnNhanSu.addActionListener(e -> cardLayout.show(pnlContent, "nhanSu"));
+        btnKho.addActionListener(e -> cardLayout.show(pnlContent, "kho"));
+        btnBanHang.addActionListener(e -> cardLayout.show(pnlContent, "banHang"));
         btnTaiKhoan.addActionListener(e -> cardLayout.show(pnlContent, "taiKhoan"));
         btnPhanQuyen.addActionListener(e -> cardLayout.show(pnlContent, "phanQuyen"));
         btnThongKe.addActionListener(e -> cardLayout.show(pnlContent, "thongKe"));
+        btnDoiMatKhau.addActionListener(e -> doiMatKhau());
         btnDangXuat.addActionListener(e -> dangXuat());
     }
 
@@ -103,6 +118,20 @@ public class AdminFrame extends JFrame {
         } catch (Exception e) {
             return null;
         }
+    }
+    
+     private void doiMatKhau() {
+        if (this.taiKhoan == null) {
+            JOptionPane.showMessageDialog(this, "Không có thông tin tài khoản hiện tại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // 2. Khởi tạo FrmDoiMatKhau Dialog
+        // FrmDoiMatKhau cần constructor: (java.awt.Frame parent, boolean modal, TaiKhoan tk)
+        GUI.FrmDoiMatKhau doiMatKhauDialog = new GUI.FrmDoiMatKhau(this, true, this.taiKhoan);
+
+        // 3. Hiển thị Dialog
+        doiMatKhauDialog.setVisible(true);
     }
 
     private void dangXuat() {

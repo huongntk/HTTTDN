@@ -36,12 +36,6 @@ public class PnTaiKhoan extends JPanel {
     private PhanQuyen phanQuyen;
     public PnTaiKhoan(PhanQuyen phanQuyen) {
         initComponents();
-        if (phanQuyen == null || !phanQuyen.isAdminQuanLyUser()) {
-            // Hiển thị thông báo hoặc ẩn toàn bộ
-            JOptionPane.showMessageDialog(this, "Bạn không có quyền quản lý tài khoản!");
-            setVisible(false);
-            return;
-        }
         loadDataToCombobox();
         loadDataToTable();
         addEvents();
