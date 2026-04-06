@@ -7,6 +7,7 @@ package GUI;
 import DTO.PhanQuyen;
 import DTO.TaiKhoan;
 import java.awt.*;
+import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.*;
 
@@ -16,11 +17,22 @@ public class MainFrame extends javax.swing.JFrame {
     private PhanQuyen phanQuyen;
     // Biến lưu nút hiện đang được chọn
     private JButton selectedButton = null;
-   
+    private ArrayList<JButton> menuButtons = new ArrayList<>();
 
     public MainFrame( TaiKhoan tk, PhanQuyen pq) {
         setTitle("Quản lý Bán Đồng Hồ Cơ");
         initComponents();
+        menuButtons.add(btnBanHang);
+        menuButtons.add(btnSanPham);
+        menuButtons.add(btnNhanVien);
+        menuButtons.add(btnKhachHang);
+        menuButtons.add(btnNhapHang);
+        menuButtons.add(btnThongKe);
+        menuButtons.add(btnPhanQuyen);
+        menuButtons.add(btnKhuyenMai);
+        menuButtons.add(btnQuanLyLuong);
+        menuButtons.add(btnChucVu);
+        menuButtons.add(btnDuyetNghi);
         
         setExtendedState(MAXIMIZED_BOTH); // Mở toàn màn hình
         setLocationRelativeTo(null);             // Căn giữa
@@ -440,6 +452,7 @@ public class MainFrame extends javax.swing.JFrame {
         pnContent.add(pn);
         pnContent.revalidate();
         pnContent.repaint();
+        setButtonActive(btnThongKe);
     }//GEN-LAST:event_btnThongKeActionPerformed
 
     private void btnKhuyenMaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKhuyenMaiActionPerformed
@@ -448,6 +461,7 @@ public class MainFrame extends javax.swing.JFrame {
         pnContent.add(pn);
         pnContent.revalidate();
         pnContent.repaint();
+        setButtonActive(btnKhuyenMai);
     }//GEN-LAST:event_btnKhuyenMaiActionPerformed
 
     private void btnPhanQuyenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPhanQuyenActionPerformed
@@ -456,6 +470,7 @@ public class MainFrame extends javax.swing.JFrame {
         pnContent.add(pn);
         pnContent.revalidate();
         pnContent.repaint();
+        setButtonActive(btnPhanQuyen);
     }//GEN-LAST:event_btnPhanQuyenActionPerformed
 
     private void btnNhapHangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNhapHangActionPerformed
@@ -464,6 +479,7 @@ public class MainFrame extends javax.swing.JFrame {
         pnContent.add(pn);
         pnContent.revalidate();
         pnContent.repaint();
+        setButtonActive(btnNhapHang);
     }//GEN-LAST:event_btnNhapHangActionPerformed
 
     private void btnNhanVienActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNhanVienActionPerformed
@@ -472,6 +488,7 @@ public class MainFrame extends javax.swing.JFrame {
         pnContent.add(pn);
         pnContent.revalidate();
         pnContent.repaint();
+        setButtonActive(btnNhanVien);
     }//GEN-LAST:event_btnNhanVienActionPerformed
 
     private void btnKhachHangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKhachHangActionPerformed
@@ -480,6 +497,7 @@ public class MainFrame extends javax.swing.JFrame {
         pnContent.add(pn);
         pnContent.revalidate();
         pnContent.repaint();
+        setButtonActive(btnKhachHang);
     }//GEN-LAST:event_btnKhachHangActionPerformed
 
     private void btnSanPhamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSanPhamActionPerformed
@@ -488,6 +506,7 @@ public class MainFrame extends javax.swing.JFrame {
         pnContent.add(pn);
         pnContent.revalidate();
         pnContent.repaint();
+        setButtonActive(btnSanPham);
     }//GEN-LAST:event_btnSanPhamActionPerformed
 
     private void btnBanHangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBanHangActionPerformed
@@ -496,6 +515,7 @@ public class MainFrame extends javax.swing.JFrame {
         pnContent.add(pn);
         pnContent.revalidate();
         pnContent.repaint();
+        setButtonActive(btnBanHang);
     }//GEN-LAST:event_btnBanHangActionPerformed
 
     private void txtaccountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtaccountActionPerformed
@@ -508,6 +528,8 @@ public class MainFrame extends javax.swing.JFrame {
         pnContent.add(pn);
         pnContent.revalidate();
         pnContent.repaint();
+        setButtonActive(btnQuanLyLuong);
+        
     }//GEN-LAST:event_btnQuanLyLuongActionPerformed
 
     private void btnDuyetNghiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDuyetNghiActionPerformed
@@ -516,6 +538,7 @@ public class MainFrame extends javax.swing.JFrame {
         pnContent.add(pn);
         pnContent.revalidate();
         pnContent.repaint();
+        setButtonActive(btnDuyetNghi);
     }//GEN-LAST:event_btnDuyetNghiActionPerformed
 
     private void btnChucVuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChucVuActionPerformed
@@ -524,8 +547,24 @@ public class MainFrame extends javax.swing.JFrame {
         pnContent.add(pn);
         pnContent.revalidate();
         pnContent.repaint();
+        setButtonActive(btnChucVu);
     }//GEN-LAST:event_btnChucVuActionPerformed
-
+private void setButtonActive(javax.swing.JButton active) {
+        for (javax.swing.JButton btn : menuButtons) {
+            if (btn == active) {
+                // Màu nền khi được chọn (Xanh dương) và viền trắng
+                btn.setBackground(new java.awt.Color(0, 102, 204)); 
+                btn.setForeground(java.awt.Color.WHITE);
+                btn.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.WHITE, 2));
+            } else {
+                // Màu nền mặc định và không viền (hoặc viền mặc định)
+                btn.setBackground(new java.awt.Color(255, 255, 255)); // Giả định nền trắng, bạn chỉnh theo màu gốc của bạn
+                btn.setForeground(java.awt.Color.BLACK);
+                btn.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+            }
+        }
+    }
+    
 //    JPanel QLBanHang = new PnBanHang(phanQuyen);
 //    JPanel QLSanPham = new PnSanPham(phanQuyen);
 //    JPanel QLKhachHang = new PnKhachHang(phanQuyen);

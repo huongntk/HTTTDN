@@ -572,11 +572,11 @@ public class PnNhanVien extends javax.swing.JPanel {
                                 .addGap(18)
                                 .addComponent(btnInLuong)
                                 .addGap(18)
+                                .addComponent(btnTinhLuong))
+                            .addGroup(pnlThongTinLayout.createSequentialGroup()
                                 .addComponent(btnDuyetNghi)
                                 .addGap(18)
-                                .addComponent(btnThayDoiChucVu)
-                                .addGap(18)
-                                .addComponent(btnTinhLuong)))))
+                                .addComponent(btnThayDoiChucVu)))))
                 .addContainerGap(20, Short.MAX_VALUE))
         );
         pnlThongTinLayout.setVerticalGroup(
@@ -636,10 +636,14 @@ public class PnNhanVien extends javax.swing.JPanel {
                 .addGroup(pnlThongTinLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnXemLuong)
                     .addComponent(btnInLuong)
-                    .addComponent(btnDuyetNghi)
-                    .addComponent(btnThayDoiChucVu)
                     .addComponent(btnTinhLuong))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18)
+                .addGroup(pnlThongTinLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnDuyetNghi)
+                    .addComponent(btnThayDoiChucVu))
+                   
+             .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                
         );
 
         pnlBang.setBorder(javax.swing.BorderFactory.createEtchedBorder(null, new java.awt.Color(204, 204, 204)));

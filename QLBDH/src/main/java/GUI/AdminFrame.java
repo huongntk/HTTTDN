@@ -4,6 +4,7 @@ import DTO.PhanQuyen;
 import DTO.TaiKhoan;
 import java.awt.*;
 import javax.swing.*;
+import java.util.*;
 
 public class AdminFrame extends JFrame {
     private TaiKhoan taiKhoan;
@@ -12,6 +13,7 @@ public class AdminFrame extends JFrame {
     private JPanel pnlMenu;
     private JPanel pnlContent;
     private CardLayout cardLayout;
+    private ArrayList<JButton> menuButtons = new ArrayList<>();
 
     public AdminFrame(TaiKhoan tk, PhanQuyen pq) {
         this.taiKhoan = tk;
@@ -77,14 +79,27 @@ public class AdminFrame extends JFrame {
         pnlContent.add(new PnThongKe(phanQuyen), "thongKe");
 
         // ===== Sự kiện các nút =====
-        btnNhanSu.addActionListener(e -> cardLayout.show(pnlContent, "nhanSu"));
-        btnKho.addActionListener(e -> cardLayout.show(pnlContent, "kho"));
-        btnBanHang.addActionListener(e -> cardLayout.show(pnlContent, "banHang"));
-        btnTaiKhoan.addActionListener(e -> cardLayout.show(pnlContent, "taiKhoan"));
-        btnPhanQuyen.addActionListener(e -> cardLayout.show(pnlContent, "phanQuyen"));
-        btnThongKe.addActionListener(e -> cardLayout.show(pnlContent, "thongKe"));
+        // Thêm các nút chuyển tab vào danh sách để quản lý
+        menuButtons.add(btnNhanSu);
+        menuButtons.add(btnKho);
+        menuButtons.add(btnBanHang);
+        menuButtons.add(btnTaiKhoan);
+        menuButtons.add(btnPhanQuyen);
+        menuButtons.add(btnThongKe);
+
+        // Bắt sự kiện chuyển Panel và gọi hàm làm nổi bật nút
+        btnNhanSu.addActionListener(e -> { cardLayout.show(pnlContent, "nhanSu"); setActiveMenuButton(btnNhanSu); });
+        btnKho.addActionListener(e -> { cardLayout.show(pnlContent, "kho"); setActiveMenuButton(btnKho); });
+        btnBanHang.addActionListener(e -> { cardLayout.show(pnlContent, "banHang"); setActiveMenuButton(btnBanHang); });
+        btnTaiKhoan.addActionListener(e -> { cardLayout.show(pnlContent, "taiKhoan"); setActiveMenuButton(btnTaiKhoan); });
+        btnPhanQuyen.addActionListener(e -> { cardLayout.show(pnlContent, "phanQuyen"); setActiveMenuButton(btnPhanQuyen); });
+        btnThongKe.addActionListener(e -> { cardLayout.show(pnlContent, "thongKe"); setActiveMenuButton(btnThongKe); });
+        
         btnDoiMatKhau.addActionListener(e -> doiMatKhau());
         btnDangXuat.addActionListener(e -> dangXuat());
+
+        // Đặt trạng thái active mặc định cho tab "Quản lý nhân sự" khi vừa mở Frame
+        setActiveMenuButton(btnNhanSu);
     }
 
     private JButton createMenuButton(String text, String iconPath) {
@@ -141,6 +156,22 @@ public class AdminFrame extends JFrame {
         if (confirm == JOptionPane.YES_OPTION) {
             dispose();
             new FrmDangNhap().setVisible(true);
+        }
+    }
+    private void setActiveMenuButton(JButton activeButton) {
+        for (JButton btn : menuButtons) {
+            if (btn == activeButton) {
+                // Đổi màu nền (ví dụ: xanh dương nhạt) và đóng khung viền trắng dày 2px
+                btn.setBackground(new Color(100, 149, 237)); 
+                btn.setBorder(BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(Color.WHITE, 2),
+                        BorderFactory.createEmptyBorder(8, 8, 8, 8)
+                ));
+            } else {
+                // Trả về màu nền xám tối và bỏ khung viền
+                btn.setBackground(new Color(70, 70, 70)); 
+                btn.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); 
+            }
         }
     }
 }
