@@ -1,78 +1,71 @@
 package GUI;
 
-import BUS.LuongBUS;
-import DTO.Luong;
-import java.awt.BorderLayout;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.util.ArrayList;
+import BUS.BangLuongBUS;
+import DTO.BangLuongDTO;
 import javax.swing.*;
+import java.awt.*;
+import java.text.MessageFormat;
+import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
 
-public class FrmInBangLuong extends JDialog {
-    private JTable tblLuong;
-    private DefaultTableModel model;
-    private LuongBUS luongBUS;
+public class FrmInBangLuong extends JFrame {
     private int maNV;
+    private BangLuongBUS bangLuongBUS;
+    private JTable table;
+    private DefaultTableModel model;
+    private JComboBox<Integer> cbThang, cbNam;
 
     public FrmInBangLuong(int maNV) {
         this.maNV = maNV;
-        luongBUS = new LuongBUS();
+        this.bangLuongBUS = new BangLuongBUS();
         initComponents();
+//        cbThang.setSelectedItem(thang);
+//        cbNam.setSelectedItem(nam);
         loadData();
-        setTitle("In bảng lương");
-        setSize(800, 500);
         setLocationRelativeTo(null);
-        setModal(true);
     }
 
     private void initComponents() {
+        setTitle("In bảng lương");
+        setSize(700, 400);
         setLayout(new BorderLayout());
 
-        JLabel lblTitle = new JLabel("BẢNG LƯƠNG", SwingConstants.CENTER);
-        lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 20));
-        add(lblTitle, BorderLayout.NORTH);
+        JPanel pnlFilter = new JPanel();
+        pnlFilter.add(new JLabel("Tháng:"));
+        cbThang = new JComboBox<>();
+        for (int i = 1; i <= 12; i++) cbThang.addItem(i);
+        pnlFilter.add(cbThang);
+        pnlFilter.add(new JLabel("Năm:"));
+        cbNam = new JComboBox<>();
+        for (int i = 2023; i <= 2030; i++) cbNam.addItem(i);
+        pnlFilter.add(cbNam);
+        JButton btnIn = new JButton("In");
+        btnIn.addActionListener(e -> inBangLuong());
+        pnlFilter.add(btnIn);
+        add(pnlFilter, BorderLayout.NORTH);
 
-        model = new DefaultTableModel(
-            new String[]{"Tháng", "Năm", "Lương cơ bản", "Phụ cấp", "Thưởng", "Khấu trừ", "Thực lĩnh"}, 0
-        );
-        tblLuong = new JTable(model);
-        tblLuong.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        tblLuong.setRowHeight(25);
-        JScrollPane scroll = new JScrollPane(tblLuong);
-        add(scroll, BorderLayout.CENTER);
-
-        JPanel pnlButton = new JPanel();
-        JButton btnPrint = new JButton("In");
-        btnPrint.addActionListener(this::printTable);
-        JButton btnClose = new JButton("Đóng");
-        btnClose.addActionListener(e -> dispose());
-        pnlButton.add(btnPrint);
-        pnlButton.add(btnClose);
-        add(pnlButton, BorderLayout.SOUTH);
+        model = new DefaultTableModel(new String[]{"Tháng", "Năm", "Lương cơ bản", "Phụ cấp", "Thưởng", "Phạt", "Tổng lương"}, 0);
+        table = new JTable(model);
+        add(new JScrollPane(table), BorderLayout.CENTER);
     }
 
     private void loadData() {
-        ArrayList<Luong> list = luongBUS.layLuongTheoNV(maNV);
         model.setRowCount(0);
-        for (Luong l : list) {
-            model.addRow(new Object[]{
-                l.getThang(), l.getNam(), l.getLuongCoBan(), l.getPhuCap(),
-                l.getThuong(), l.getKhauTru(), l.getThucLinh()
-            });
+        int thang = (int) cbThang.getSelectedItem();
+        int nam = (int) cbNam.getSelectedItem();
+        BangLuongDTO bl = bangLuongBUS.getByMaNVAndMonth(maNV, thang, nam);
+        if (bl != null) {
+            model.addRow(new Object[]{bl.getThang(), bl.getNam(), bl.getLuongCoBan(), bl.getPhuCap(), bl.getThuong(), bl.getPhat(), bl.getTongLuong()});
         }
     }
 
-    private void printTable(ActionEvent e) {
+    private void inBangLuong() {
         try {
-            boolean complete = tblLuong.print();
-            if (complete) {
-                JOptionPane.showMessageDialog(this, "In thành công!");
-            } else {
-                JOptionPane.showMessageDialog(this, "In bị hủy!");
-            }
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Lỗi khi in: " + ex.getMessage());
+            MessageFormat header = new MessageFormat("BẢNG LƯƠNG NHÂN VIÊN - THÁNG " + cbThang.getSelectedItem() + "/" + cbNam.getSelectedItem());
+            MessageFormat footer = new MessageFormat("Trang {0}");
+            table.print(JTable.PrintMode.FIT_WIDTH, header, footer);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Lỗi in: " + e.getMessage());
         }
     }
 }

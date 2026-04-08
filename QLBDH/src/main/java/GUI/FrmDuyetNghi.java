@@ -1,100 +1,229 @@
 package GUI;
 
 import BUS.DonNghiBUS;
-import DTO.DonNghi;
+import DTO.DonNghiDTO;
 import DTO.PhanQuyen;
-import java.awt.BorderLayout;
-import java.awt.Font;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import javax.swing.*;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
-public class FrmDuyetNghi extends JDialog {
-    private JTable tblDon;
-    private DefaultTableModel model;
-    private DonNghiBUS donNghiBUS;
+public class FrmDuyetNghi extends javax.swing.JPanel {
+
     private PhanQuyen phanQuyen;
+    private DonNghiBUS donNghiBUS;
+    private DefaultTableModel modelDon;
 
-    public FrmDuyetNghi(PhanQuyen phanQuyen) {
-        this.phanQuyen = phanQuyen;
-        donNghiBUS = new DonNghiBUS();
+    public FrmDuyetNghi(PhanQuyen pq) {
         initComponents();
+        this.phanQuyen = pq;
+        donNghiBUS = new DonNghiBUS();
+        modelDon = (DefaultTableModel) tblDonNghi.getModel();
+
         loadData();
-        setTitle("Duyệt đơn nghỉ phép");
-        setSize(800, 500);
-        setLocationRelativeTo(null);
-        setModal(true);
-    }
-
-    private void initComponents() {
-        setLayout(new BorderLayout());
-
-        JLabel lblTitle = new JLabel("DANH SÁCH ĐƠN XIN NGHỈ", SwingConstants.CENTER);
-        lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 20));
-        add(lblTitle, BorderLayout.NORTH);
-
-        model = new DefaultTableModel(
-            new String[]{"Mã đơn", "Mã NV", "Họ tên", "Ngày bắt đầu", "Ngày kết thúc", "Lý do", "Trạng thái"}, 0
-        );
-        tblDon = new JTable(model);
-        tblDon.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        tblDon.setRowHeight(25);
-        JScrollPane scroll = new JScrollPane(tblDon);
-        add(scroll, BorderLayout.CENTER);
-
-        JPanel pnlButton = new JPanel();
-        JButton btnDuyet = new JButton("Duyệt");
-        btnDuyet.addActionListener(e -> duyetDon());
-        JButton btnTuChoi = new JButton("Từ chối");
-        btnTuChoi.addActionListener(e -> tuChoiDon());
-        JButton btnDong = new JButton("Đóng");
-        btnDong.addActionListener(e -> dispose());
-        pnlButton.add(btnDuyet);
-        pnlButton.add(btnTuChoi);
-        pnlButton.add(btnDong);
-        add(pnlButton, BorderLayout.SOUTH);
+        addEvents();
+        setPreferredSize(new java.awt.Dimension(900, 600));
     }
 
     private void loadData() {
-        ArrayList<DonNghi> list = donNghiBUS.layDonChoDuyet();
-        model.setRowCount(0);
-        for (DonNghi d : list) {
-            model.addRow(new Object[]{
-                d.getMaDon(), d.getMaNV(), d.getHoTen(), d.getNgayBatDau(),
-                d.getNgayKetThuc(), d.getLyDo(), d.getTrangThai()
+        modelDon.setRowCount(0);
+        ArrayList<DonNghiDTO> list = donNghiBUS.layTatCaDon();   // hoặc layDonChoDuyet() nếu chỉ muốn chờ duyệt
+        for (DonNghiDTO d : list) {
+            modelDon.addRow(new Object[]{
+                d.getMaDon(),
+                d.getHoTen(),
+                d.getLoaiDon(),          // cột Loại nghỉ
+                d.getNgayBatDau(),
+                d.getNgayKetThuc(),
+                d.getLyDo(),
+                d.getTrangThai()
             });
         }
     }
 
-    private void duyetDon() {
-        int row = tblDon.getSelectedRow();
-        if (row == -1) {
-            JOptionPane.showMessageDialog(this, "Chọn đơn cần duyệt!");
-            return;
-        }
-        int maDon = (int) model.getValueAt(row, 0);
-        boolean success = donNghiBUS.duyetDon(maDon, "Đã duyệt");
-        if (success) {
-            JOptionPane.showMessageDialog(this, "Duyệt thành công!");
-            loadData();
-        } else {
-            JOptionPane.showMessageDialog(this, "Duyệt thất bại!");
-        }
+    private void addEvents() {
+        tblDonNghi.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    int row = tblDonNghi.getSelectedRow();
+                    if (row != -1) {
+                        int maDon = (int) modelDon.getValueAt(row, 0);
+                        String trangThai = (String) modelDon.getValueAt(row, 6);
+
+                        if ("Đã duyệt".equals(trangThai) || "Từ chối".equals(trangThai)) {
+                            JOptionPane.showMessageDialog(FrmDuyetNghi.this, "Đơn này đã được xử lý!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                            return;
+                        }
+
+                        int confirm = JOptionPane.showConfirmDialog(FrmDuyetNghi.this,
+                                "Bạn muốn DUYỆT đơn này?", "Xác nhận duyệt", JOptionPane.YES_NO_OPTION);
+
+                        if (confirm == JOptionPane.YES_OPTION) {
+                            String msg = donNghiBUS.duyetDon(maDon);
+                            JOptionPane.showMessageDialog(FrmDuyetNghi.this, msg);
+                            loadData();
+                        }
+                    }
+                }
+            }
+        });
     }
 
-    private void tuChoiDon() {
-        int row = tblDon.getSelectedRow();
-        if (row == -1) {
-            JOptionPane.showMessageDialog(this, "Chọn đơn cần từ chối!");
-            return;
-        }
-        int maDon = (int) model.getValueAt(row, 0);
-        boolean success = donNghiBUS.duyetDon(maDon, "Từ chối");
-        if (success) {
-            JOptionPane.showMessageDialog(this, "Từ chối thành công!");
+    @SuppressWarnings("unchecked")
+    private void initComponents() {
+        
+        jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblDonNghi = new javax.swing.JTable();
+        btnDuyet = new javax.swing.JButton();
+        btnTuChoi = new javax.swing.JButton();
+        btnLamMoi = new javax.swing.JButton();
+        btnThoat = new javax.swing.JButton();
+//
+//        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+//        setTitle("Duyệt Đơn Nghỉ - Quản lý nhân sự");
+
+        jPanel1.setBackground(new java.awt.Color(170, 222, 215));
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 20));
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("DUYỆT ĐƠN NGHỈ PHÉP / ỐM ĐAU / THAI SẢN / NGHỈ VIỆC");
+
+        tblDonNghi.setFont(new java.awt.Font("Segoe UI", 0, 14));
+        tblDonNghi.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {},
+            new String [] {"Mã đơn", "Nhân viên", "Loại nghỉ", "Từ ngày", "Đến ngày", "Lý do", "Trạng thái"}
+        ) {
+            boolean[] canEdit = new boolean[] {false, false, false, false, false, false, false};
+            public boolean isCellEditable(int rowIndex, int columnIndex) { return canEdit[columnIndex]; }
+        });
+        tblDonNghi.setRowHeight(28);
+        jScrollPane1.setViewportView(tblDonNghi);
+
+        btnDuyet.setFont(new java.awt.Font("Segoe UI", 0, 14));
+//        btnDuyet.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/accept.png")));
+        btnDuyet.setText("Duyệt");
+        btnDuyet.addActionListener(evt -> {
+            int row = tblDonNghi.getSelectedRow();
+            if (row == -1) {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn một đơn!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            int maDon = (int) modelDon.getValueAt(row, 0);
+            String msg = donNghiBUS.duyetDon(maDon);
+            JOptionPane.showMessageDialog(this, msg);
             loadData();
-        } else {
-            JOptionPane.showMessageDialog(this, "Từ chối thất bại!");
-        }
+        });
+
+        btnTuChoi.setFont(new java.awt.Font("Segoe UI", 0, 14));
+//        btnTuChoi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/reject.png")));
+        btnTuChoi.setText("Từ chối");
+        btnTuChoi.addActionListener(evt -> {
+            int row = tblDonNghi.getSelectedRow();
+            if (row == -1) {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn một đơn!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            int maDon = (int) modelDon.getValueAt(row, 0);
+            String msg = donNghiBUS.tuChoiDon(maDon);
+            JOptionPane.showMessageDialog(this, msg);
+            loadData();
+        });
+
+        btnLamMoi.setFont(new java.awt.Font("Segoe UI", 0, 14));
+        btnLamMoi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/refresh.png")));
+        btnLamMoi.setText("Làm mới");
+        btnLamMoi.addActionListener(evt -> loadData());
+
+        btnThoat.setFont(new java.awt.Font("Segoe UI", 0, 14));
+        btnThoat.setText("Thoát");
+          btnThoat.setText("Thoát");
+        btnThoat.addActionListener(e -> {
+            // 1. Tìm cửa sổ tổ tiên (Window) chứa Panel hiện tại
+            java.awt.Window window = javax.swing.SwingUtilities.getWindowAncestor(this);
+
+            // 2. Kiểm tra xem Window đó có đúng là MainFrame không
+            if (window instanceof MainFrame) {
+                MainFrame main = (MainFrame) window;
+
+                // 3. Gọi hàm getPnContent() mà bạn vừa thêm ở Bước 1
+                javax.swing.JPanel content = main.getPnContent();
+
+                if (content != null) {
+                    content.removeAll();
+                    // Nạp lại giao diện cũ (ví dụ PnNhanVien)
+                    PnNhanVien pn = new PnNhanVien(this.phanQuyen);
+                    content.add(pn, java.awt.BorderLayout.CENTER);
+
+                    content.revalidate();
+                    content.repaint();
+                }
+            }
+        });
+        
+        // Layout (NetBeans style)
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 880, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(btnDuyet, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18)
+                        .addComponent(btnTuChoi, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18)
+                        .addComponent(btnLamMoi, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnThoat, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(20)
+                .addComponent(jLabel1)
+                .addGap(18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 420, Short.MAX_VALUE)
+                .addGap(18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnDuyet, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnTuChoi, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnLamMoi, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnThoat, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(20))
+        );
+        this.setLayout(new java.awt.BorderLayout());
+        this.add(jPanel1, java.awt.BorderLayout.CENTER);
+
+//        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+//        getContentPane().setLayout(layout);
+//        layout.setHorizontalGroup(
+//            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+//            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+//        );
+//        layout.setVerticalGroup(
+//            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+//            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+//        );
+
     }
+
+    // Variables declaration
+    private javax.swing.JButton btnDuyet;
+    private javax.swing.JButton btnLamMoi;
+    private javax.swing.JButton btnThoat;
+    private javax.swing.JButton btnTuChoi;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable tblDonNghi;
 }

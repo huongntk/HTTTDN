@@ -8,6 +8,8 @@ public class NhanVienDTO {
     private String gioiTinh;
     private String soDienThoai;
     private String maCV;
+
+    private String maQuyen;
     private boolean trangThai;
 
     private String tenTaiKhoan;
@@ -16,6 +18,20 @@ public class NhanVienDTO {
     public NhanVienDTO() {
     }
 
+    public NhanVienDTO(int maNV, String ho, String ten, String gioiTinh, String soDienThoai, String maCV, String maQuyen, boolean trangThai, String tenTaiKhoan, String matKhau) {
+        this.maNV = maNV;
+        this.ho = ho;
+        this.ten = ten;
+        this.gioiTinh = gioiTinh;
+        this.soDienThoai = soDienThoai;
+        this.maCV = maCV;
+        this.maQuyen = maQuyen;
+        this.trangThai = trangThai;
+        this.tenTaiKhoan = tenTaiKhoan;
+        this.matKhau = matKhau;
+    }
+
+    
     public NhanVienDTO(int maNV, String ho, String ten, String gioiTinh, String soDienThoai, String maCV, boolean trangThai, String tenTaiKhoan, String matKhau) {
         this.maNV = maNV;
         this.ho = ho;
@@ -32,6 +48,15 @@ public class NhanVienDTO {
         return maNV;
     }
 
+    public void setMaQuyen(String maQuyen) {
+        this.maQuyen = maQuyen;
+    }
+
+    public String getMaQuyen() {
+        return maQuyen;
+    }
+    
+
     public void setMaNV(int maNV) {
         this.maNV = maNV;
     }
@@ -47,7 +72,13 @@ public class NhanVienDTO {
     public String getTen() {
         return ten;
     }
+    public void setMaCV(String maCV) {
+        this.maCV = maCV;
+    }
 
+    public String getMaCV() {
+        return maCV;
+    }
     public void setTen(String ten) {
         this.ten = ten;
     }
@@ -68,13 +99,6 @@ public class NhanVienDTO {
         this.soDienThoai = soDienThoai;
     }
 
-    public String getChucVu() {
-        return maCV;
-    }
-
-    public void setChucVu(String maCV) {
-        this.maCV = maCV;
-    }
 
     public boolean isTrangThai() {
         return trangThai;
@@ -100,7 +124,4 @@ public class NhanVienDTO {
         this.matKhau = matKhau;
     }
 
-    public String getMaQuyen() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
 }

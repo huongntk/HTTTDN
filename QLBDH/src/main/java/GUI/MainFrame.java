@@ -10,14 +10,16 @@ import java.awt.*;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.*;
+import GUI.PnChamCong;
 
 public class MainFrame extends javax.swing.JFrame {
-    
+       
     private TaiKhoan taiKhoan;
     private PhanQuyen phanQuyen;
     // Biến lưu nút hiện đang được chọn
     private JButton selectedButton = null;
     private ArrayList<JButton> menuButtons = new ArrayList<>();
+    
 
     public MainFrame( TaiKhoan tk, PhanQuyen pq) {
         setTitle("Quản lý Bán Đồng Hồ Cơ");
@@ -31,7 +33,7 @@ public class MainFrame extends javax.swing.JFrame {
         menuButtons.add(btnPhanQuyen);
         menuButtons.add(btnKhuyenMai);
         menuButtons.add(btnQuanLyLuong);
-        menuButtons.add(btnChucVu);
+        menuButtons.add(btnChamCong);
         menuButtons.add(btnDuyetNghi);
         
         setExtendedState(MAXIMIZED_BOTH); // Mở toàn màn hình
@@ -76,9 +78,11 @@ public class MainFrame extends javax.swing.JFrame {
         btnPhanQuyen.setVisible(phanQuyen.isPqQuanLyPhanQuyen());
         btnThongKe.setVisible(phanQuyen.isAdminBaoCaoTongHop() || phanQuyen.isBhThongKeDoanhThu() || phanQuyen.isBhThongKeLoiNhuan() || phanQuyen.isKhoBaoCaoTonKho());
         // Quản lý lương: hiển thị nếu có bất kỳ quyền nào về lương
-        btnQuanLyLuong.setVisible(phanQuyen.isNsXemLuongCaNhan() || phanQuyen.isNsTinhLuong() || phanQuyen.isNsInBangLuong());
-        btnDuyetNghi.setVisible(phanQuyen.isNsDuyetNghi());
-        btnChucVu.setVisible(phanQuyen.isNsThayDoiChucVu());
+        btnQuanLyLuong.setVisible(phanQuyen.isNsXemLuongCaNhan() && phanQuyen.isNsTinhLuong() && phanQuyen.isNsInBangLuong());
+        
+        boolean isAdmin = taiKhoan.getMaQuyen().equals("ADMIN");
+        btnDuyetNghi.setVisible(phanQuyen.isNsDuyetNghi() && !isAdmin);
+        btnChamCong.setVisible(phanQuyen.isNsChamCong());
         
         // 7. Refresh lại giao diện thanh menu sau khi ẩn/hiện các nút
         pnMenu.revalidate();
@@ -103,7 +107,7 @@ public class MainFrame extends javax.swing.JFrame {
         btnThongKe = new javax.swing.JButton();
         btnQuanLyLuong = new javax.swing.JButton();
         btnDuyetNghi = new javax.swing.JButton();
-        btnChucVu = new javax.swing.JButton();
+        btnChamCong = new javax.swing.JButton();
         pnBottomMenu = new javax.swing.JPanel();
         btnDangXuat = new javax.swing.JButton();
         btnDoiMatKhau = new javax.swing.JButton();
@@ -331,24 +335,24 @@ public class MainFrame extends javax.swing.JFrame {
         });
         pnMenu.add(btnDuyetNghi);
 
-        btnChucVu.setBackground(new java.awt.Color(0, 204, 204));
-        btnChucVu.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        btnChucVu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/bar-char.png"))); // NOI18N
-        btnChucVu.setText("Quản lý chức vụ");
-        btnChucVu.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        btnChucVu.setBorderPainted(false);
-        btnChucVu.setContentAreaFilled(false);
-        btnChucVu.setHideActionText(true);
-        btnChucVu.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
-        btnChucVu.setMaximumSize(new java.awt.Dimension(200, 45));
-        btnChucVu.setPreferredSize(new java.awt.Dimension(200, 30));
-        btnChucVu.setSelected(true);
-        btnChucVu.addActionListener(new java.awt.event.ActionListener() {
+        btnChamCong.setBackground(new java.awt.Color(0, 204, 204));
+        btnChamCong.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnChamCong.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/bar-char.png"))); // NOI18N
+        btnChamCong.setText("Chấm công");
+        btnChamCong.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        btnChamCong.setBorderPainted(false);
+        btnChamCong.setContentAreaFilled(false);
+        btnChamCong.setHideActionText(true);
+        btnChamCong.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
+        btnChamCong.setMaximumSize(new java.awt.Dimension(200, 45));
+        btnChamCong.setPreferredSize(new java.awt.Dimension(200, 30));
+        btnChamCong.setSelected(true);
+        btnChamCong.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnChucVuActionPerformed(evt);
+                btnChamCongActionPerformed(evt);
             }
         });
-        pnMenu.add(btnChucVu);
+        pnMenu.add(btnChamCong);
 
         pnSidebar.add(pnMenu, java.awt.BorderLayout.CENTER);
 
@@ -534,22 +538,23 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void btnDuyetNghiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDuyetNghiActionPerformed
          pnContent.removeAll();
-        PnLuong pn = new PnLuong(phanQuyen);
-        pnContent.add(pn);
+        FrmDuyetNghi pn = new FrmDuyetNghi(phanQuyen);
+        
+        pnContent.add(pn, java.awt.BorderLayout.CENTER);
         pnContent.revalidate();
         pnContent.repaint();
         setButtonActive(btnDuyetNghi);
     }//GEN-LAST:event_btnDuyetNghiActionPerformed
 
-    private void btnChucVuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChucVuActionPerformed
+    private void btnChamCongActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChamCongActionPerformed
          pnContent.removeAll();
-        PnLuong pn = new PnLuong(phanQuyen);
+        PnChamCong pn = new PnChamCong(phanQuyen);
         pnContent.add(pn);
         pnContent.revalidate();
         pnContent.repaint();
-        setButtonActive(btnChucVu);
-    }//GEN-LAST:event_btnChucVuActionPerformed
-private void setButtonActive(javax.swing.JButton active) {
+        setButtonActive(btnChamCong);
+    }//GEN-LAST:event_btnChamCongActionPerformed
+    private void setButtonActive(javax.swing.JButton active) {
         for (javax.swing.JButton btn : menuButtons) {
             if (btn == active) {
                 // Màu nền khi được chọn (Xanh dương) và viền trắng
@@ -565,6 +570,10 @@ private void setButtonActive(javax.swing.JButton active) {
         }
     }
     
+    public javax.swing.JPanel getPnContent() {
+        return pnContent;
+    }
+    
 //    JPanel QLBanHang = new PnBanHang(phanQuyen);
 //    JPanel QLSanPham = new PnSanPham(phanQuyen);
 //    JPanel QLKhachHang = new PnKhachHang(phanQuyen);
@@ -575,27 +584,26 @@ private void setButtonActive(javax.swing.JButton active) {
 //    JPanel QLThongKe = new PnThongKe(phanQuyen);
     
     public static void main(String[] args) {
-    // Khởi chạy MainFrame mà không cần đăng nhập
-    TaiKhoan tk = new TaiKhoan(1, "admin", "admin", "ADMIN", 1);
-    BUS.PhanQuyenBUS pqBUS = new BUS.PhanQuyenBUS();
-    DTO.PhanQuyen pq = pqBUS.getPhanQuyenByTen(tk.getMaQuyen());
-    if (pq == null){
-        JOptionPane.showConfirmDialog(null, "Không tìm thấy quyền 'admin' trong csdl", "Lỗi khởi tạo", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-    java.awt.EventQueue.invokeLater(new Runnable() {
-        public void run() {
-            MainFrame main = new MainFrame(tk,pq);
-            main.setVisible(true);
+        // Khởi chạy MainFrame mà không cần đăng nhập
+        TaiKhoan tk = new TaiKhoan(1, "admin", "admin", "ADMIN", 1);
+        BUS.PhanQuyenBUS pqBUS = new BUS.PhanQuyenBUS();
+        DTO.PhanQuyen pq = pqBUS.getPhanQuyenByTen(tk.getMaQuyen());
+        if (pq == null){
+            JOptionPane.showConfirmDialog(null, "Không tìm thấy quyền 'admin' trong csdl", "Lỗi khởi tạo", JOptionPane.ERROR_MESSAGE);
+            return;
         }
-    });
-    
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                MainFrame main = new MainFrame(tk,pq);
+                main.setVisible(true);
+            }
+        });
 }
 
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBanHang;
-    private javax.swing.JButton btnChucVu;
+    private javax.swing.JButton btnChamCong;
     private javax.swing.JButton btnDangXuat;
     private javax.swing.JButton btnDoiMatKhau;
     private javax.swing.JButton btnDuyetNghi;

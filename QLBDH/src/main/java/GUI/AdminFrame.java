@@ -47,6 +47,7 @@ public class AdminFrame extends JFrame {
         JButton btnKho = createMenuButton("Quản lý kho", "/icon/boxes.png");
         JButton btnBanHang = createMenuButton("Quản lý bán hàng", "/icon/pay.png");
         JButton btnTaiKhoan = createMenuButton("Quản lý tài khoản", "/icon/user.png");
+        JButton btnKhachHang = createMenuButton("Quản lý khách hàng", "/icon/user.png");
         JButton btnPhanQuyen = createMenuButton("Phân quyền", "/icon/account.png");
         JButton btnThongKe = createMenuButton("Báo cáo tổng hợp", "/icon/bar-char.png");
         JButton btnDoiMatKhau = createMenuButton("Đổi mật khẩu", "/icon/undo.png");
@@ -56,6 +57,7 @@ public class AdminFrame extends JFrame {
         pnlMenu.add(btnKho);
         pnlMenu.add(btnBanHang);
         pnlMenu.add(btnTaiKhoan);
+        pnlMenu.add(btnKhachHang);
         pnlMenu.add(btnPhanQuyen);
         pnlMenu.add(btnThongKe);
         pnlMenu.add(Box.createVerticalGlue()); // Đẩy nút đăng xuất xuống 
@@ -84,6 +86,7 @@ public class AdminFrame extends JFrame {
         menuButtons.add(btnKho);
         menuButtons.add(btnBanHang);
         menuButtons.add(btnTaiKhoan);
+        menuButtons.add(btnKhachHang);
         menuButtons.add(btnPhanQuyen);
         menuButtons.add(btnThongKe);
 
@@ -92,6 +95,7 @@ public class AdminFrame extends JFrame {
         btnKho.addActionListener(e -> { cardLayout.show(pnlContent, "kho"); setActiveMenuButton(btnKho); });
         btnBanHang.addActionListener(e -> { cardLayout.show(pnlContent, "banHang"); setActiveMenuButton(btnBanHang); });
         btnTaiKhoan.addActionListener(e -> { cardLayout.show(pnlContent, "taiKhoan"); setActiveMenuButton(btnTaiKhoan); });
+        btnKhachHang.addActionListener(e -> { cardLayout.show(pnlContent, "khachHang"); setActiveMenuButton(btnKhachHang); });
         btnPhanQuyen.addActionListener(e -> { cardLayout.show(pnlContent, "phanQuyen"); setActiveMenuButton(btnPhanQuyen); });
         btnThongKe.addActionListener(e -> { cardLayout.show(pnlContent, "thongKe"); setActiveMenuButton(btnThongKe); });
         

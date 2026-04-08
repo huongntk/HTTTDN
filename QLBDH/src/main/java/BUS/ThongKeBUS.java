@@ -60,6 +60,7 @@
 
 package BUS;
 
+import DAO.DataProvider;
 import DTO.HoaDon;
 import DTO.CTHoaDon;
 import DTO.Product;
@@ -80,26 +81,61 @@ public class ThongKeBUS {
      * @return ArrayList các đối tượng Map chứa các cặp key: "ThoiGian", "DoanhThu", "GiaVon", "LoiNhuan"
      */
     public ArrayList<Map<String, Object>> thongKeLoiNhuan(int thang, int quy, int nam) {
-        ArrayList<Map<String, Object>> result = new ArrayList<>();
-        String sql = buildThongKeLoiNhuanSQL(thang, quy, nam);
-        
-        try (Connection conn = DBConnect.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-            
-            while (rs.next()) {
+    ArrayList<Map<String, Object>> result = new ArrayList<>();
+    String sql;
+    ResultSet rs = null;
+    
+    try {
+        if (thang > 0) {
+            // Thống kê theo tháng
+            sql = "SELECT MONTH(NgayLap) AS Thang, SUM(TongTien) AS DoanhThu " +
+                  "FROM HoaDon WHERE MONTH(NgayLap) = ? AND YEAR(NgayLap) = ? " +
+                  "GROUP BY MONTH(NgayLap)";
+            rs = DataProvider.executeQuery(sql, thang, nam);
+            if (rs != null && rs.next()) {
                 Map<String, Object> row = new HashMap<>();
-                row.put("ThoiGian", rs.getString("thoi_gian"));
-                row.put("DoanhThu", rs.getDouble("doanh_thu"));
-                row.put("GiaVon", rs.getDouble("gia_von"));
-                row.put("LoiNhuan", rs.getDouble("loi_nhuan"));
+                row.put("ThoiGian", "Tháng " + rs.getInt("Thang"));
+                row.put("DoanhThu", rs.getDouble("DoanhThu"));
+                row.put("GiaVon", 0.0);      // Tạm tính, nếu cần thì tính từ CTHoaDon + SanPham
+                row.put("LoiNhuan", rs.getDouble("DoanhThu")); // Tạm tính = doanh thu
                 result.add(row);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } else if (quy > 0) {
+            // Thống kê theo quý: lấy từ tháng đầu đến tháng cuối quý
+            int thangBatDau = (quy - 1) * 3 + 1;
+            int thangKetThuc = quy * 3;
+            sql = "SELECT ? AS Quy, SUM(TongTien) AS DoanhThu " +
+                  "FROM HoaDon WHERE MONTH(NgayLap) BETWEEN ? AND ? AND YEAR(NgayLap) = ?";
+            rs = DataProvider.executeQuery(sql, quy, thangBatDau, thangKetThuc, nam);
+            if (rs != null && rs.next()) {
+                Map<String, Object> row = new HashMap<>();
+                row.put("ThoiGian", "Quý " + rs.getInt("Quy"));
+                row.put("DoanhThu", rs.getDouble("DoanhThu"));
+                row.put("GiaVon", 0.0);
+                row.put("LoiNhuan", rs.getDouble("DoanhThu"));
+                result.add(row);
+            }
+        } else {
+            // Cả năm
+            sql = "SELECT YEAR(NgayLap) AS Nam, SUM(TongTien) AS DoanhThu " +
+                  "FROM HoaDon WHERE YEAR(NgayLap) = ? GROUP BY YEAR(NgayLap)";
+            rs = DataProvider.executeQuery(sql, nam);
+            if (rs != null && rs.next()) {
+                Map<String, Object> row = new HashMap<>();
+                row.put("ThoiGian", "Năm " + rs.getInt("Nam"));
+                row.put("DoanhThu", rs.getDouble("DoanhThu"));
+                row.put("GiaVon", 0.0);
+                row.put("LoiNhuan", rs.getDouble("DoanhThu"));
+                result.add(row);
+            }
         }
-        return result;
+    } catch (SQLException e) {
+        e.printStackTrace();
+    } finally {
+        closeResultSet(rs);
     }
+    return result;
+}
 
     private String buildThongKeLoiNhuanSQL(int thang, int quy, int nam) {
         StringBuilder sql = new StringBuilder();
@@ -261,5 +297,16 @@ public class ThongKeBUS {
             e.printStackTrace();
         }
         return result;
+    }
+    
+    private void closeResultSet(ResultSet rs) {
+        if (rs != null) {
+            try {
+                rs.getStatement().close();
+                rs.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

@@ -4,6 +4,10 @@ public class PhanQuyen {
 
     private String maQuyen;
     private String tenQuyen;
+    private boolean nsXemChamCong;
+
+    
+    
 
     // ==================== QUẢN LÝ NHÂN SỰ ====================
     private boolean nsXemDanhSach;
@@ -72,6 +76,7 @@ public boolean isBhThongKeLoiNhuan() { return bhThongKeLoiNhuan; }
     public boolean isQlBanHang() {
         return qlBanHang;
     }
+    
 
     public boolean isQlNhapHang() {
         return qlNhapHang;
@@ -96,12 +101,15 @@ public boolean isBhThongKeLoiNhuan() { return bhThongKeLoiNhuan; }
     public boolean isQlThongKe() {
         return qlThongKe;
     }
-
+    
     
     // Nhân sự
     public boolean isNsXemDanhSach() { return nsXemDanhSach; }
     public void setNsXemDanhSach(boolean value) { this.nsXemDanhSach = value; }
 
+    public boolean isNsChamCong() { return nsXemDanhSach; }
+    public void setNsChamCong(boolean value) { this.nsXemDanhSach = value; }
+    
     public boolean isNsThem() { return nsThem; }
     public void setNsThem(boolean value) { this.nsThem = value; }
 
@@ -231,4 +239,6 @@ public boolean isBhThongKeLoiNhuan() { return bhThongKeLoiNhuan; }
     this.qlKhuyenMai = value;
     this.qlThongKe = value;
 }
+
+   
 }

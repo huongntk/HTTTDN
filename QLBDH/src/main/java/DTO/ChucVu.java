@@ -3,14 +3,14 @@ package DTO;
 public class ChucVu {
     private String maCV;
     private String tenCV;
-    private double luongCoBan;
+
 
     public ChucVu() {}
 
-    public ChucVu(String maCV, String tenCV, double luongCoBan) {
+    public ChucVu(String maCV, String tenCV) {
         this.maCV = maCV;
         this.tenCV = tenCV;
-        this.luongCoBan = luongCoBan;
+       
     }
 
     public String getMaCV() {
@@ -24,6 +24,5 @@ public class ChucVu {
     
     public String getTenCV() { return tenCV; }
     public void setTenCV(String tenCV) { this.tenCV = tenCV; }
-    public double getLuongCoBan() { return luongCoBan; }
-    public void setLuongCoBan(double luongCoBan) { this.luongCoBan = luongCoBan; }
+    
 }

@@ -220,8 +220,9 @@ public class PhanQuyenDAO {
         pq.setQLSanPham(pq.isKhoXemSanPham() || pq.isKhoThemSanPham() || pq.isKhoSuaSanPham() || pq.isKhoXoaSanPham());
         pq.setQLNhanVien(pq.isNsXemDanhSach() || pq.isNsThem() || pq.isNsSua() || pq.isNsXoa() || pq.isNsDuyetNghi() || pq.isNsThayDoiChucVu() || pq.isNsTinhLuong() || pq.isNsXemLuongCaNhan() || pq.isNsInBangLuong());
         pq.setQLNhapHang(pq.isKhoNhapHang()); // hoặc kết hợp
-        pq.setQLKhachHang(true); // chưa có quyền cụ thể, tạm thời false
+        pq.setQLKhachHang(pq.isQlKhachHang()); 
         pq.setQLKhuyenMai(false);
+        pq.setNsChamCong(pq.isNsChamCong());
         pq.setQLThongKe(pq.isBhThongKeDoanhThu() || pq.isBhThongKeLoiNhuan() || pq.isKhoBaoCaoTonKho() || pq.isAdminBaoCaoTongHop());
         pq.setQLPhanQuyen(pq.isPqQuanLyPhanQuyen());
 

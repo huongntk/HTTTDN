@@ -1,6 +1,8 @@
 package GUI;
 
+import BUS.DonNghiBUS;
 import BUS.NhanVienBUS;
+import DTO.DonNghiDTO;
 import DTO.NhanVienDTO;
 import DTO.PhanQuyen;
 import UTIL.Auth;
@@ -12,9 +14,14 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
@@ -26,6 +33,8 @@ public class PnNhanVien extends javax.swing.JPanel {
     private ArrayList<NhanVienDTO> currentNhanVienList;
     private javax.swing.JButton btnTaoDonNghi;
     private javax.swing.JButton btnXemDonCuaToi;
+    private javax.swing.JComboBox<String> cblLoaiNghi;
+   
     public PnNhanVien(PhanQuyen pq) {
         
         initComponents();
@@ -44,16 +53,26 @@ public class PnNhanVien extends javax.swing.JPanel {
                 .setHorizontalAlignment(javax.swing.JLabel.CENTER);
         headerDN.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 14));
         loadChucVu();
+        loadLoaiNghi();
         loadData();
         addEvents();
         configureByPermission();
+    }
+    private void loadLoaiNghi() {
+        cboLoaiNghi.removeAllItems();
+        cboLoaiNghi.addItem("Nghỉ phép");
+        cboLoaiNghi.addItem("Nghỉ ốm đau");
+        cboLoaiNghi.addItem("Nghỉ thai sản");
+        cboLoaiNghi.addItem("Nghỉ việc");
     }
     private void configureByPermission(){
         btnThem.setVisible(phanQuyen.isNsThem());
         btnSua.setVisible(phanQuyen.isNsSua());
         btnXoa.setVisible(phanQuyen.isNsXoa());
-        btnDuyetNghi.setVisible(phanQuyen.isNsDuyetNghi());
-        btnThayDoiChucVu.setVisible(phanQuyen.isNsThayDoiChucVu());
+        // Chỉ hiển thị nút Duyệt nghỉ bên trong PnNhanVien nếu là ADMIN
+        boolean isAdmin = Auth.getUser().getMaQuyen().equals("ADMIN");
+        btnDuyetNghi.setVisible(phanQuyen.isNsDuyetNghi() && isAdmin);
+//        btnThayDoiChucVu.setVisible(phanQuyen.isNsThayDoiChucVu());
         btnTinhLuong.setVisible(phanQuyen.isNsTinhLuong());
         btnTaoDonNghi.setVisible(phanQuyen.isNsTaoDonNghi());
         btnXemDonCuaToi.setVisible(phanQuyen.isNsXemDonCuaMinh());
@@ -91,7 +110,7 @@ public class PnNhanVien extends javax.swing.JPanel {
                 } else {
                     rdoNu.setSelected(true);
                 }
-                cboChucVu.setSelectedItem(nv.getChucVu());
+                cboChucVu.setSelectedItem(nv.getMaCV());
                 txtTenTaiKhoan.setText(nv.getTenTaiKhoan());
                 txtMatKhau.setText(nv.getMatKhau());
                 if (nv.isTrangThai()) {
@@ -120,6 +139,7 @@ public class PnNhanVien extends javax.swing.JPanel {
 
         // Nếu không có quyền gì liên quan đến nhân sự, ẩn toàn bộ panel (trường hợp hiếm)
     }
+    
     private void loadChucVu() {
         // Gọi BUS để lấy danh sách chức vụ từ CSDL (Giả định BUS đã gọi DAO)
         ArrayList<String> chucVuList = nhanVienBUS.layDanhSachChucVu();
@@ -135,6 +155,15 @@ public class PnNhanVien extends javax.swing.JPanel {
         // Thiết lập model cho cboChucVu
         cboChucVu.setModel(model);
     }
+    
+    private Date parseDate(String dateStr) {
+    try {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        return sdf.parse(dateStr);
+    } catch (ParseException e) {
+        return null;
+    }
+}
 
     private void loadData() {
         currentNhanVienList = nhanVienBUS.layDanhSachNhanVien();
@@ -146,10 +175,30 @@ public class PnNhanVien extends javax.swing.JPanel {
         showData(currentNhanVienList);
     }
     private void loadDanhSachDonNghiCaNhan() {
-        // TODO: Viết logic gọi DonNghiBUS để lấy danh sách đơn từ của Auth.getUser().getMaNV()
-        // Code mẫu hiển thị data cứng để test giao diện:
-        modelDonNghi.setRowCount(0);
-        // modelDonNghi.addRow(new Object[]{"DN01", "01/05/2026", "02/05/2026", "Bệnh", "Chờ duyệt"});
+        modelDonNghi.setRowCount(0); // Xóa trắng dữ liệu cũ trên bảng
+
+        DonNghiBUS donNghiBUS = new DonNghiBUS();
+        int maNV = Auth.getUser().getMaNV();
+
+        // Gọi BUS lấy danh sách đơn của nhân viên đang đăng nhập
+        ArrayList<DonNghiDTO> list = donNghiBUS.layDonTheoNhanVien(maNV);
+
+        // Format ngày để hiển thị đẹp mắt
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+        for (DonNghiDTO dn : list) {
+            String strNgayBatDau = dn.getNgayBatDau() != null ? sdf.format(dn.getNgayBatDau()) : "";
+            String strNgayKetThuc = dn.getNgayKetThuc() != null ? sdf.format(dn.getNgayKetThuc()) : "";
+
+            Object[] row = new Object[]{
+                dn.getMaDon(),
+                strNgayBatDau,
+                strNgayKetThuc,
+                dn.getLyDo(),
+                dn.getTrangThai()
+            };
+            modelDonNghi.addRow(row);
+        }
     }
     private void showData(ArrayList<NhanVienDTO> danhSach) {
         modelNhanVien.setRowCount(0);
@@ -163,7 +212,7 @@ public class PnNhanVien extends javax.swing.JPanel {
                 hoTen,
                 gioiTinh,
                 nv.getSoDienThoai(),
-                nv.getChucVu(),
+                nv.getMaCV(),
                 trangThai
             };
             modelNhanVien.addRow(row);
@@ -215,7 +264,7 @@ public class PnNhanVien extends javax.swing.JPanel {
                             rdoNu.setSelected(true);
                         }
                         
-                        cboChucVu.setSelectedItem(nv.getChucVu());
+                        cboChucVu.setSelectedItem(nv.getMaCV());
                         txtTenTaiKhoan.setText(nv.getTenTaiKhoan());
                         txtMatKhau.setText(nv.getMatKhau());
                         
@@ -245,6 +294,7 @@ public class PnNhanVien extends javax.swing.JPanel {
         });
         
         btnNopDonNghi.addActionListener(e -> {
+            String loaiNghi = (String) cboLoaiNghi.getSelectedItem();
             String tuNgay = txtTuNgayNghi.getText().trim();
             String denNgay = txtDenNgayNghi.getText().trim();
             String lyDo = txtLyDoNghi.getText().trim();
@@ -254,12 +304,28 @@ public class PnNhanVien extends javax.swing.JPanel {
                 return;
             }
 
-            // TODO: Gọi DonNghiBUS.themDonNghi(DTO) ở đây
-            JOptionPane.showMessageDialog(this, "Đã nộp đơn nghỉ thành công! Vui lòng chờ duyệt.");
-            txtTuNgayNghi.setText("");
-            txtDenNgayNghi.setText("");
-            txtLyDoNghi.setText("");
-            loadDanhSachDonNghiCaNhan();
+            // 1. Tạo đối tượng và Gán dữ liệu TRƯỚC khi xóa form
+            DonNghiBUS donNghiBUS = new DonNghiBUS();
+            DonNghiDTO don = new DonNghiDTO();
+            don.setMaNV(Auth.getUser().getMaNV());                  
+            don.setLoaiDon(loaiNghi); // Lấy linh hoạt từ Combobox thay vì gán cứng "Nghỉ phép"
+            don.setNgayBatDau(parseDate(tuNgay)); 
+            don.setNgayKetThuc(parseDate(denNgay));
+            don.setLyDo(lyDo);             
+            don.setTrangThai("Chờ duyệt");                         
+            don.setNgayGui(new Date());                            
+
+            // 2. Gọi BUS thêm đơn vào CSDL
+            String result = donNghiBUS.themDonNghi(don);
+            JOptionPane.showMessageDialog(this, result); // Hiện thông báo thật từ BUS trả về
+
+            // 3. NẾU thêm thành công thì mới xóa trắng form và load lại bảng
+            if (result.contains("Đã gửi đơn nghỉ")) {
+                txtTuNgayNghi.setText("");
+                txtDenNgayNghi.setText("");
+                txtLyDoNghi.setText("");
+                loadDanhSachDonNghiCaNhan(); // Cập nhật lại JTable
+            }
         });
         
         btnTaoDonNghi.addActionListener(e -> {
@@ -267,9 +333,8 @@ public class PnNhanVien extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(this, "Bạn không có quyền tạo đơn nghỉ!");
             return;
         }
-            JOptionPane.showMessageDialog(this, "chức năng phát triển");
-        // Mở dialog tạo đơn nghỉ (có thể tạo mới DlgTaoDonNghi)
-//            new FrmDuyetNghi(phanQuyen).setVisible(true);
+           
+        
         });
 
     btnXemDonCuaToi.addActionListener(e -> {
@@ -280,6 +345,7 @@ public class PnNhanVien extends javax.swing.JPanel {
         JOptionPane.showMessageDialog(this, "chức năng phát triển");
         // Mở dialog xem danh sách đơn nghỉ của nhân viên hiện tại
 //        new DlgXemDonCuaToi((Frame) SwingUtilities.getWindowAncestor(this), true, Auth.getUser().getMaNV()).setVisible(true);
+        
     });
 
         btnSua.addActionListener(e -> {
@@ -368,29 +434,34 @@ public class PnNhanVien extends javax.swing.JPanel {
             new FrmInBangLuong(maNV).setVisible(true);
         });
         btnDuyetNghi.addActionListener(e -> {
-//            if (!phanQuyen.isNsDuyetNghi()) {
-//                JOptionPane.showMessageDialog(this, "Bạn không có quyền duyệt đơn nghỉ!");
+            java.awt.Window window = SwingUtilities.getWindowAncestor(this);
+            JDialog dialog = new JDialog((Frame) window, "Duyệt đơn nghỉ", true);
+            dialog.add(new FrmDuyetNghi(phanQuyen));
+            dialog.pack();
+            dialog.setLocationRelativeTo(window);
+            dialog.setVisible(true);
+        });
+//        pnContent.removeAll();
+//        FrmDuyetNghi pn = new FrmDuyetNghi(phanQuyen);
+//        
+//        pnContent.add(pn, java.awt.BorderLayout.CENTER);
+//        pnContent.revalidate();
+//        pnContent.repaint();
+        // Xử lý nút thay đổi chức vụ (quản lý)
+//        btnThayDoiChucVu.addActionListener(e -> {
+//           
+//            if (txtMaNV.getText().isEmpty()) {
+//                JOptionPane.showMessageDialog(this, "Vui lòng chọn nhân viên cần thay đổi chức vụ");
 //                return;
 //            }
-            // Mở form duyệt nghỉ phép
-            new FrmDuyetNghi(phanQuyen).setVisible(true);
-        });
-
-        // Xử lý nút thay đổi chức vụ (quản lý)
-        btnThayDoiChucVu.addActionListener(e -> {
-           
-            if (txtMaNV.getText().isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Vui lòng chọn nhân viên cần thay đổi chức vụ");
-                return;
-            }
-            int maNV = Integer.parseInt(txtMaNV.getText());
-            new FrmThayDoiChucVu(maNV,phanQuyen).setVisible(true);
-        });
-        btnTinhLuong.addActionListener(e -> {
-           
-            // Mở form tính lương hàng loạt hoặc theo tháng
-            new FrmTinhLuong(phanQuyen).setVisible(true);
-        });
+//            int maNV = Integer.parseInt(txtMaNV.getText());
+//            new FrmThayDoiChucVu(maNV,phanQuyen).setVisible(true);
+//        });
+//        btnTinhLuong.addActionListener(e -> {
+//           
+//            // Mở form tính lương hàng loạt hoặc theo tháng
+//            new FrmTinhLuong(phanQuyen).setVisible(true);
+//        });
     }
     
     private NhanVienDTO getNhanVienFromForm() {
@@ -403,12 +474,45 @@ public class PnNhanVien extends javax.swing.JPanel {
         String ten = txtTen.getText().trim();
         String sdt = txtSoDienThoai.getText().trim();
         String gioiTinh = rdoNam.isSelected() ? "Nam" : "Nữ";
-        String maCV = cboChucVu.getSelectedItem() != null ? cboChucVu.getSelectedItem().toString() : "";
+        String tenChucVu = cboChucVu.getSelectedItem() != null ? cboChucVu.getSelectedItem().toString().trim() : "";
+        String maCV = "";
+        String maQuyen = "";
+        switch (tenChucVu) {
+            case "Giám đốc":
+                maCV = "CV01"; 
+                maQuyen = "ADMIN"; 
+                break;
+            case "Quản lý nhân sự":
+                maCV = "CV02"; 
+                maQuyen = "QL_NHANSU";
+                break;
+            case "Quản lý kho":
+                maCV = "CV03"; 
+                maQuyen = "QL_KHO"; 
+                break;
+            case "Quản lý bán hàng":
+                maCV = "CV04"; 
+                maQuyen = "QL_KINHDOANH"; 
+                break;
+            case "Nhân viên bán hàng":
+                maCV = "CV05"; 
+                maQuyen = "NHANVIEN"; 
+                break;
+            case "Nhân viên nhập hàng":
+                maCV = "CV06"; 
+                maQuyen = "NHANVIEN"; 
+                break;
+            default:
+                maCV = "CV05";
+                maQuyen = "NHANVIEN"; // Dự phòng
+                break;
+        }
+       
         String tenTaiKhoan = txtTenTaiKhoan.getText().trim();
         String matKhau = new String(txtMatKhau.getPassword()).trim();
         boolean trangThai = rdoDangLam.isSelected();
         
-        return new NhanVienDTO(maNV, ho, ten, gioiTinh, sdt, maCV, trangThai, tenTaiKhoan, matKhau);
+        return new NhanVienDTO(maNV, ho, ten, gioiTinh, sdt, maCV, maQuyen, trangThai, tenTaiKhoan, matKhau);
     }
 
         @SuppressWarnings("unchecked")
@@ -446,7 +550,7 @@ public class PnNhanVien extends javax.swing.JPanel {
         btnXemLuong = new javax.swing.JButton();
         btnInLuong = new javax.swing.JButton();
         btnDuyetNghi = new javax.swing.JButton();
-        btnThayDoiChucVu = new javax.swing.JButton();
+//        btnThayDoiChucVu = new javax.swing.JButton();
         btnTinhLuong = new javax.swing.JButton();
         btnTaoDonNghi = new javax.swing.JButton();
         btnXemDonCuaToi = new javax.swing.JButton();
@@ -454,6 +558,7 @@ public class PnNhanVien extends javax.swing.JPanel {
         pnlRight = new javax.swing.JPanel();
         pnlRight.setLayout(new CardLayout());
         pnlBang = new javax.swing.JPanel();
+//        btnThayDoiChucVu = new javax.swing.JButton();
         lblTieuDeBang = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblNhanVien = new javax.swing.JTable();
@@ -550,8 +655,8 @@ public class PnNhanVien extends javax.swing.JPanel {
         btnDuyetNghi.setFont(new java.awt.Font("Segoe UI", 0, 14));
         btnDuyetNghi.setText("Duyệt nghỉ");
 
-        btnThayDoiChucVu.setFont(new java.awt.Font("Segoe UI", 0, 14));
-        btnThayDoiChucVu.setText("Đổi chức vụ");
+//        btnThayDoiChucVu.setFont(new java.awt.Font("Segoe UI", 0, 14));
+//        btnThayDoiChucVu.setText("Đổi chức vụ");
 
         btnTinhLuong.setFont(new java.awt.Font("Segoe UI", 0, 14));
         btnTinhLuong.setText("Tính lương");
@@ -619,9 +724,9 @@ public class PnNhanVien extends javax.swing.JPanel {
                                 .addGap(18)
                                 .addComponent(btnTinhLuong))
                             .addGroup(pnlThongTinLayout.createSequentialGroup()
-                                .addComponent(btnDuyetNghi)
-                                .addGap(18)
-                                .addComponent(btnThayDoiChucVu)))))
+                                .addComponent(btnDuyetNghi)))))
+//                                .addGap(18)
+//                                .addComponent(btnThayDoiChucVu)))))
                 .addContainerGap(20, Short.MAX_VALUE))
         );
         pnlThongTinLayout.setVerticalGroup(
@@ -684,8 +789,8 @@ public class PnNhanVien extends javax.swing.JPanel {
                     .addComponent(btnTinhLuong))
                 .addGap(18)
                 .addGroup(pnlThongTinLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnDuyetNghi)
-                    .addComponent(btnThayDoiChucVu))
+                    .addComponent(btnDuyetNghi))
+//                    .addComponent(btnThayDoiChucVu))
                    
              .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 
@@ -779,9 +884,9 @@ public class PnNhanVien extends javax.swing.JPanel {
         pnlDonNghiCaNhan.add(scrollDonNghi, BorderLayout.CENTER);
 
         // Form nhập đơn phía dưới
-        javax.swing.JPanel pnlFormDon = new javax.swing.JPanel(new GridLayout(4, 2, 10, 10));
+        javax.swing.JPanel pnlFormDon = new javax.swing.JPanel(new GridLayout(5, 2, 10, 10));
         pnlFormDon.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Nhập đơn nghỉ mới", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 1, 12)));
-        
+        cboLoaiNghi = new javax.swing.JComboBox<>();
         txtTuNgayNghi = new javax.swing.JTextField();
         txtDenNgayNghi = new javax.swing.JTextField();
         txtLyDoNghi = new javax.swing.JTextField();
@@ -789,7 +894,9 @@ public class PnNhanVien extends javax.swing.JPanel {
         btnNopDonNghi.setFont(new java.awt.Font("Segoe UI", 1, 14));
         btnNopDonNghi.setBackground(new java.awt.Color(0, 204, 153));
         btnNopDonNghi.setForeground(java.awt.Color.WHITE);
-
+        
+        pnlFormDon.add(new javax.swing.JLabel("Loại nghỉ:"));
+        pnlFormDon.add(cboLoaiNghi);
         pnlFormDon.add(new javax.swing.JLabel("Từ ngày (dd/MM/yyyy):"));
         pnlFormDon.add(txtTuNgayNghi);
         pnlFormDon.add(new javax.swing.JLabel("Đến ngày (dd/MM/yyyy):"));
@@ -893,4 +1000,5 @@ public class PnNhanVien extends javax.swing.JPanel {
     private javax.swing.JTable tblDonNghi;
     private javax.swing.JTextField txtTuNgayNghi, txtDenNgayNghi, txtLyDoNghi;
     private javax.swing.JButton btnNopDonNghi;
+    private javax.swing.JComboBox<String> cboLoaiNghi;
 }

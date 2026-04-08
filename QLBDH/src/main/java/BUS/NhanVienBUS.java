@@ -1,5 +1,6 @@
 package BUS;
 
+import DAO.LuongCoBanTheoChucVuDAO;
 import DAO.NhanVienDAO;
 import DTO.ChucVu;
 import DTO.LichSuChucVu;
@@ -117,12 +118,12 @@ public class NhanVienBUS {
         if (nv == null) return false;
 
         // Lấy mã chức vụ cũ và mới
-        ChucVu cvCu = chucVuBUS.layChucVuTheoTen(nv.getChucVu()); // cần thêm phương thức
+        ChucVu cvCu = chucVuBUS.layChucVuTheoTen(nv.getMaCV()); // cần thêm phương thức
         ChucVu cvMoi = chucVuBUS.layChucVuTheoTen(chucVuMoi);
         if (cvCu == null || cvMoi == null) return false;
 
         // Cập nhật chức vụ cho nhân viên
-        nv.setChucVu(chucVuMoi);
+        nv.setMaCV(chucVuMoi);
         boolean updateNV = nhanVienDAO.update(nv) > 0;
         if (!updateNV) return false;
 
@@ -134,5 +135,11 @@ public class NhanVienBUS {
         ls.setNgayThayDoi(java.sql.Date.valueOf(ngayHieuLuc)); // cần parse
         ls.setGhiChu(lyDo);
         return lichSuBUS.themLichSu(ls);
+    }
+    public double getLuongCoBanByChucVu(String maCV) {
+        return new LuongCoBanTheoChucVuDAO().getLuongCoBan(maCV);
+    }
+    public double getPhuCapByChucVu(String maCV) {
+        return new LuongCoBanTheoChucVuDAO().getPhuCap(maCV);
     }
 }

@@ -1,74 +1,99 @@
 package GUI;
 
-import BUS.LuongBUS;
+import BUS.BangLuongBUS;
+import BUS.NhanVienBUS;
+import DTO.BangLuongDTO;
+import DTO.NhanVienDTO;
 import DTO.PhanQuyen;
-import java.awt.*;
-import java.time.YearMonth;
-import java.time.format.DateTimeFormatter;
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Locale;
 
-public class FrmTinhLuong extends JDialog {
-    private LuongBUS luongBUS;
-    private JComboBox<String> cboThang, cboNam;
-    private JButton btnTinh, btnDong;
+public class FrmTinhLuong extends JFrame {
     private PhanQuyen phanQuyen;
+    private BangLuongBUS bangLuongBUS;
+    private NhanVienBUS nhanVienBUS;
+    private JTable table;
+    private DefaultTableModel model;
+    private JComboBox<Integer> cbThang, cbNam;
+    private JButton btnTinh, btnLuu, btnClose;
+    private ArrayList<NhanVienDTO> dsNhanVien;
 
     public FrmTinhLuong(PhanQuyen phanQuyen) {
         this.phanQuyen = phanQuyen;
-        luongBUS = new LuongBUS();
+        bangLuongBUS = new BangLuongBUS();
+        nhanVienBUS = new NhanVienBUS();
         initComponents();
-        setTitle("Tính lương nhân viên");
-        setSize(400, 200);
+        loadDanhSachNhanVien();
         setLocationRelativeTo(null);
-        setModal(true);
     }
 
     private void initComponents() {
+        setTitle("Tính lương nhân viên");
+        setSize(1000, 600);
         setLayout(new BorderLayout());
 
-        JLabel lblTitle = new JLabel("TÍNH LƯƠNG THEO THÁNG", SwingConstants.CENTER);
-        lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 16));
-        add(lblTitle, BorderLayout.NORTH);
-
-        JPanel pnlCenter = new JPanel(new FlowLayout());
-        pnlCenter.add(new JLabel("Tháng:"));
-        cboThang = new JComboBox<>(new String[]{"1","2","3","4","5","6","7","8","9","10","11","12"});
-        pnlCenter.add(cboThang);
-
-        pnlCenter.add(new JLabel("Năm:"));
-        cboNam = new JComboBox<>();
-        int currentYear = YearMonth.now().getYear();
-        for (int y = currentYear - 2; y <= currentYear + 1; y++) {
-            cboNam.addItem(String.valueOf(y));
-        }
-        cboNam.setSelectedItem(String.valueOf(currentYear));
-        pnlCenter.add(cboNam);
-
-        add(pnlCenter, BorderLayout.CENTER);
-
-        JPanel pnlButton = new JPanel();
+        JPanel pnlTop = new JPanel();
+        pnlTop.add(new JLabel("Tháng:"));
+        cbThang = new JComboBox<>();
+        for (int i = 1; i <= 12; i++) cbThang.addItem(i);
+        pnlTop.add(cbThang);
+        pnlTop.add(new JLabel("Năm:"));
+        cbNam = new JComboBox<>();
+        for (int i = 2023; i <= 2030; i++) cbNam.addItem(i);
+        pnlTop.add(cbNam);
         btnTinh = new JButton("Tính lương");
-        btnTinh.addActionListener(e -> tinhLuong());
-        btnDong = new JButton("Đóng");
-        btnDong.addActionListener(e -> dispose());
-        pnlButton.add(btnTinh);
-        pnlButton.add(btnDong);
-        add(pnlButton, BorderLayout.SOUTH);
+        btnTinh.addActionListener(e -> tinhLuongChoThang());
+        pnlTop.add(btnTinh);
+        btnLuu = new JButton("Lưu tất cả");
+        btnLuu.addActionListener(e -> luuTatCa());
+        pnlTop.add(btnLuu);
+        btnClose = new JButton("Đóng");
+        btnClose.addActionListener(e -> dispose());
+        pnlTop.add(btnClose);
+        add(pnlTop, BorderLayout.NORTH);
+
+        model = new DefaultTableModel(new String[]{"Mã NV", "Họ tên", "Chức vụ", "Lương cơ bản", "Phụ cấp", "Thưởng", "Phạt", "Tổng lương"}, 0);
+        table = new JTable(model);
+        add(new JScrollPane(table), BorderLayout.CENTER);
     }
 
-    private void tinhLuong() {
-        int thang = Integer.parseInt(cboThang.getSelectedItem().toString());
-        int nam = Integer.parseInt(cboNam.getSelectedItem().toString());
-        int confirm = JOptionPane.showConfirmDialog(this,
-                "Bạn có chắc muốn tính lương tháng " + thang + "/" + nam + "?",
-                "Xác nhận", JOptionPane.YES_NO_OPTION);
-        if (confirm == JOptionPane.YES_OPTION) {
-            boolean success = luongBUS.tinhLuongTheoThang(thang, nam);
-            if (success) {
-                JOptionPane.showMessageDialog(this, "Tính lương thành công!");
-            } else {
-                JOptionPane.showMessageDialog(this, "Tính lương thất bại (có thể đã tính rồi)!");
+    private void loadDanhSachNhanVien() {
+        dsNhanVien = nhanVienBUS.layDanhSachNhanVien();
+    }
+
+    private void tinhLuongChoThang() {
+        int thang = (int) cbThang.getSelectedItem();
+        int nam = (int) cbNam.getSelectedItem();
+        model.setRowCount(0);
+        for (NhanVienDTO nv : dsNhanVien) {
+            // Giả sử mỗi nhân viên có thể nhập thưởng/phạt riêng (ở đây tạm =0)
+            BangLuongDTO bl = bangLuongBUS.tinhLuongChoNhanVien(nv.getMaNV(), thang, nam, 0, 0);
+            if (bl != null) {
+                model.addRow(new Object[]{
+                    nv.getMaNV(), nv.getHo() + " " + nv.getTen(), nv.getMaCV(),
+                    bl.getLuongCoBan(), bl.getPhuCap(), 0, 0, bl.getTongLuong()
+                });
             }
         }
+        // Cho phép sửa trực tiếp cột thưởng, phạt
+        table.getColumnModel().getColumn(5).setCellEditor(new DefaultCellEditor(new JTextField()));
+        table.getColumnModel().getColumn(6).setCellEditor(new DefaultCellEditor(new JTextField()));
+    }
+
+    private void luuTatCa() {
+        int thang = (int) cbThang.getSelectedItem();
+        int nam = (int) cbNam.getSelectedItem();
+        for (int i = 0; i < model.getRowCount(); i++) {
+            int maNV = (int) model.getValueAt(i, 0);
+            double thuong = Double.parseDouble(model.getValueAt(i, 5).toString());
+            double phat = Double.parseDouble(model.getValueAt(i, 6).toString());
+            BangLuongDTO bl = bangLuongBUS.tinhLuongChoNhanVien(maNV, thang, nam, thuong, phat);
+            bangLuongBUS.luuBangLuong(bl);
+        }
+        JOptionPane.showMessageDialog(this, "Đã lưu bảng lương tháng " + thang + "/" + nam);
     }
 }

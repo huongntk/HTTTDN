@@ -109,7 +109,7 @@ public class NhanVienDAO {
             psNhanVien.setString(2, nv.getTen());
             psNhanVien.setString(3, nv.getGioiTinh());
             psNhanVien.setString(4, nv.getSoDienThoai());
-            psNhanVien.setString(5, nv.getChucVu());
+            psNhanVien.setString(5, nv.getMaCV());
             psNhanVien.setBoolean(6, nv.isTrangThai());
 
             int rowsAffected = psNhanVien.executeUpdate();
@@ -189,7 +189,7 @@ public class NhanVienDAO {
             psNhanVien.setString(2, nv.getTen());
             psNhanVien.setString(3, nv.getGioiTinh());
             psNhanVien.setString(4, nv.getSoDienThoai());
-            psNhanVien.setString(5, nv.getChucVu());
+            psNhanVien.setString(5, nv.getMaCV());
             psNhanVien.setBoolean(6, nv.isTrangThai());
             psNhanVien.setInt(7, nv.getMaNV());
             
@@ -199,7 +199,7 @@ public class NhanVienDAO {
             psTaiKhoan = conn.prepareStatement(sqlTaiKhoan);
             psTaiKhoan.setString(1, nv.getTenTaiKhoan());
             psTaiKhoan.setString(2, nv.getMatKhau());
-            psTaiKhoan.setString(3, nv.getChucVu());
+            psTaiKhoan.setString(3, nv.getMaQuyen());
             psTaiKhoan.setBoolean(4, nv.isTrangThai());
             psTaiKhoan.setInt(5, nv.getMaNV());
 
@@ -242,7 +242,7 @@ public class NhanVienDAO {
     public int update(NhanVienDTO nv) {
         String sql = "UPDATE NhanVien SET Ho = ?, Ten = ?, GioiTinh = ?, SoDienThoai = ?, MaCV = ?, TrangThai = ? WHERE MaNV = ?";
         return DataProvider.executeUpdate(sql, 
-                nv.getHo(), nv.getTen(), nv.getGioiTinh(), nv.getSoDienThoai(), nv.getChucVu(), nv.isTrangThai(), nv.getMaNV());
+                nv.getHo(), nv.getTen(), nv.getGioiTinh(), nv.getSoDienThoai(), nv.getMaCV(), nv.isTrangThai(), nv.getMaNV());
     }
 
     public boolean xoaNhanVien(int maNV) {
@@ -407,7 +407,7 @@ public class NhanVienDAO {
                 nv.setTen(rs.getString("Ten"));
                 nv.setGioiTinh(rs.getString("GioiTinh"));
                 nv.setSoDienThoai(rs.getString("SoDienThoai"));
-                nv.setChucVu(rs.getString("MaCV"));
+                nv.setMaCV(rs.getString("MaCV"));
                 nv.setTrangThai(rs.getBoolean("TrangThai"));
                 nv.setTenTaiKhoan(rs.getString("TaiKhoan"));
                 nv.setMatKhau(rs.getString("MatKhau"));
@@ -444,5 +444,76 @@ public class NhanVienDAO {
             }
         }
         return chucVuList;
+    }
+    
+    // Lấy lương cơ bản theo mã chức vụ
+    public double getLuongCoBanByChucVu(String maCV) {
+        String sql = "SELECT LuongCoBan FROM LuongCoBanTheoChucVu WHERE MaCV = ?";
+        ResultSet rs = null;
+        try {
+            rs = DataProvider.executeQuery(sql, maCV);
+            if (rs != null && rs.next()) {
+                return rs.getDouble("LuongCoBan");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeResultSet(rs);
+        }
+        return 0; // trả về 0 nếu không có cấu hình
+    }
+
+    // Lấy phụ cấp chức vụ theo mã chức vụ
+    public double getPhuCapByChucVu(String maCV) {
+        String sql = "SELECT PhuCapChucVu FROM LuongCoBanTheoChucVu WHERE MaCV = ?";
+        ResultSet rs = null;
+        try {
+            rs = DataProvider.executeQuery(sql, maCV);
+            if (rs != null && rs.next()) {
+                return rs.getDouble("PhuCapChucVu");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeResultSet(rs);
+        }
+        return 0;
+    }
+
+    // Helper method đóng ResultSet (nếu chưa có)
+    private void closeResultSet(ResultSet rs) {
+        if (rs != null) {
+            try {
+                Statement stmt = rs.getStatement();
+                rs.close();
+                if (stmt != null) stmt.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    public ArrayList<NhanVienDTO> selectAll() {
+        ArrayList<NhanVienDTO> list = new ArrayList<>();
+        String sql = "SELECT * FROM NhanVien";
+        try (ResultSet rs = DataProvider.executeQuery(sql)) {
+            while (rs.next()) {
+                NhanVienDTO nv = new NhanVienDTO();
+                nv.setMaNV(rs.getInt("MaNV"));
+                nv.setHo(rs.getString("Ho"));
+                nv.setTen(rs.getString("Ten"));
+                nv.setGioiTinh(rs.getString("GioiTinh"));
+                nv.setSoDienThoai(rs.getString("SoDienThoai"));
+                nv.setMaCV(rs.getString("MaCV"));
+                nv.setMaQuyen(rs.getString("MaQuyen"));
+                nv.setTrangThai(rs.getBoolean("TrangThai"));
+                nv.setTenTaiKhoan(rs.getString("TenTaiKhoan"));
+                nv.setMatKhau(rs.getString("MatKhau"));
+                list.add(nv);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 }

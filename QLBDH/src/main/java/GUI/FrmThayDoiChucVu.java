@@ -104,7 +104,7 @@ public class FrmThayDoiChucVu extends JDialog {
         if (nv != null) {
             txtMaNV.setText(String.valueOf(nv.getMaNV()));
             txtHoTen.setText(nv.getHo() + " " + nv.getTen());
-            txtChucVuHienTai.setText(nv.getChucVu());
+            txtChucVuHienTai.setText(nv.getMaCV());
         }
         // Load danh sách chức vụ (trừ chức vụ hiện tại)
         ArrayList<String> dsChucVu = nvBUS.layDanhSachChucVu();

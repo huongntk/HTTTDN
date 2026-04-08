@@ -14,7 +14,7 @@ public class ChucVuDAO {
                 ChucVu cv = new ChucVu();
                 cv.setMaCV(rs.getString("MaCV"));
                 cv.setTenCV(rs.getString("TenCV"));
-                cv.setLuongCoBan(rs.getDouble("LuongCoBan"));
+               
                 list.add(cv);
             }
         } catch (Exception e) {
@@ -30,7 +30,7 @@ public class ChucVuDAO {
                 ChucVu cv = new ChucVu();
                 cv.setMaCV(rs.getString("MaCV"));
                 cv.setTenCV(rs.getString("TenCV"));
-                cv.setLuongCoBan(rs.getDouble("LuongCoBan"));
+               
                 return cv;
             }
         } catch (Exception e) {
@@ -46,7 +46,7 @@ public class ChucVuDAO {
                 ChucVu cv = new ChucVu();
                 cv.setMaCV(rs.getString("MaCV"));
                 cv.setTenCV(rs.getString("TenCV"));
-                cv.setLuongCoBan(rs.getDouble("LuongCoBan"));
+                
                 return cv;
             }
         } catch (Exception e) {
@@ -56,13 +56,13 @@ public class ChucVuDAO {
     }
     
     public int insert(ChucVu cv) {
-        String sql = "INSERT INTO ChucVu (TenCV, LuongCoBan) VALUES (?, ?)";
-        return DataProvider.executeUpdate(sql, cv.getTenCV(), cv.getLuongCoBan());
+        String sql = "INSERT INTO ChucVu (TenCV) VALUES (?)";
+        return DataProvider.executeUpdate(sql, cv.getTenCV());
     }
     
     public int update(ChucVu cv) {
-        String sql = "UPDATE ChucVu SET TenCV = ?, LuongCoBan = ? WHERE MaCV = ?";
-        return DataProvider.executeUpdate(sql, cv.getTenCV(), cv.getLuongCoBan(), cv.getMaCV());
+        String sql = "UPDATE ChucVu SET TenCV = ? WHERE MaCV = ?";
+        return DataProvider.executeUpdate(sql, cv.getTenCV(), cv.getMaCV());
     }
     
     public int delete(int maCV) {
