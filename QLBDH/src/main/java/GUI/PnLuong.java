@@ -84,11 +84,16 @@ public class PnLuong extends JPanel {
         pnlTop.add(cboNam);
 
         btnTinhLuong = new JButton("Tính lương tháng");
+        btnTinhLuong.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/caculator.png")));
 //        btnXemLuong = new JButton("Xem lương");
         btnInLuong = new JButton("In lương");
+        btnInLuong.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/print.png")));
         btnLamMoi = new JButton("Làm mới");
+        btnLamMoi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/refresh.png")));
         btnCauHinhLuong = new JButton ("Cấu hình lương");
+        btnCauHinhLuong.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/settings.png")));
         btnLuuThuongPhat = new JButton ("Sửa thưởng/phạt");
+        btnLuuThuongPhat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/undo.png")));
 
         pnlTop.add(btnTinhLuong);
 //        pnlTop.add(btnXemLuong);

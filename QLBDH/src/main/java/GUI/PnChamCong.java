@@ -77,6 +77,7 @@ public class PnChamCong extends JPanel {
         pnlTop.add(cboNhanVien);
 
         btnLamMoi = new JButton("Làm mới");
+        btnLamMoi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/refresh.png")));
         pnlTop.add(btnLamMoi);
 
         add(pnlTop, BorderLayout.NORTH);
@@ -97,8 +98,11 @@ public class PnChamCong extends JPanel {
         // Panel nút dưới cùng
         JPanel pnlBottom = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
         btnThem = new JButton("Thêm chấm công");
+        btnThem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/them.png")));
         btnSua = new JButton("Cập nhật");
+        btnSua.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/sua.png")));
         btnXoa = new JButton("Xóa");
+        btnXoa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/xoa.png")));
         pnlBottom.add(btnThem);
         pnlBottom.add(btnSua);
         pnlBottom.add(btnXoa);

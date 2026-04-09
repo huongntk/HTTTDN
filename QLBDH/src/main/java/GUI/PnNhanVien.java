@@ -644,25 +644,21 @@ public class PnNhanVien extends javax.swing.JPanel {
         txtTenTaiKhoan.setFont(new java.awt.Font("Segoe UI", 0, 14));
 
         btnXemLuong.setFont(new java.awt.Font("Segoe UI", 0, 14));
+        btnXemLuong.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/search.png")));
         btnXemLuong.setText("Xem lương");
 
         btnInLuong.setFont(new java.awt.Font("Segoe UI", 0, 14));
+        btnInLuong.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/print.png")));
         btnInLuong.setText("In lương");
 
         btnDuyetNghi.setFont(new java.awt.Font("Segoe UI", 0, 14));
+        btnDuyetNghi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/xacnhan.png")));
         btnDuyetNghi.setText("Duyệt nghỉ");
 
-//        btnThayDoiChucVu.setFont(new java.awt.Font("Segoe UI", 0, 14));
-//        btnThayDoiChucVu.setText("Đổi chức vụ");
 
         btnTinhLuong.setFont(new java.awt.Font("Segoe UI", 0, 14));
+        btnTinhLuong.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/caculator.png")));
         btnTinhLuong.setText("Tính lương");
-
-        btnTaoDonNghi.setFont(new java.awt.Font("Segoe UI", 0, 14));
-        btnTaoDonNghi.setText("Tạo đơn nghỉ");
-
-        btnXemDonCuaToi.setFont(new java.awt.Font("Segoe UI", 0, 14));
-        btnXemDonCuaToi.setText("Xem đơn của tôi");
         javax.swing.GroupLayout pnlThongTinLayout = new javax.swing.GroupLayout(pnlThongTin);
         pnlThongTin.setLayout(pnlThongTinLayout);
         pnlThongTinLayout.setHorizontalGroup(
@@ -889,6 +885,7 @@ public class PnNhanVien extends javax.swing.JPanel {
         txtLyDoNghi = new javax.swing.JTextField();
         btnNopDonNghi = new javax.swing.JButton("Nộp đơn nghỉ");
         btnNopDonNghi.setFont(new java.awt.Font("Segoe UI", 1, 14));
+        btnNopDonNghi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/send.png")));
         btnNopDonNghi.setBackground(new java.awt.Color(0, 204, 153));
         btnNopDonNghi.setForeground(java.awt.Color.WHITE);
         

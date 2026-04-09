@@ -468,7 +468,9 @@ public class PnThongKe extends JPanel {
         // Có thể load năm động từ CSDL, nhưng tạm thời cứng
 
         btnThongKe = new JButton("Thực hiện thống kê");
+        btnThongKe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/thongke.png")));
         btnInBaoCao = new JButton("In báo cáo (PDF)");
+        btnInBaoCao.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/export.png")));
 
         pnlTop.add(new JLabel("Tháng:")); pnlTop.add(cbThang);
         pnlTop.add(new JLabel("Quý:")); pnlTop.add(cbQuy);

@@ -125,35 +125,7 @@ public class PnPhanQuyen extends JPanel {
         pqPanel.add(chkAdminBaoCaoTongHop);
         centerPanel.add(pqPanel);
         
-        // Quyền cũ (chỉ hiển thị, không sửa)
-        JPanel legacyPanel = new JPanel(new GridLayout(0, 4, 5, 5));
-        legacyPanel.setBorder(BorderFactory.createTitledBorder("Quyền cũ (tự động tính)"));
-        chkQLBanHang = new JCheckBox("QL Bán hàng");
-        chkQLNhapHang = new JCheckBox("QL Nhập hàng");
-        chkQLNhanVien = new JCheckBox("QL Nhân viên");
-        chkQLSanPham = new JCheckBox("QL Sản phẩm");
-        chkQLKhachHang = new JCheckBox("QL Khách hàng");
-        chkQLKhuyenMai = new JCheckBox("QL Khuyến mãi");
-        chkQLPhanQuyen = new JCheckBox("QL Phân quyền");
-        chkQLThongKe = new JCheckBox("QL Thống kê");
-        // Vô hiệu hóa sửa
-        chkQLBanHang.setEnabled(false);
-        chkQLNhapHang.setEnabled(false);
-        chkQLNhanVien.setEnabled(false);
-        chkQLSanPham.setEnabled(false);
-        chkQLKhachHang.setEnabled(false);
-        chkQLKhuyenMai.setEnabled(false);
-        chkQLPhanQuyen.setEnabled(false);
-        chkQLThongKe.setEnabled(false);
-        legacyPanel.add(chkQLBanHang);
-        legacyPanel.add(chkQLNhapHang);
-        legacyPanel.add(chkQLNhanVien);
-        legacyPanel.add(chkQLSanPham);
-        legacyPanel.add(chkQLKhachHang);
-        legacyPanel.add(chkQLKhuyenMai);
-        legacyPanel.add(chkQLPhanQuyen);
-        legacyPanel.add(chkQLThongKe);
-        centerPanel.add(legacyPanel);
+   
         
         JScrollPane scroll = new JScrollPane(centerPanel);
         add(scroll, BorderLayout.CENTER);

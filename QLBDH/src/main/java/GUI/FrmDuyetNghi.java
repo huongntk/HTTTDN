@@ -106,7 +106,7 @@ public class FrmDuyetNghi extends javax.swing.JPanel {
         jScrollPane1.setViewportView(tblDonNghi);
 
         btnDuyet.setFont(new java.awt.Font("Segoe UI", 0, 14));
-//        btnDuyet.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/accept.png")));
+        btnDuyet.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/xacnhan.png")));
         btnDuyet.setText("Duyệt");
         btnDuyet.addActionListener(evt -> {
             int row = tblDonNghi.getSelectedRow();
@@ -121,7 +121,7 @@ public class FrmDuyetNghi extends javax.swing.JPanel {
         });
 
         btnTuChoi.setFont(new java.awt.Font("Segoe UI", 0, 14));
-//        btnTuChoi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/reject.png")));
+        btnTuChoi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/close.png")));
         btnTuChoi.setText("Từ chối");
         btnTuChoi.addActionListener(evt -> {
             int row = tblDonNghi.getSelectedRow();

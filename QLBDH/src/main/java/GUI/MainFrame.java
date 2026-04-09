@@ -113,7 +113,7 @@ public class MainFrame extends javax.swing.JFrame {
         btnDoiMatKhau = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Quản lý bán đồng hồ cơ\n\n");
+        setTitle("Quản lý bán điện thoại\n");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
         pnContent.setLayout(new java.awt.CardLayout());
@@ -299,7 +299,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         btnQuanLyLuong.setBackground(new java.awt.Color(0, 204, 204));
         btnQuanLyLuong.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        btnQuanLyLuong.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/bar-char.png"))); // NOI18N
+        btnQuanLyLuong.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/money.png"))); // NOI18N
         btnQuanLyLuong.setText("Quản lý lương");
         btnQuanLyLuong.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         btnQuanLyLuong.setBorderPainted(false);
@@ -318,7 +318,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         btnDuyetNghi.setBackground(new java.awt.Color(0, 204, 204));
         btnDuyetNghi.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        btnDuyetNghi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/bar-char.png"))); // NOI18N
+        btnDuyetNghi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/xacnhan.png"))); // NOI18N
         btnDuyetNghi.setText("Duyệt nghỉ");
         btnDuyetNghi.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         btnDuyetNghi.setBorderPainted(false);
@@ -337,7 +337,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         btnChamCong.setBackground(new java.awt.Color(0, 204, 204));
         btnChamCong.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        btnChamCong.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/bar-char.png"))); // NOI18N
+        btnChamCong.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/clock.png"))); // NOI18N
         btnChamCong.setText("Chấm công");
         btnChamCong.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         btnChamCong.setBorderPainted(false);
@@ -547,12 +547,7 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_btnDuyetNghiActionPerformed
 
     private void btnChamCongActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChamCongActionPerformed
-         pnContent.removeAll();
-        PnChamCong pn = new PnChamCong(phanQuyen);
-        pnContent.add(pn);
-        pnContent.revalidate();
-        pnContent.repaint();
-        setButtonActive(btnChamCong);
+        // TODO add your handling code here:
     }//GEN-LAST:event_btnChamCongActionPerformed
     private void setButtonActive(javax.swing.JButton active) {
         for (javax.swing.JButton btn : menuButtons) {
