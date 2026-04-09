@@ -48,6 +48,7 @@ public class AdminFrame extends JFrame {
         JButton btnBanHang = createMenuButton("Quản lý bán hàng", "/icon/pay.png");
         JButton btnTaiKhoan = createMenuButton("Quản lý tài khoản", "/icon/user.png");
         JButton btnKhachHang = createMenuButton("Quản lý khách hàng", "/icon/user.png");
+        JButton btnGiamGia = createMenuButton("Quản lý khuyến mãi", "/icon/tag.png");
         JButton btnPhanQuyen = createMenuButton("Phân quyền", "/icon/account.png");
         JButton btnThongKe = createMenuButton("Báo cáo tổng hợp", "/icon/bar-char.png");
         JButton btnDoiMatKhau = createMenuButton("Đổi mật khẩu", "/icon/undo.png");
@@ -58,6 +59,7 @@ public class AdminFrame extends JFrame {
         pnlMenu.add(btnBanHang);
         pnlMenu.add(btnTaiKhoan);
         pnlMenu.add(btnKhachHang);
+        pnlMenu.add(btnGiamGia);
         pnlMenu.add(btnPhanQuyen);
         pnlMenu.add(btnThongKe);
         pnlMenu.add(Box.createVerticalGlue()); // Đẩy nút đăng xuất xuống 
@@ -77,6 +79,7 @@ public class AdminFrame extends JFrame {
         pnlContent.add(new PnBanHang(phanQuyen), "banHang");
         pnlContent.add(new PnTaiKhoan(phanQuyen), "taiKhoan");
         pnlContent.add(new PnKhachHang(phanQuyen), "khachHang");
+        pnlContent.add(new PnKhuyenMai(phanQuyen), "giamGia");
         // PnPhanQuyen cần nhận PhanQuyen, nhưng admin có thể truyền null và xử lý trong panel
         pnlContent.add(new PnPhanQuyen(phanQuyen), "phanQuyen");
         pnlContent.add(new PnThongKe(phanQuyen), "thongKe");
@@ -88,6 +91,7 @@ public class AdminFrame extends JFrame {
         menuButtons.add(btnBanHang);
         menuButtons.add(btnTaiKhoan);
         menuButtons.add(btnKhachHang);
+        menuButtons.add(btnGiamGia);
         menuButtons.add(btnPhanQuyen);
         menuButtons.add(btnThongKe);
 
@@ -97,6 +101,7 @@ public class AdminFrame extends JFrame {
         btnBanHang.addActionListener(e -> { cardLayout.show(pnlContent, "banHang"); setActiveMenuButton(btnBanHang); });
         btnTaiKhoan.addActionListener(e -> { cardLayout.show(pnlContent, "taiKhoan"); setActiveMenuButton(btnTaiKhoan); });
         btnKhachHang.addActionListener(e -> { cardLayout.show(pnlContent, "khachHang"); setActiveMenuButton(btnKhachHang); });
+        btnGiamGia.addActionListener(e -> { cardLayout.show(pnlContent, "giamGia"); setActiveMenuButton(btnGiamGia); });
         btnPhanQuyen.addActionListener(e -> { cardLayout.show(pnlContent, "phanQuyen"); setActiveMenuButton(btnPhanQuyen); });
         btnThongKe.addActionListener(e -> { cardLayout.show(pnlContent, "thongKe"); setActiveMenuButton(btnThongKe); });
         

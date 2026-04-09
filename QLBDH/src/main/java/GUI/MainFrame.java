@@ -59,7 +59,7 @@ public class MainFrame extends javax.swing.JFrame {
         // 2. Phân quyền cho nhóm Nhân sự (Sử dụng các thuộc tính mới trong PhanQuyen.java)
         btnNhanVien.setVisible(phanQuyen.isNsXemDanhSach() || phanQuyen.isNsXemLuongCaNhan() || phanQuyen.isNsTaoDonNghi());
 
-        // 3. Phân quyền cho nhóm Bán hàng
+        // . Phân quyền cho nhóm Bán hàng
         // Nếu có quyền lập phiếu xuất thì hiện nút Bán Hàng
         btnBanHang.setVisible(phanQuyen.isBhLapPhieuXuat() || phanQuyen.isBhThongKeDoanhThu() || phanQuyen.isBhThongKeLoiNhuan());
 
@@ -547,7 +547,12 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_btnDuyetNghiActionPerformed
 
     private void btnChamCongActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChamCongActionPerformed
-        // TODO add your handling code here:
+        pnContent.removeAll();
+        PnChamCong pn = new PnChamCong(phanQuyen);
+        pnContent.add(pn);
+        pnContent.revalidate();
+        pnContent.repaint();
+        setButtonActive(btnChamCong);
     }//GEN-LAST:event_btnChamCongActionPerformed
     private void setButtonActive(javax.swing.JButton active) {
         for (javax.swing.JButton btn : menuButtons) {
