@@ -60,6 +60,20 @@ public class PnChamCong extends JPanel {
 
         pnlTop.add(new JLabel("Nhân viên:"));
         cboNhanVien = new JComboBox<>();
+        cboNhanVien.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value,
+                    int index, boolean isSelected, boolean cellHasFocus) {
+                if (value instanceof NhanVienDTO) {
+                    NhanVienDTO nv = (NhanVienDTO) value;
+                    // Giả sử NhanVienDTO có getMaNV() và getTenNV() 
+                    // (nếu tên phương thức khác, sửa lại cho đúng)
+                    value = nv.getMaNV() + " - " + nv.getHo() + " " + nv.getTen();
+                }
+                return super.getListCellRendererComponent(list, value, index,
+                        isSelected, cellHasFocus);
+            }
+        });
         pnlTop.add(cboNhanVien);
 
         btnLamMoi = new JButton("Làm mới");

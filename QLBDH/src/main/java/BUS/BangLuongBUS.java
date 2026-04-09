@@ -11,36 +11,56 @@ import java.util.Calendar;
 public class BangLuongBUS {
     private BangLuongDAO bangLuongDAO;
     private NhanVienDAO nhanVienDAO;
+    private ChamCongBUS chamCongBUS;
 
     public BangLuongBUS() {
         bangLuongDAO = new BangLuongDAO();
         nhanVienDAO = new NhanVienDAO();
+        chamCongBUS = new ChamCongBUS();
     }
 
     /**
-     * Tính lương cho một nhân viên trong tháng/năm cụ thể.
-     * Công thức: TongLuong = LuongCoBan + PhuCap + Thuong - Phat
-     * Trong đó LuongCoBan được lấy từ cấu hình theo chức vụ tại thời điểm tính.
+     * Tính lương cho một nhân viên trong tháng/năm dựa trên chấm công.
+     * Quy tắc (có thể điều chỉnh theo doanh nghiệp):
+     * - Ngày công chuẩn: 26 ngày/tháng
+     * - Lương ngày = Lương cơ bản / 26
+     * - Đi làm đủ: +1 công
+     * - Đi muộn / về sớm: +0.5 công (hoặc trừ 0.5 công tùy cách tính)
+     * - Nghỉ có phép: +1 công (vẫn hưởng lương)
+     * - Nghỉ không phép: +0 công
+     * - Thưởng/phạt: nhập tay
      * @param maNV
      * @param thang
      * @param nam
-     * @param thuong  (có thể truyền từ form nhập)
-     * @param phat    (có thể truyền từ form nhập)
-     * @return BangLuongDTO đã được tính toán
+     * @param thuong
+     * @param phat
+     * @return BangLuongDTO đã tính
      */
     public BangLuongDTO tinhLuongChoNhanVien(int maNV, int thang, int nam, double thuong, double phat) {
-        // 1. Lấy thông tin nhân viên (bao gồm chức vụ hiện tại)
         NhanVienDTO nv = nhanVienDAO.selectById(maNV);
         if (nv == null) return null;
 
-        // 2. Lấy lương cơ bản + phụ cấp từ bảng cấu hình theo chức vụ (giả sử có method getLuongCoBanTheoChucVu)
+        // Lấy lương cơ bản & phụ cấp theo chức vụ
         double luongCoBan = nhanVienDAO.getLuongCoBanByChucVu(nv.getMaCV());
         double phuCap = nhanVienDAO.getPhuCapByChucVu(nv.getMaCV());
 
-        // 3. Tính tổng lương
-        double tongLuong = luongCoBan + phuCap + thuong - phat;
+        // Lấy dữ liệu chấm công trong tháng
+        int soNgayDiLam = chamCongBUS.tinhSoNgayCong(maNV, thang, nam);
+        int soNgayNghiCoPhep = chamCongBUS.tinhSoNgayNghiCoPhep(maNV, thang, nam);
+        int soNgayNghiKhongPhep = chamCongBUS.tinhSoNgayNghiKhongPhep(maNV, thang, nam);
+        // (Có thể lấy thêm số ngày đi muộn/về sớm nếu cần trừ riêng)
 
-        // 4. Tạo đối tượng BangLuongDTO
+        int ngayCongChuan = 26; // hoặc lấy từ cấu hình
+        double luongNgay = luongCoBan / ngayCongChuan;
+
+        // Tính số công thực tế (theo quy tắc: đi làm + nghỉ có phép = 1 công, nghỉ không phép = 0)
+        double soCong = soNgayDiLam + soNgayNghiCoPhep;
+        // Nếu muốn trừ đi muộn/về sớm: soCong -= (soNgayDiMuon + soNgayVeSom) * 0.5;
+
+        double tienLuong = soCong * luongNgay;
+        double tongLuong = tienLuong + phuCap + thuong - phat;
+        if (tongLuong < 0) tongLuong = 0;
+
         BangLuongDTO bl = new BangLuongDTO();
         bl.setMaNV(maNV);
         bl.setThang(thang);
@@ -51,11 +71,9 @@ public class BangLuongBUS {
         bl.setPhat(phat);
         bl.setTongLuong(tongLuong);
         bl.setNgayTinh(new Date(Calendar.getInstance().getTimeInMillis()));
-        bl.setTrangThai(0); // 0: tạm tính, chờ duyệt
-
+        bl.setTrangThai(0);
         return bl;
     }
-
     /**
      * Lưu bảng lương (thêm mới hoặc cập nhật nếu đã tồn tại)
      */
@@ -120,4 +138,7 @@ public class BangLuongBUS {
         }
         return count;
     }
+    public ArrayList<BangLuongDTO> getByMaNVAndYear(int maNV, int nam) {
+            return bangLuongDAO.getByMaNVAndYear(maNV, nam);
+        }
 }

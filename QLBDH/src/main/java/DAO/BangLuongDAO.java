@@ -172,4 +172,13 @@ public class BangLuongDAO {
         bl.setTrangThai(rs.getInt("TrangThai"));
         return bl;
     }
+    
+    public ArrayList<BangLuongDTO> getByMaNVAndYear(int maNV, int nam) {
+        ArrayList<BangLuongDTO> list = new ArrayList<>();
+        String sql = "SELECT * FROM BangLuong WHERE MaNV = ? AND Nam = ? ORDER BY Thang";
+        try (ResultSet rs = DataProvider.executeQuery(sql, maNV, nam)) {
+            while (rs.next()) list.add(mapResultSetToDTO(rs));
+        } catch (SQLException e) { e.printStackTrace(); }
+        return list;
+    }
 }

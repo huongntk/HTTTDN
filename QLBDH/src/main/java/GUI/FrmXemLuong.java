@@ -56,6 +56,14 @@ public class FrmXemLuong extends JFrame {
         btnIn.addActionListener(e -> inBangLuong());
         if (!phanQuyen.isNsInBangLuong()) btnIn.setEnabled(false);
         pnlFilter.add(btnIn);
+        
+        JButton btnCachTinh = new JButton("Cách tính lương");
+        btnCachTinh.addActionListener(e -> hienThiCachTinh());
+        pnlFilter.add(btnCachTinh);
+
+        JButton btnInNam = new JButton("In lương năm");
+        btnInNam.addActionListener(e -> inLuongNam());
+        pnlFilter.add(btnInNam);                                                                                                
 
         btnClose = new JButton("Đóng");
         btnClose.addActionListener(e -> dispose());
@@ -94,5 +102,22 @@ public class FrmXemLuong extends JFrame {
     private void inBangLuong() {
         // In trực tiếp bảng lương hoặc gọi FrmInBangLuong
         new FrmInBangLuong(maNV).setVisible(true);
+    }
+    
+    private void hienThiCachTinh() {
+        String msg = "Cách tính lương:\n" +
+                     "- Lương cơ bản: theo chức vụ\n" +
+                     "- Phụ cấp: theo chức vụ\n" +
+                     "- Ngày công chuẩn: 26 ngày\n" +
+                     "- Lương ngày = Lương cơ bản / 26\n" +
+                     "- Số công = (ngày đi làm + ngày nghỉ có phép)\n" +
+                     "- Nghỉ không phép: không tính công\n" +
+                     "- Thưởng/phạt: nhập tay khi tính lương\n" +
+                     "=> Tổng lương = (số công * lương ngày) + phụ cấp + thưởng - phạt";
+        JOptionPane.showMessageDialog(this, msg);
+    }
+    private void inLuongNam() {
+        int nam = Integer.parseInt(JOptionPane.showInputDialog(this, "Nhập năm:", cbNam.getSelectedItem()));
+        new FrmInBangLuongNam(maNV, nam).setVisible(true);
     }
 }
