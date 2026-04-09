@@ -1,25 +1,4 @@
-package BUS;
-
-import DAO.BangLuongDAO;
-import DAO.NhanVienDAO;
-import DTO.BangLuongDTO;
-import DTO.NhanVienDTO;
-import java.sql.Date;
-import java.util.ArrayList;
-import java.util.Calendar;
-
-public class BangLuongBUS {
-    private BangLuongDAO bangLuongDAO;
-    private NhanVienDAO nhanVienDAO;
-    private ChamCongBUS chamCongBUS;
-
-    public BangLuongBUS() {
-        bangLuongDAO = new BangLuongDAO();
-        nhanVienDAO = new NhanVienDAO();
-        chamCongBUS = new ChamCongBUS();
-    }
-
-    /**
+/**
      * Tính lương cho một nhân viên trong tháng/năm dựa trên chấm công.
      * Quy tắc (có thể điều chỉnh theo doanh nghiệp):
      * - Ngày công chuẩn: 26 ngày/tháng
@@ -36,47 +15,165 @@ public class BangLuongBUS {
      * @param phat
      * @return BangLuongDTO đã tính
      */
+package BUS;
+
+import DAO.BangLuongDAO;
+import DAO.NhanVienDAO;
+import DAO.LichSuChucVuDAO;
+import DTO.BangLuongDTO;
+import DTO.NhanVienDTO;
+import DTO.LichSuChucVu;
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.Calendar;
+
+public class BangLuongBUS {
+    private BangLuongDAO bangLuongDAO;
+    private NhanVienDAO nhanVienDAO;
+    private ChamCongBUS chamCongBUS;
+    private LichSuChucVuDAO lichSuDAO;
+
+    public BangLuongBUS() {
+        bangLuongDAO = new BangLuongDAO();
+        nhanVienDAO = new NhanVienDAO();
+        chamCongBUS = new ChamCongBUS();
+        lichSuDAO = new LichSuChucVuDAO();
+    }
+
+    /**
+     * Tính lương cho nhân viên theo tháng, có xét đến lịch sử thay đổi chức vụ.
+     * Lương cơ bản và phụ cấp được tính riêng cho từng khoảng thời gian trước/sau ngày thay đổi.
+     */
     public BangLuongDTO tinhLuongChoNhanVien(int maNV, int thang, int nam, double thuong, double phat) {
+        // Lấy lịch sử thay đổi chức vụ
+        ArrayList<LichSuChucVu> lichSu = lichSuDAO.selectByMaNV(maNV);
+        
+        // Ngày đầu tháng và cuối tháng
+        Date ngayDauThang = Date.valueOf(String.format("%d-%02d-01", nam, thang));
+        Date ngayCuoiThang = Date.valueOf(String.format("%d-%02d-%02d", nam, thang, daysInMonth(thang, nam)));
+        
+        // Tập hợp các mốc thay đổi trong tháng (gồm đầu tháng, các ngày thay đổi, và ngày sau cuối tháng)
+        ArrayList<Date> moc = new ArrayList<>();
+        moc.add(ngayDauThang);
+        for (LichSuChucVu ls : lichSu) {
+            // Sửa lỗi: convert java.util.Date → java.sql.Date
+            Date ngay = new Date(ls.getNgayThayDoi().getTime());
+            if (ngay.compareTo(ngayDauThang) >= 0 && ngay.compareTo(ngayCuoiThang) <= 0) {
+                moc.add(ngay);
+            }
+        }
+        moc.add(dayAfter(ngayCuoiThang));
+        moc.sort(Date::compareTo);
+        
+        double tongLuong = 0;
+        double tongPhuCap = 0;
+        
+        // Duyệt từng khoảng
+        for (int i = 0; i < moc.size() - 1; i++) {
+            Date start = moc.get(i);
+            Date endExclusive = moc.get(i+1);
+            Date end = new Date(endExclusive.getTime() - 24 * 60 * 60 * 1000);
+            if (end.compareTo(start) < 0) continue;
+            
+            // Lấy chức vụ áp dụng trong khoảng này
+            String maCV = getChucVuAtDate(maNV, start, lichSu);
+            if (maCV == null) maCV = nhanVienDAO.selectById(maNV).getMaCV();
+            
+            double luongCoBan = nhanVienDAO.getLuongCoBanByChucVu(maCV);
+            double phuCap = nhanVienDAO.getPhuCapByChucVu(maCV);
+            
+            // Số ngày trong khoảng (từ start đến end, bao gồm cả hai)
+            int soNgayTrongKhoang = daysBetween(start, end) + 1;
+            // Số công thực tế trong khoảng (dựa vào chấm công)
+            double soCong = tinhSoCongTrongKhoang(maNV, start, end, thang, nam);
+            
+            int ngayCongChuan = 26;
+            double luongNgay = luongCoBan / ngayCongChuan;
+            double tienLuongKhoang = soCong * luongNgay;
+            double phuCapKhoang = phuCap * ((double) soNgayTrongKhoang / daysInMonth(thang, nam));
+            
+            tongLuong += tienLuongKhoang;
+            tongPhuCap += phuCapKhoang;
+        }
+        
+        double tongLuongCuoi = tongLuong + tongPhuCap + thuong - phat;
+        if (tongLuongCuoi < 0) tongLuongCuoi = 0;
+        
+        // Lấy lương cơ bản và phụ cấp hiện tại (cuối tháng) để lưu vào bảng lương
         NhanVienDTO nv = nhanVienDAO.selectById(maNV);
-        if (nv == null) return null;
-
-        // Lấy lương cơ bản & phụ cấp theo chức vụ
-        double luongCoBan = nhanVienDAO.getLuongCoBanByChucVu(nv.getMaCV());
-        double phuCap = nhanVienDAO.getPhuCapByChucVu(nv.getMaCV());
-
-        // Lấy dữ liệu chấm công trong tháng
-        int soNgayDiLam = chamCongBUS.tinhSoNgayCong(maNV, thang, nam);
-        int soNgayNghiCoPhep = chamCongBUS.tinhSoNgayNghiCoPhep(maNV, thang, nam);
-        int soNgayNghiKhongPhep = chamCongBUS.tinhSoNgayNghiKhongPhep(maNV, thang, nam);
-        // (Có thể lấy thêm số ngày đi muộn/về sớm nếu cần trừ riêng)
-
-        int ngayCongChuan = 26; // hoặc lấy từ cấu hình
-        double luongNgay = luongCoBan / ngayCongChuan;
-
-        // Tính số công thực tế (theo quy tắc: đi làm + nghỉ có phép = 1 công, nghỉ không phép = 0)
-        double soCong = soNgayDiLam + soNgayNghiCoPhep;
-        // Nếu muốn trừ đi muộn/về sớm: soCong -= (soNgayDiMuon + soNgayVeSom) * 0.5;
-
-        double tienLuong = soCong * luongNgay;
-        double tongLuong = tienLuong + phuCap + thuong - phat;
-        if (tongLuong < 0) tongLuong = 0;
-
+        double luongHienTai = nhanVienDAO.getLuongCoBanByChucVu(nv.getMaCV());
+        double phuCapHienTai = nhanVienDAO.getPhuCapByChucVu(nv.getMaCV());
+        
         BangLuongDTO bl = new BangLuongDTO();
         bl.setMaNV(maNV);
         bl.setThang(thang);
         bl.setNam(nam);
-        bl.setLuongCoBan(luongCoBan);
-        bl.setPhuCap(phuCap);
+        bl.setLuongCoBan(luongHienTai);
+        bl.setPhuCap(phuCapHienTai);
         bl.setThuong(thuong);
         bl.setPhat(phat);
-        bl.setTongLuong(tongLuong);
-        bl.setNgayTinh(new Date(Calendar.getInstance().getTimeInMillis()));
+        bl.setTongLuong(tongLuongCuoi);
+        bl.setNgayTinh(new Date(Calendar.getInstance().getTimeInMillis())); // java.sql.Date
         bl.setTrangThai(0);
         return bl;
     }
-    /**
-     * Lưu bảng lương (thêm mới hoặc cập nhật nếu đã tồn tại)
-     */
+    
+    // ------------------ Các phương thức helper ------------------
+    
+    private int daysInMonth(int thang, int nam) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(nam, thang - 1, 1);
+        return cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+    }
+    
+    private Date dayAfter(Date date) {
+        return new Date(date.getTime() + 24 * 60 * 60 * 1000);
+    }
+    
+    private int daysBetween(Date start, Date end) {
+        long diff = end.getTime() - start.getTime();
+        return (int) (diff / (24 * 60 * 60 * 1000));
+    }
+    
+    private String getChucVuAtDate(int maNV, Date date, ArrayList<LichSuChucVu> lichSu) {
+        LichSuChucVu latest = null;
+        for (LichSuChucVu ls : lichSu) {
+            if (ls.getNgayThayDoi().compareTo(date) <= 0) {
+                if (latest == null || ls.getNgayThayDoi().compareTo(latest.getNgayThayDoi()) > 0) {
+                    latest = ls;
+                }
+            }
+        }
+        if (latest != null) return latest.getMaCMoi();
+        // Nếu chưa có thay đổi, lấy chức vụ gốc từ nhân viên
+        NhanVienDTO nv = nhanVienDAO.selectById(maNV);
+        return nv != null ? nv.getMaCV() : null;
+    }
+    
+    private double tinhSoCongTrongKhoang(int maNV, Date start, Date end, int thang, int nam) {
+        var dsChamCong = chamCongBUS.layChamCongTheoNhanVienThang(maNV, thang, nam);
+        double cong = 0;
+        for (var cc : dsChamCong) {
+            Date ngay = new Date(cc.getNgayLam().getTime()); // java.util.Date -> java.sql.Date
+            if (ngay.compareTo(start) >= 0 && ngay.compareTo(end) <= 0) {
+                String tt = cc.getTrangThai();
+                if ("Đi làm".equals(tt) || "Nghỉ có phép".equals(tt)) {
+                    cong += 1.0;
+                } else if ("Đi muộn".equals(tt) || "Về sớm".equals(tt)) {
+                    cong += 0.5;
+                }
+                // Nghỉ không phép: 0
+            }
+        }
+        return cong;
+    }
+    
+    // ------------------ Các phương thức cũ (giữ nguyên) ------------------
+    
+    public boolean kiemTraTonTai(int maNV, int thang, int nam) {
+        return bangLuongDAO.kiemTraTonTai(maNV, thang, nam);
+    }
+    
     public String luuBangLuong(BangLuongDTO bl) {
         if (bangLuongDAO.kiemTraTonTai(bl.getMaNV(), bl.getThang(), bl.getNam())) {
             boolean ok = bangLuongDAO.update(bl);
@@ -86,50 +183,24 @@ public class BangLuongBUS {
             return ok ? "Thêm bảng lương thành công!" : "Thêm thất bại!";
         }
     }
-
-    // Các phương thức khác: xem lương theo nhân viên, xem tất cả theo tháng, ...
-
+    
     public BangLuongDTO getByMaNVAndMonth(int maNV, int thang, int nam) {
         return bangLuongDAO.getByMaNVAndMonth(maNV, thang, nam);
     }
     
-        /**
-     * Kiểm tra đã có bảng lương của nhân viên trong tháng/năm chưa
-     */
-    public boolean kiemTraTonTai(int maNV, int thang, int nam) {
-        return bangLuongDAO.kiemTraTonTai(maNV, thang, nam);
-    }
-
-    /**
-     * Lấy danh sách bảng lương của một nhân viên (lịch sử)
-     */
     public ArrayList<BangLuongDTO> getListByMaNV(int maNV) {
         return bangLuongDAO.getListByMaNV(maNV);
     }
-
-    /**
-     * Lấy danh sách bảng lương của tất cả nhân viên trong tháng/năm
-     */
+    
     public ArrayList<BangLuongDTO> getListByMonth(int thang, int nam) {
         return bangLuongDAO.getListByMonth(thang, nam);
     }
-
-    /**
-     * Tính lương cho tất cả nhân viên đang làm việc trong tháng (hàng loạt)
-     * @param thang
-     * @param nam
-     * @param thuongMacDinh  giá trị thưởng mặc định (có thể truyền 0)
-     * @param phatMacDinh    giá trị phạt mặc định (có thể truyền 0)
-     * @return số lượng nhân viên được tính thành công
-     */
+    
     public int tinhLuongHangLoat(int thang, int nam, double thuongMacDinh, double phatMacDinh) {
-        NhanVienDAO nvDAO = new NhanVienDAO();
-        ArrayList<NhanVienDTO> dsNV = nvDAO.selectAll();
+        ArrayList<NhanVienDTO> dsNV = nhanVienDAO.selectAll();
         int count = 0;
         for (NhanVienDTO nv : dsNV) {
-            // Chỉ tính cho nhân viên đang làm (trangThai == true)
             if (!nv.isTrangThai()) continue;
-
             BangLuongDTO bl = tinhLuongChoNhanVien(nv.getMaNV(), thang, nam, thuongMacDinh, phatMacDinh);
             if (bl != null) {
                 String result = luuBangLuong(bl);
