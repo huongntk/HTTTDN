@@ -58,6 +58,7 @@ public class PnNhanVien extends javax.swing.JPanel {
         addEvents();
         configureByPermission();
     }
+    
     private void loadLoaiNghi() {
         cboLoaiNghi.removeAllItems();
         cboLoaiNghi.addItem("Nghỉ phép");
@@ -69,17 +70,20 @@ public class PnNhanVien extends javax.swing.JPanel {
         btnThem.setVisible(phanQuyen.isNsThem());
         btnSua.setVisible(phanQuyen.isNsSua());
         btnXoa.setVisible(phanQuyen.isNsXoa());
-        // Chỉ hiển thị nút Duyệt nghỉ bên trong PnNhanVien nếu là ADMIN
+       
         boolean isAdmin = Auth.getUser().getMaQuyen().equals("ADMIN");
         btnDuyetNghi.setVisible(phanQuyen.isNsDuyetNghi() && isAdmin);
-//        btnThayDoiChucVu.setVisible(phanQuyen.isNsThayDoiChucVu());
-        btnTinhLuong.setVisible(phanQuyen.isNsTinhLuong());
+
         btnTaoDonNghi.setVisible(phanQuyen.isNsTaoDonNghi());
         btnXemDonCuaToi.setVisible(phanQuyen.isNsXemDonCuaMinh());
+        
+        boolean isQLNS = phanQuyen.getMaQuyen().trim().equalsIgnoreCase("QL_NHANSU");
 
+        btnTinhLuong.setVisible(phanQuyen.isNsTinhLuong() && !isQLNS);
+        btnXemLuong.setVisible(phanQuyen.isNsXemLuongCaNhan());
+        btnInLuong.setVisible(phanQuyen.isNsInBangLuong() && !isQLNS);
 
     
-    // Quyền xem danh sách nhân viên (nếu không có, ẩn bảng và chỉ cho xem thông tin cá nhân)
         boolean coQuyenXemDanhSach = phanQuyen.isNsXemDanhSach();
         
         CardLayout cl = (CardLayout) pnlRight.getLayout();
@@ -132,27 +136,20 @@ public class PnNhanVien extends javax.swing.JPanel {
                 rdoNghiViec.setEnabled(false);
             }
         }
-        
-        // Quyền xem lương cá nhân và in lương (cho cả nhân viên và quản lý)
-        btnXemLuong.setVisible(phanQuyen.isNsXemLuongCaNhan());
-        btnInLuong.setVisible(phanQuyen.isNsInBangLuong());
+       
 
-        // Nếu không có quyền gì liên quan đến nhân sự, ẩn toàn bộ panel (trường hợp hiếm)
     }
     
     private void loadChucVu() {
-        // Gọi BUS để lấy danh sách chức vụ từ CSDL (Giả định BUS đã gọi DAO)
         ArrayList<String> chucVuList = nhanVienBUS.layDanhSachChucVu();
         
-        // Tạo DefaultComboBoxModel mới
+     
         DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
         
-        // Thêm các chức vụ vào model
         for (String chucVu : chucVuList) {
             model.addElement(chucVu);
         }
         
-        // Thiết lập model cho cboChucVu
         cboChucVu.setModel(model);
     }
     

@@ -173,6 +173,9 @@ public class BangLuongBUS {
     public boolean kiemTraTonTai(int maNV, int thang, int nam) {
         return bangLuongDAO.kiemTraTonTai(maNV, thang, nam);
     }
+    public ArrayList<Object[]> selectAllNhanVienWithLuong() {
+        return bangLuongDAO.selectAllNhanVienWithLuong();
+    }
     
     public String luuBangLuong(BangLuongDTO bl) {
         if (bangLuongDAO.kiemTraTonTai(bl.getMaNV(), bl.getThang(), bl.getNam())) {
