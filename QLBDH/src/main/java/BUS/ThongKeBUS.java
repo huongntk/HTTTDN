@@ -1,312 +1,262 @@
-//package BUS;
-//
-//import DAO.ThongKeDAO;
-//import java.util.ArrayList;
-//import java.sql.Date;
-//
-//public class ThongKeBUS {
-//
-//    private ThongKeDAO thongKeDAO;
-//
-//    public ThongKeBUS() {
-//        thongKeDAO = new ThongKeDAO();
-//    }
-//
-//    public ArrayList<Object[]> getTopSanPham(Date tuNgay, Date denNgay) {
-//        return thongKeDAO.getTopSanPham(tuNgay, denNgay);
-//    }
-//
-//    public ArrayList<Object[]> getTopKhachHang(Date tuNgay, Date denNgay) {
-//        return thongKeDAO.getTopKhachHang(tuNgay, denNgay);
-//    }
-//
-//    public ArrayList<Object[]> getTopNhanVien(Date tuNgay, Date denNgay) {
-//        return thongKeDAO.getTopNhanVien(tuNgay, denNgay);
-//    }
-//    
-//    public double getTongDoanhThu(Date tuNgay, Date denNgay) {
-//        return thongKeDAO.getTongDoanhThu(tuNgay, denNgay);
-//    }
-//}
-
-//package BUS;
-//
-//import DAO.ThongKeDAO;
-//import java.util.ArrayList;
-//import java.util.HashMap;
-//
-//public class ThongKeBUS {
-//    private ThongKeDAO tkDAO = new ThongKeDAO();
-//
-//    public ArrayList<HashMap<String, Object>> thongKeLoiNhuanQuy(int nam) {
-//        if (nam < 2000 || nam > 2100) return new ArrayList<>(); // Kiểm tra năm hợp lệ
-//        return tkDAO.getLoiNhuanTheoQuy(nam);
-//    }
-//
-//    public ArrayList<HashMap<String, Object>> thongKeNhanSuThang(int thang, int nam) {
-//        if (thang < 1 || thang > 12) return new ArrayList<>();
-//        return tkDAO.getChiPhiNhanSu(thang, nam);
-//    }
-//
-//    // Hàm hỗ trợ tính tổng lợi nhuận cả năm từ danh sách các quý
-//    public double tinhTongLoiNhuanNam(ArrayList<HashMap<String, Object>> dsQuy) {
-//        double tong = 0;
-//        for (HashMap<String, Object> map : dsQuy) {
-//            tong += (double) map.get("LoiNhuan");
-//        }
-//        return tong;
-//    }
-//}
-
 package BUS;
 
-import DAO.DataProvider;
-import DTO.HoaDon;
-import DTO.CTHoaDon;
-import DTO.Product;
-import DTO.NhanVienDTO;
+import DAO.ThongKeDAO;
 import UTIL.DBConnect;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ThongKeBUS {
 
+    private ThongKeDAO thongKeDAO;
+    private Connection conn;
+
+    public ThongKeBUS() {
+        conn = DBConnect.getConnection(); // Có thể hiển thị thông báo lỗi kết nối ở đây
+        thongKeDAO = new ThongKeDAO(conn);
+    }
+
+    /**
+     * Đóng kết nối khi không sử dụng BUS nữa (nên gọi khi đóng ứng dụng hoặc panel)
+     */
+    public void closeConnection() {
+        try {
+            if (conn != null && !conn.isClosed()) {
+                conn.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // ==================== KINH DOANH & LỢI NHUẬN ====================
+
     /**
      * Thống kê doanh thu, giá vốn, lợi nhuận theo tháng/quý/năm.
-     * @param thang (0 nếu không chọn tháng)
-     * @param quy (0 nếu không chọn quý)
-     * @param nam
-     * @return ArrayList các đối tượng Map chứa các cặp key: "ThoiGian", "DoanhThu", "GiaVon", "LoiNhuan"
+     * @return ArrayList<Map<String, Object>> với các key: "ThoiGian", "DoanhThu", "GiaVon", "LoiNhuan"
      */
     public ArrayList<Map<String, Object>> thongKeLoiNhuan(int thang, int quy, int nam) {
-    ArrayList<Map<String, Object>> result = new ArrayList<>();
-    String sql;
-    ResultSet rs = null;
-    
-    try {
-        if (thang > 0) {
-            // Thống kê theo tháng
-            sql = "SELECT MONTH(NgayLap) AS Thang, SUM(TongTien) AS DoanhThu " +
-                  "FROM HoaDon WHERE MONTH(NgayLap) = ? AND YEAR(NgayLap) = ? " +
-                  "GROUP BY MONTH(NgayLap)";
-            rs = DataProvider.executeQuery(sql, thang, nam);
-            if (rs != null && rs.next()) {
-                Map<String, Object> row = new HashMap<>();
-                row.put("ThoiGian", "Tháng " + rs.getInt("Thang"));
-                row.put("DoanhThu", rs.getDouble("DoanhThu"));
-                row.put("GiaVon", 0.0);      // Tạm tính, nếu cần thì tính từ CTHoaDon + SanPham
-                row.put("LoiNhuan", rs.getDouble("DoanhThu")); // Tạm tính = doanh thu
-                result.add(row);
-            }
-        } else if (quy > 0) {
-            // Thống kê theo quý: lấy từ tháng đầu đến tháng cuối quý
-            int thangBatDau = (quy - 1) * 3 + 1;
-            int thangKetThuc = quy * 3;
-            sql = "SELECT ? AS Quy, SUM(TongTien) AS DoanhThu " +
-                  "FROM HoaDon WHERE MONTH(NgayLap) BETWEEN ? AND ? AND YEAR(NgayLap) = ?";
-            rs = DataProvider.executeQuery(sql, quy, thangBatDau, thangKetThuc, nam);
-            if (rs != null && rs.next()) {
-                Map<String, Object> row = new HashMap<>();
-                row.put("ThoiGian", "Quý " + rs.getInt("Quy"));
-                row.put("DoanhThu", rs.getDouble("DoanhThu"));
-                row.put("GiaVon", 0.0);
-                row.put("LoiNhuan", rs.getDouble("DoanhThu"));
-                result.add(row);
-            }
-        } else {
-            // Cả năm
-            sql = "SELECT YEAR(NgayLap) AS Nam, SUM(TongTien) AS DoanhThu " +
-                  "FROM HoaDon WHERE YEAR(NgayLap) = ? GROUP BY YEAR(NgayLap)";
-            rs = DataProvider.executeQuery(sql, nam);
-            if (rs != null && rs.next()) {
-                Map<String, Object> row = new HashMap<>();
-                row.put("ThoiGian", "Năm " + rs.getInt("Nam"));
-                row.put("DoanhThu", rs.getDouble("DoanhThu"));
-                row.put("GiaVon", 0.0);
-                row.put("LoiNhuan", rs.getDouble("DoanhThu"));
-                result.add(row);
-            }
-        }
-    } catch (SQLException e) {
-        e.printStackTrace();
-    } finally {
-        closeResultSet(rs);
-    }
-    return result;
-}
-
-    private String buildThongKeLoiNhuanSQL(int thang, int quy, int nam) {
-        StringBuilder sql = new StringBuilder();
-        if (quy > 0) {
-            // Thống kê theo quý
-            sql.append("SELECT CONCAT('Q', QUARTER(ngayLap), '/', YEAR(ngayLap)) AS thoi_gian, ")
-               .append("SUM(tongTien) AS doanh_thu, ")
-               .append("SUM(IFNULL(giaVon,0)) AS gia_von, ")
-               .append("SUM(tongTien - IFNULL(giaVon,0)) AS loi_nhuan ")
-               .append("FROM hoadon h ")
-               .append("LEFT JOIN (")
-               .append("    SELECT maHD, SUM(soLuong * giaNhap) AS giaVon ")
-               .append("    FROM cthoadon ct ")
-               .append("    JOIN sanpham sp ON ct.maSP = sp.maSP ")
-               .append("    GROUP BY maHD")
-               .append(") v ON h.maHD = v.maHD ")
-               .append("WHERE YEAR(ngayLap) = ? ");
-            if (quy >= 1 && quy <= 4) {
-                sql.append("AND QUARTER(ngayLap) = ? ");
-            }
-            sql.append("GROUP BY QUARTER(ngayLap), YEAR(ngayLap) ");
-            sql.append("ORDER BY YEAR(ngayLap), QUARTER(ngayLap)");
-        } else if (thang > 0) {
-            // Thống kê theo tháng
-            sql.append("SELECT DATE_FORMAT(ngayLap, '%m/%Y') AS thoi_gian, ")
-               .append("SUM(tongTien) AS doanh_thu, ")
-               .append("SUM(IFNULL(giaVon,0)) AS gia_von, ")
-               .append("SUM(tongTien - IFNULL(giaVon,0)) AS loi_nhuan ")
-               .append("FROM hoadon h ")
-               .append("LEFT JOIN (")
-               .append("    SELECT maHD, SUM(soLuong * giaNhap) AS giaVon ")
-               .append("    FROM cthoadon ct ")
-               .append("    JOIN sanpham sp ON ct.maSP = sp.maSP ")
-               .append("    GROUP BY maHD")
-               .append(") v ON h.maHD = v.maHD ")
-               .append("WHERE YEAR(ngayLap) = ? ");
-            if (thang >= 1 && thang <= 12) {
-                sql.append("AND MONTH(ngayLap) = ? ");
-            }
-            sql.append("GROUP BY MONTH(ngayLap), YEAR(ngayLap) ")
-               .append("ORDER BY YEAR(ngayLap), MONTH(ngayLap)");
-        } else {
-            // Thống kê theo năm
-            sql.append("SELECT YEAR(ngayLap) AS thoi_gian, ")
-               .append("SUM(tongTien) AS doanh_thu, ")
-               .append("SUM(IFNULL(giaVon,0)) AS gia_von, ")
-               .append("SUM(tongTien - IFNULL(giaVon,0)) AS loi_nhuan ")
-               .append("FROM hoadon h ")
-               .append("LEFT JOIN (")
-               .append("    SELECT maHD, SUM(soLuong * giaNhap) AS giaVon ")
-               .append("    FROM cthoadon ct ")
-               .append("    JOIN sanpham sp ON ct.maSP = sp.maSP ")
-               .append("    GROUP BY maHD")
-               .append(") v ON h.maHD = v.maHD ")
-               .append("WHERE YEAR(ngayLap) = ? ")
-               .append("GROUP BY YEAR(ngayLap)");
-        }
-        return sql.toString();
-    }
-
-    /**
-     * Thống kê tồn kho: nhập, xuất, tồn cuối kỳ theo tháng/quý/năm.
-     */
-    public ArrayList<Map<String, Object>> thongKeTonKho(int thang, int quy, int nam) {
         ArrayList<Map<String, Object>> result = new ArrayList<>();
-        String sql = buildThongKeTonKhoSQL(thang, quy, nam);
-        
-        try (Connection conn = DBConnect.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            
-            // Set tham số nếu cần (tùy theo cách build SQL)
-            // Ở đây giả sử SQL đã được build sẵn với điều kiện
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                Map<String, Object> row = new HashMap<>();
-                row.put("MaSP", rs.getInt("maSP"));
-                row.put("TenSP", rs.getString("tenSP"));
-                row.put("NhapTrongKy", rs.getInt("nhap"));
-                row.put("XuatTrongKy", rs.getInt("xuat"));
-                row.put("TonCuoi", rs.getInt("ton"));
-                result.add(row);
+
+        try {
+            // Lấy tổng doanh thu
+            double doanhThu = thongKeDAO.getTongDoanhThu(thang, quy, nam);
+            // Lấy tổng giá vốn
+            double giaVon = thongKeDAO.getTongGiaVon(thang, quy, nam);
+
+            Map<String, Object> row = new HashMap<>();
+            String thoiGian = "";
+            if (thang > 0) {
+                thoiGian = "Tháng " + thang + "/" + nam;
+            } else if (quy > 0) {
+                thoiGian = "Quý " + quy + "/" + nam;
+            } else {
+                thoiGian = "Năm " + nam;
             }
+
+            row.put("ThoiGian", thoiGian);
+            row.put("DoanhThu", doanhThu);
+            row.put("GiaVon", giaVon);
+            row.put("LoiNhuan", doanhThu - giaVon);
+
+            result.add(row);
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return result;
     }
 
-    private String buildThongKeTonKhoSQL(int thang, int quy, int nam) {
-        // Giả sử có bảng sanpham (maSP, tenSP, soLuongTon), phieunhap, phieuxuat
-        // Tính nhập trong kỳ từ phieunhap, xuất từ hoadon
-        // Phức tạp, tạm thời trả về SQL mẫu
-        return "SELECT sp.maSP, sp.tenSP, "
-             + "IFNULL(nhap.soLuongNhap,0) AS nhap, "
-             + "IFNULL(xuat.soLuongXuat,0) AS xuat, "
-             + "(sp.soLuongTon + IFNULL(nhap.soLuongNhap,0) - IFNULL(xuat.soLuongXuat,0)) AS ton "
-             + "FROM sanpham sp "
-             + "LEFT JOIN ("
-             + "    SELECT maSP, SUM(soLuong) AS soLuongNhap "
-             + "    FROM ctphieunhap "
-             + "    JOIN phieunhap pn ON ctphieunhap.maPN = pn.maPN "
-             + "    WHERE pn.trangThai = 1 AND YEAR(pn.ngayLap) = ? "
-             + (thang > 0 ? "AND MONTH(pn.ngayLap) = ? " : "")
-             + (quy > 0 ? "AND QUARTER(pn.ngayLap) = ? " : "")
-             + "    GROUP BY maSP"
-             + ") nhap ON sp.maSP = nhap.maSP "
-             + "LEFT JOIN ("
-             + "    SELECT ct.maSP, SUM(soLuong) AS soLuongXuat "
-             + "    FROM cthoadon ct "
-             + "    JOIN hoadon h ON ct.maHD = h.maHD "
-             + "    WHERE YEAR(h.ngayLap) = ? "
-             + (thang > 0 ? "AND MONTH(h.ngayLap) = ? " : "")
-             + (quy > 0 ? "AND QUARTER(h.ngayLap) = ? " : "")
-             + "    GROUP BY maSP"
-             + ") xuat ON sp.maSP = xuat.maSP";
+    /**
+     * Thống kê lợi nhuận chi tiết theo từng tháng trong năm (hoặc theo quý nếu cần).
+     * Phương thức này có thể mở rộng để trả về danh sách nhiều dòng nếu cần.
+     */
+    public ArrayList<Map<String, Object>> thongKeLoiNhuanChiTiet(int thang, int quy, int nam) {
+        // Hiện tại chỉ có 1 dòng tổng hợp, có thể phát triển thêm để lấy theo từng tháng nếu thang=0, quy=0
+        return thongKeLoiNhuan(thang, quy, nam);
     }
+
+    // ==================== KHO HÀNG & SẢN PHẨM ====================
+
+    /**
+     * Thống kê tồn kho: nhập, xuất, tồn cuối kỳ cho từng sản phẩm.
+     */
+    public ArrayList<Map<String, Object>> thongKeTonKho(int thang, int quy, int nam) {
+        ArrayList<Map<String, Object>> result = new ArrayList<>();
+        // Phương thức này hiện chưa có trong DAO, cần bổ sung vào ThongKeDAO nếu muốn.
+        // Tạm thời trả về rỗng hoặc gọi DAO với câu lệnh SQL phức tạp.
+        // Để giữ tính toàn vẹn, ta sẽ sử dụng một truy vấn trực tiếp (nhưng nên đưa xuống DAO).
+        // Ở đây ta sẽ dùng Connection để truy vấn tạm (sẽ chuyển sang DAO sau).
+        String sql = buildTonKhoSQL(thang, quy, nam);
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            int idx = 1;
+            if (thang > 0) {
+                ps.setInt(idx++, nam);
+                ps.setInt(idx++, thang);
+                ps.setInt(idx++, nam);
+                ps.setInt(idx++, thang);
+            } else if (quy > 0) {
+                int startMonth = (quy - 1) * 3 + 1;
+                int endMonth = quy * 3;
+                ps.setInt(idx++, nam);
+                ps.setInt(idx++, startMonth);
+                ps.setInt(idx++, endMonth);
+                ps.setInt(idx++, nam);
+                ps.setInt(idx++, startMonth);
+                ps.setInt(idx++, endMonth);
+            } else {
+                ps.setInt(idx++, nam);
+                ps.setInt(idx++, nam);
+            }
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Map<String, Object> row = new HashMap<>();
+                row.put("MaSP", rs.getInt("MaSP"));
+                row.put("TenSP", rs.getString("TenSP"));
+                row.put("NhapTrongKy", rs.getInt("Nhap"));
+                row.put("XuatTrongKy", rs.getInt("Xuat"));
+                row.put("TonCuoi", rs.getInt("Ton"));
+                result.add(row);
+            }
+            rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    private String buildTonKhoSQL(int thang, int quy, int nam) {
+        String conditionNhap = "YEAR(pn.NgayLap) = ?";
+        if (thang > 0) conditionNhap += " AND MONTH(pn.NgayLap) = ?";
+        else if (quy > 0) conditionNhap += " AND MONTH(pn.NgayLap) BETWEEN ? AND ?";
+
+        String conditionXuat = "YEAR(hd.NgayLap) = ?";
+        if (thang > 0) conditionXuat += " AND MONTH(hd.NgayLap) = ?";
+        else if (quy > 0) conditionXuat += " AND MONTH(hd.NgayLap) BETWEEN ? AND ?";
+
+        return "SELECT sp.ID AS MaSP, sp.TenSP, " +
+               "ISNULL(nhap.SoLuongNhap, 0) AS Nhap, " +
+               "ISNULL(xuat.SoLuongXuat, 0) AS Xuat, " +
+               "(sp.SoLuong + ISNULL(nhap.SoLuongNhap, 0) - ISNULL(xuat.SoLuongXuat, 0)) AS Ton " +
+               "FROM SanPham sp " +
+               "LEFT JOIN (SELECT ct.ID, SUM(ct.SoLuong) AS SoLuongNhap FROM CTPhieuNhap ct " +
+               "JOIN PhieuNhap pn ON ct.MaPN = pn.MaPN WHERE " + conditionNhap + " AND pn.TrangThai = 1 GROUP BY ct.ID) nhap ON sp.ID = nhap.ID " +
+               "LEFT JOIN (SELECT ct.ID, SUM(ct.SoLuong) AS SoLuongXuat FROM CTHoaDon ct " +
+               "JOIN HoaDon hd ON ct.MaHD = hd.MaHD WHERE " + conditionXuat + " AND hd.TrangThai = N'Đã thanh toán' GROUP BY ct.ID) xuat ON sp.ID = xuat.ID " +
+               "WHERE sp.TrangThai = 1";
+    }
+
+    // ==================== NHÂN SỰ & LƯƠNG ====================
 
     /**
      * Thống kê lương nhân viên theo tháng/quý/năm.
      */
     public ArrayList<Map<String, Object>> thongKeLuong(int thang, int quy, int nam) {
         ArrayList<Map<String, Object>> result = new ArrayList<>();
-        String sql = "SELECT nv.maNV, nv.ho, nv.ten, nv.chucVu, "
-                   + "SUM(l.thucLinh) AS tongLuong, "
-                   + "SUM(l.thuong) AS tongThuong "
-                   + "FROM luong l "
-                   + "JOIN nhanvien nv ON l.maNV = nv.maNV "
-                   + "WHERE l.nam = ? "
-                   + (thang > 0 ? "AND l.thang = ? " : "")
-                   + (quy > 0 ? "AND l.thang BETWEEN ? AND ? " : "") // quý 1-3, 4-6,...
-                   + "GROUP BY nv.maNV, nv.ho, nv.ten, nv.chucVu";
-        
-        try (Connection conn = DBConnect.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            
-            int index = 1;
-            ps.setInt(index++, nam);
-            if (thang > 0) {
-                ps.setInt(index++, thang);
-            }
-            if (quy > 0) {
-                int thangBatDau = (quy - 1) * 3 + 1;
-                int thangKetThuc = quy * 3;
-                ps.setInt(index++, thangBatDau);
-                ps.setInt(index++, thangKetThuc);
-            }
-            
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                Map<String, Object> row = new HashMap<>();
-                row.put("MaNV", rs.getInt("maNV"));
-                row.put("HoTen", rs.getString("ho") + " " + rs.getString("ten"));
-                row.put("ChucVu", rs.getString("chucVu"));
-                row.put("TongLuong", rs.getDouble("tongLuong"));
-                row.put("TongThuong", rs.getDouble("tongThuong"));
-                result.add(row);
+        try {
+            // Sử dụng DAO để lấy tổng chi phí lương và danh sách nhân viên bán hàng top
+            // Nhưng yêu cầu là danh sách từng nhân viên với tổng lương, thưởng.
+            // Ta sẽ dùng truy vấn riêng (sẽ chuyển sang DAO sau).
+            String sql = buildLuongSQL(thang, quy, nam);
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                setLuongParameters(ps, thang, quy, nam);
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    Map<String, Object> row = new HashMap<>();
+                    row.put("MaNV", rs.getInt("MaNV"));
+                    row.put("HoTen", rs.getString("HoTen"));
+                    row.put("ChucVu", rs.getString("ChucVu"));
+                    row.put("TongLuong", rs.getDouble("TongLuong"));
+                    row.put("TongThuong", rs.getDouble("TongThuong"));
+                    result.add(row);
+                }
+                rs.close();
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return result;
     }
-    
-    private void closeResultSet(ResultSet rs) {
-        if (rs != null) {
-            try {
-                rs.getStatement().close();
-                rs.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+
+    private String buildLuongSQL(int thang, int quy, int nam) {
+        String condition;
+        if (thang > 0) {
+            condition = "l.Thang = ? AND l.Nam = ?";
+        } else if (quy > 0) {
+            condition = "l.Thang BETWEEN ? AND ? AND l.Nam = ?";
+        } else {
+            condition = "l.Nam = ?";
         }
+        return "SELECT nv.MaNV, nv.Ho + ' ' + nv.Ten AS HoTen, nv.ChucVu, " +
+               "SUM(l.ThucLinh) AS TongLuong, SUM(l.Thuong) AS TongThuong " +
+               "FROM Luong l JOIN NhanVien nv ON l.MaNV = nv.MaNV " +
+               "WHERE " + condition + " AND nv.TrangThai = 1 " +
+               "GROUP BY nv.MaNV, nv.Ho, nv.Ten, nv.ChucVu";
+    }
+
+    private void setLuongParameters(PreparedStatement ps, int thang, int quy, int nam) throws SQLException {
+        int idx = 1;
+        if (thang > 0) {
+            ps.setInt(idx++, thang);
+            ps.setInt(idx++, nam);
+        } else if (quy > 0) {
+            int start = (quy - 1) * 3 + 1;
+            int end = quy * 3;
+            ps.setInt(idx++, start);
+            ps.setInt(idx++, end);
+            ps.setInt(idx++, nam);
+        } else {
+            ps.setInt(idx++, nam);
+        }
+    }
+
+    // ==================== TIỆN ÍCH ====================
+    // Các phương thức lấy dữ liệu tổng hợp nhanh (gọi từ DAO)
+    public double getTongDoanhThu(int thang, int quy, int nam) throws SQLException {
+        return thongKeDAO.getTongDoanhThu(thang, quy, nam);
+    }
+
+    public double getTongGiaVon(int thang, int quy, int nam) throws SQLException {
+        return thongKeDAO.getTongGiaVon(thang, quy, nam);
+    }
+
+    public int getSoHoaDon(int thang, int quy, int nam) throws SQLException {
+        return thongKeDAO.getSoHoaDon(thang, quy, nam);
+    }
+
+    public int getTongSanPhamBanRa(int thang, int quy, int nam) throws SQLException {
+        return thongKeDAO.getTongSanPhamBanRa(thang, quy, nam);
+    }
+
+    public int getTongNhapSoLuong(int thang, int quy, int nam) throws SQLException {
+        return thongKeDAO.getTongNhapSoLuong(thang, quy, nam);
+    }
+
+    public double getTongNhapGiaTri(int thang, int quy, int nam) throws SQLException {
+        return thongKeDAO.getTongNhapGiaTri(thang, quy, nam);
+    }
+
+    public int getTonKhoHienTai() throws SQLException {
+        return thongKeDAO.getTonKhoHienTai();
+    }
+
+    public ArrayList<Object[]> getTopSanPhamBanChay(int thang, int quy, int nam, int limit) throws SQLException {
+        return thongKeDAO.getTopSanPhamBanChay(thang, quy, nam, limit);
+    }
+
+    public double getTongChiPhiLuong(int thang, int quy, int nam) throws SQLException {
+        return thongKeDAO.getTongChiPhiLuong(thang, quy, nam);
+    }
+
+    public int getSoNhanVienDangLam() throws SQLException {
+        return thongKeDAO.getSoNhanVienDangLam();
+    }
+
+    public ArrayList<Object[]> getTopNhanVienBanHang(int thang, int quy, int nam, int limit) throws SQLException {
+        return thongKeDAO.getTopNhanVienBanHang(thang, quy, nam, limit);
     }
 }

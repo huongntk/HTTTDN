@@ -350,13 +350,38 @@ public class PnNhanVien extends javax.swing.JPanel {
                 JOptionPane.showMessageDialog(this, "Vui lòng chọn nhân viên cần sửa", "Lỗi", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            
+
             NhanVienDTO nv = getNhanVienFromForm();
             if (nv == null) return;
 
-            String result = nhanVienBUS.suaNhanVien(nv);
+            // Lấy mã nhân viên và chức vụ mới từ form
+            int maNV = nv.getMaNV();
+            String chucVuMoi = nv.getMaCV();
+
+            // Lấy chức vụ cũ từ database (gọi BUS)
+            NhanVienDTO nvCu = nhanVienBUS.layNhanVienTheoMa(maNV);
+            String chucVuCu = nvCu != null ? nvCu.getMaCV() : "";
+
+            String lyDo = "";
+            if (!chucVuMoi.equals(chucVuCu)) {
+                // Hiển thị dialog nhập lý do
+                lyDo = JOptionPane.showInputDialog(this,
+                        "Nhập lý do thay đổi chức vụ từ '" + chucVuCu + "' sang '" + chucVuMoi + "':",
+                        "Lý do thay đổi",
+                        JOptionPane.QUESTION_MESSAGE);
+                if (lyDo == null) {
+                    return; // Người dùng hủy nhập
+                }
+                if (lyDo.trim().isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Lý do không được để trống!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            }
+
+            // Gọi BUS sửa nhân viên, truyền lý do (nếu có)
+            String result = nhanVienBUS.suaNhanVien(nv, lyDo);
             JOptionPane.showMessageDialog(this, result);
-            
+
             if (result.contains("thành công")) {
                 loadData();
                 lamMoiForm();
