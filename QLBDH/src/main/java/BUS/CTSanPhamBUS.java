@@ -2,6 +2,7 @@ package BUS;
 
 import DAO.CTSanPhamDAO;
 import DTO.ProductDetail;
+import DAO.CTPhieuNhapDAO;
 
 public class CTSanPhamBUS {
     private CTSanPhamDAO dao = new CTSanPhamDAO();
@@ -14,5 +15,14 @@ public class CTSanPhamBUS {
     }
     public boolean updateCTSanPham(ProductDetail detail) {
         return dao.updateCTSanPham(detail);
+    }
+ 
+    public boolean isSanPhamInUse(int maSP) {
+        try {           
+            return new CTPhieuNhapDAO().isSanPhamInUse(maSP);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

@@ -192,8 +192,8 @@ public class HoaDonBUS {
     }
     
     public String getTenSanPham(int id) {
-        // Giả định SanPhamDAO có hàm selectById() trả về đối tượng Product DTO
-        DTO.Product product = sanPhamDAO.selectById(id); 
+        // Giả định SanPhamDAO có hàm selectById() trả về đối tượng SanPhamDTO DTO
+        DTO.SanPhamDTO product = sanPhamDAO.selectById(id); 
         if (product != null) {
             return product.getTenSP();
         }

@@ -33,7 +33,15 @@ public class PnNhanVien extends javax.swing.JPanel {
     private ArrayList<NhanVienDTO> currentNhanVienList;
     private javax.swing.JButton btnTaoDonNghi;
     private javax.swing.JButton btnXemDonCuaToi;
-    private javax.swing.JComboBox<String> cblLoaiNghi;
+    private javax.swing.JComboBox<String> cblLoaiNghi;    
+    private javax.swing.JButton btnNopDonNghi;     // Thêm
+    private javax.swing.JComboBox<String> cboLoaiNghi; // Thêm
+    private javax.swing.JTextField txtLyDoNghi;
+    private com.toedter.calendar.JDateChooser txtTuNgayNghi;
+    private com.toedter.calendar.JDateChooser txtDenNgayNghi;
+    private javax.swing.JScrollPane scrollDonNghi; // Thêm
+    private javax.swing.JTable tblDonNghi;         // Thêm
+    private javax.swing.JPanel pnlDonNghiCaNhan;   // Thêm
    
     public PnNhanVien(PhanQuyen pq) {
         
@@ -93,6 +101,7 @@ public class PnNhanVien extends javax.swing.JPanel {
         jScrollPane1.setVisible(coQuyenXemDanhSach);
         lblTimKiem.setVisible(coQuyenXemDanhSach);
         txtTimKiem.setVisible(coQuyenXemDanhSach);
+        
         if (coQuyenXemDanhSach) {
             // Màn hình Quản lý
             cl.show(pnlRight, "DanhSachNhanVien");
@@ -101,43 +110,21 @@ public class PnNhanVien extends javax.swing.JPanel {
             cl.show(pnlRight, "DonNghiCaNhan");
             loadDanhSachDonNghiCaNhan(); // Load data đơn nghỉ của riêng NV đó
             
-            // Lấy thông tin cá nhân fill vào form bên trái
-            int maNV = Auth.getUser().getMaNV();
-            NhanVienDTO nv = nhanVienBUS.layNhanVienTheoMa(maNV);
-            if (nv != null) {
-                txtMaNV.setText(String.valueOf(nv.getMaNV()));
-                txtHo.setText(nv.getHo());
-                txtTen.setText(nv.getTen());
-                txtSoDienThoai.setText(nv.getSoDienThoai());
-                if (nv.getGioiTinh().equalsIgnoreCase("Nam")) {
-                    rdoNam.setSelected(true);
-                } else {
-                    rdoNu.setSelected(true);
-                }
-                cboChucVu.setSelectedItem(nv.getMaCV());
-                txtTenTaiKhoan.setText(nv.getTenTaiKhoan());
-                txtMatKhau.setText(nv.getMatKhau());
-                if (nv.isTrangThai()) {
-                    rdoDangLam.setSelected(true);
-                } else {
-                    rdoNghiViec.setSelected(true);
-                }
-                
-                // Khóa các trường không cho phép nhân viên tự sửa
-                txtHo.setEditable(phanQuyen.isNsSua());
-                txtTen.setEditable(phanQuyen.isNsSua());
-                txtSoDienThoai.setEditable(phanQuyen.isNsSua());
-                rdoNam.setEnabled(phanQuyen.isNsSua());
-                rdoNu.setEnabled(phanQuyen.isNsSua());
-                cboChucVu.setEnabled(false);
-                txtTenTaiKhoan.setEditable(false);
-                txtMatKhau.setEditable(false);
-                rdoDangLam.setEnabled(false);
-                rdoNghiViec.setEnabled(false);
-            }
-        }
-       
+            refreshThongTinCaNhan();//           
+        }      
 
+    }    
+
+    private String layTenChucVuTuMa(String maCV) {
+        switch (maCV) {
+            case "CV01": return "Giám đốc";
+            case "CV02": return "Quản lý nhân sự";
+            case "CV03": return "Quản lý kho";
+            case "CV04": return "Quản lý bán hàng";
+            case "CV05": return "Nhân viên bán hàng";
+            case "CV06": return "Nhân viên nhập hàng";
+            default: return "Nhân viên";
+        }
     }
     
     private void loadChucVu() {
@@ -156,6 +143,7 @@ public class PnNhanVien extends javax.swing.JPanel {
     private Date parseDate(String dateStr) {
     try {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        sdf.setLenient(false); 
         return sdf.parse(dateStr);
     } catch (ParseException e) {
         return null;
@@ -292,25 +280,53 @@ public class PnNhanVien extends javax.swing.JPanel {
         
         btnNopDonNghi.addActionListener(e -> {
             String loaiNghi = (String) cboLoaiNghi.getSelectedItem();
-            String tuNgay = txtTuNgayNghi.getText().trim();
-            String denNgay = txtDenNgayNghi.getText().trim();
+    
+            // Lấy ngày từ JDateChooser
+            Date ngayBatDau = txtTuNgayNghi.getDate();
+            Date ngayKetThuc = txtDenNgayNghi.getDate();
             String lyDo = txtLyDoNghi.getText().trim();
 
-            if (tuNgay.isEmpty() || denNgay.isEmpty() || lyDo.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thời gian và lý do nghỉ!");
+            // Kiểm tra không để trống
+            if (ngayBatDau == null || ngayKetThuc == null || lyDo.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn đầy đủ thời gian và nhập lý do nghỉ!");
+                return;
+            }
+            
+            // Kiểm tra ngày bắt đầu <= ngày kết thúc
+            if (ngayBatDau.after(ngayKetThuc)) {
+                JOptionPane.showMessageDialog(this, "Ngày bắt đầu phải nhỏ hơn hoặc bằng ngày kết thúc!");
                 return;
             }
 
-            // 1. Tạo đối tượng và Gán dữ liệu TRƯỚC khi xóa form
+           // Kiểm tra ngày bắt đầu không được nhỏ hơn ngày hiện tại
+            Date today = new Date();
+            // So sánh ngày (bỏ giờ, phút, giây)
+            java.util.Calendar cal1 = java.util.Calendar.getInstance();
+            java.util.Calendar cal2 = java.util.Calendar.getInstance();
+            cal1.setTime(ngayBatDau);
+            cal2.setTime(today);
+
+            if (cal1.get(java.util.Calendar.YEAR) == cal2.get(java.util.Calendar.YEAR) &&
+                cal1.get(java.util.Calendar.DAY_OF_YEAR) < cal2.get(java.util.Calendar.DAY_OF_YEAR)) {
+                JOptionPane.showMessageDialog(this, "Ngày bắt đầu nghỉ không được nhỏ hơn ngày hiện tại!");
+                return;
+            }
+
+            if (ngayBatDau.before(today)) {
+                JOptionPane.showMessageDialog(this, "Ngày bắt đầu nghỉ không được nhỏ hơn ngày hiện tại!");
+                return;
+            }
+
+            // 1. Tạo đối tượng và gửi
             DonNghiBUS donNghiBUS = new DonNghiBUS();
             DonNghiDTO don = new DonNghiDTO();
             don.setMaNV(Auth.getUser().getMaNV());                  
-            don.setLoaiDon(loaiNghi); // Lấy linh hoạt từ Combobox thay vì gán cứng "Nghỉ phép"
-            don.setNgayBatDau(parseDate(tuNgay)); 
-            don.setNgayKetThuc(parseDate(denNgay));
+            don.setLoaiDon(loaiNghi);
+            don.setNgayBatDau(ngayBatDau); 
+            don.setNgayKetThuc(ngayKetThuc);
             don.setLyDo(lyDo);             
             don.setTrangThai("Chờ duyệt");                         
-            don.setNgayGui(new Date());                            
+            don.setNgayGui(new Date());                                
 
             // 2. Gọi BUS thêm đơn vào CSDL
             String result = donNghiBUS.themDonNghi(don);
@@ -318,32 +334,34 @@ public class PnNhanVien extends javax.swing.JPanel {
 
             // 3. NẾU thêm thành công thì mới xóa trắng form và load lại bảng
             if (result.contains("Đã gửi đơn nghỉ")) {
-                txtTuNgayNghi.setText("");
-                txtDenNgayNghi.setText("");
+                txtTuNgayNghi.setDate(null);
+                txtDenNgayNghi.setDate(null);
                 txtLyDoNghi.setText("");
-                loadDanhSachDonNghiCaNhan(); // Cập nhật lại JTable
+                loadDanhSachDonNghiCaNhan();
             }
         });
         
         btnTaoDonNghi.addActionListener(e -> {
-        if (!phanQuyen.isNsTaoDonNghi()) {
-            JOptionPane.showMessageDialog(this, "Bạn không có quyền tạo đơn nghỉ!");
-            return;
-        }
-           
-        
+            if (!phanQuyen.isNsTaoDonNghi()) {
+                JOptionPane.showMessageDialog(this, "Bạn không có quyền tạo đơn nghỉ!");
+                return;
+            }
+            // Chuyển sang panel đơn nghỉ cá nhân
+            CardLayout cl = (CardLayout) pnlRight.getLayout();
+            cl.show(pnlRight, "DonNghiCaNhan");
+            loadDanhSachDonNghiCaNhan();
         });
 
-    btnXemDonCuaToi.addActionListener(e -> {
-        if (!phanQuyen.isNsXemDonCuaMinh()) {
-            JOptionPane.showMessageDialog(this, "Bạn không có quyền xem đơn của mình!");
-            return;
-        }
-        JOptionPane.showMessageDialog(this, "chức năng phát triển");
-        // Mở dialog xem danh sách đơn nghỉ của nhân viên hiện tại
-//        new DlgXemDonCuaToi((Frame) SwingUtilities.getWindowAncestor(this), true, Auth.getUser().getMaNV()).setVisible(true);
-        
-    });
+        btnXemDonCuaToi.addActionListener(e -> {
+            if (!phanQuyen.isNsXemDonCuaMinh()) {
+                JOptionPane.showMessageDialog(this, "Bạn không có quyền xem đơn của mình!");
+                return;
+            }
+            // Chuyển sang panel đơn nghỉ cá nhân
+            CardLayout cl = (CardLayout) pnlRight.getLayout();
+            cl.show(pnlRight, "DonNghiCaNhan");
+            loadDanhSachDonNghiCaNhan();
+        });
 
         btnSua.addActionListener(e -> {
             if (txtMaNV.getText().isEmpty()) {
@@ -386,6 +404,41 @@ public class PnNhanVien extends javax.swing.JPanel {
                 loadData();
                 lamMoiForm();
             }
+            
+            // Cập nhật lại thông tin hiển thị 
+            // Nếu đang ở chế độ nhân viên (không có quyền xem danh sách)
+            if (!phanQuyen.isNsXemDanhSach()) {
+                // Load lại thông tin nhân viên hiện tại vào form
+                int currentMaNV = Auth.getUser().getMaNV();
+                NhanVienDTO nvUpdated = nhanVienBUS.layNhanVienTheoMa(currentMaNV);
+                if (nvUpdated != null) {
+                    // Cập nhật form bên trái
+                    txtMaNV.setText(String.valueOf(nvUpdated.getMaNV()));
+                    txtHo.setText(nvUpdated.getHo());
+                    txtTen.setText(nvUpdated.getTen());
+                    txtSoDienThoai.setText(nvUpdated.getSoDienThoai());
+                    if (nvUpdated.getGioiTinh().equalsIgnoreCase("Nam")) {
+                        rdoNam.setSelected(true);
+                    } else {
+                        rdoNu.setSelected(true);
+                    }
+                    String tenChucVu = layTenChucVuTuMa(nvUpdated.getMaCV());
+                    cboChucVu.setSelectedItem(tenChucVu);
+                    txtTenTaiKhoan.setText(nvUpdated.getTenTaiKhoan());
+                    txtMatKhau.setText(nvUpdated.getMatKhau());
+                    if (nvUpdated.isTrangThai()) {
+                        rdoDangLam.setSelected(true);
+                    } else {
+                        rdoNghiViec.setSelected(true);
+                    }
+                }
+
+                // Load lại danh sách đơn nghỉ
+                loadDanhSachDonNghiCaNhan();
+            } else {
+                // Nếu có quyền xem danh sách, chỉ cần load lại danh sách và làm mới form
+                lamMoiForm();
+            }        
         });
 
         btnXoa.addActionListener(e -> {
@@ -485,55 +538,71 @@ public class PnNhanVien extends javax.swing.JPanel {
 //            new FrmTinhLuong(phanQuyen).setVisible(true);
 //        });
     }
-    
+
     private NhanVienDTO getNhanVienFromForm() {
-        int maNV = 0;
-        if (!txtMaNV.getText().isEmpty()) {
-            maNV = Integer.parseInt(txtMaNV.getText());
-        }
-        
+        // Validate dữ liệu
         String ho = txtHo.getText().trim();
         String ten = txtTen.getText().trim();
         String sdt = txtSoDienThoai.getText().trim();
+
+        if (ho.isEmpty() || ten.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Họ và tên không được để trống!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
+
+        if (sdt.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Số điện thoại không được để trống!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
+
+        // Validate số điện thoại (10-11 số)
+        if (!sdt.matches("^0[0-9]{9,10}$")) {
+            JOptionPane.showMessageDialog(this, "Số điện thoại không hợp lệ! Phải bắt đầu bằng số 0 và có 10-11 số.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
+
+        int maNV = 0;
+        if (!txtMaNV.getText().isEmpty()) {
+            try {
+                maNV = Integer.parseInt(txtMaNV.getText());
+            } catch (NumberFormatException e) {
+                // Bỏ qua
+            }
+        }
+
         String gioiTinh = rdoNam.isSelected() ? "Nam" : "Nữ";
         String tenChucVu = cboChucVu.getSelectedItem() != null ? cboChucVu.getSelectedItem().toString().trim() : "";
+
         String maCV = "";
         String maQuyen = "";
         switch (tenChucVu) {
             case "Giám đốc":
-                maCV = "CV01"; 
-                maQuyen = "ADMIN"; 
-                break;
+                maCV = "CV01"; maQuyen = "ADMIN"; break;
             case "Quản lý nhân sự":
-                maCV = "CV02"; 
-                maQuyen = "QL_NHANSU";
-                break;
+                maCV = "CV02"; maQuyen = "QL_NHANSU"; break;
             case "Quản lý kho":
-                maCV = "CV03"; 
-                maQuyen = "QL_KHO"; 
-                break;
+                maCV = "CV03"; maQuyen = "QL_KHO"; break;
             case "Quản lý bán hàng":
-                maCV = "CV04"; 
-                maQuyen = "QL_KINHDOANH"; 
-                break;
+                maCV = "CV04"; maQuyen = "QL_KINHDOANH"; break;
             case "Nhân viên bán hàng":
-                maCV = "CV05"; 
-                maQuyen = "NHANVIEN"; 
-                break;
+                maCV = "CV05"; maQuyen = "NHANVIEN"; break;
             case "Nhân viên nhập hàng":
-                maCV = "CV06"; 
-                maQuyen = "NHANVIEN"; 
-                break;
+                maCV = "CV06"; maQuyen = "NHANVIEN"; break;
             default:
-                maCV = "CV05";
-                maQuyen = "NHANVIEN"; // Dự phòng
-                break;
+                maCV = "CV05"; maQuyen = "NHANVIEN"; break;
         }
-       
+
         String tenTaiKhoan = txtTenTaiKhoan.getText().trim();
         String matKhau = new String(txtMatKhau.getPassword()).trim();
+
+        // Validate tài khoản khi thêm mới
+        if (maNV == 0 && tenTaiKhoan.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Tên tài khoản không được để trống khi thêm mới!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
+
         boolean trangThai = rdoDangLam.isSelected();
-        
+
         return new NhanVienDTO(maNV, ho, ten, gioiTinh, sdt, maCV, maQuyen, trangThai, tenTaiKhoan, matKhau);
     }
 
@@ -905,8 +974,13 @@ public class PnNhanVien extends javax.swing.JPanel {
         javax.swing.JPanel pnlFormDon = new javax.swing.JPanel(new GridLayout(5, 2, 10, 10));
         pnlFormDon.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Nhập đơn nghỉ mới", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 1, 12)));
         cboLoaiNghi = new javax.swing.JComboBox<>();
-        txtTuNgayNghi = new javax.swing.JTextField();
-        txtDenNgayNghi = new javax.swing.JTextField();
+        txtTuNgayNghi = new com.toedter.calendar.JDateChooser();
+        txtTuNgayNghi.setDateFormatString("dd/MM/yyyy");
+        txtTuNgayNghi.setFont(new java.awt.Font("Segoe UI", 0, 14));
+
+        txtDenNgayNghi = new com.toedter.calendar.JDateChooser();
+        txtDenNgayNghi.setDateFormatString("dd/MM/yyyy");
+        txtDenNgayNghi.setFont(new java.awt.Font("Segoe UI", 0, 14));
         txtLyDoNghi = new javax.swing.JTextField();
         btnNopDonNghi = new javax.swing.JButton("Nộp đơn nghỉ");
         btnNopDonNghi.setFont(new java.awt.Font("Segoe UI", 1, 14));
@@ -973,7 +1047,45 @@ public class PnNhanVien extends javax.swing.JPanel {
         );
     }
 
+    private void refreshThongTinCaNhan() {
+        int maNV = Auth.getUser().getMaNV();
+        NhanVienDTO nv = nhanVienBUS.layNhanVienTheoMa(maNV);
+        if (nv != null) {
+            txtMaNV.setText(String.valueOf(nv.getMaNV()));
+            txtHo.setText(nv.getHo());
+            txtTen.setText(nv.getTen());
+            txtSoDienThoai.setText(nv.getSoDienThoai());
+            if (nv.getGioiTinh().equalsIgnoreCase("Nam")) {
+                rdoNam.setSelected(true);
+            } else {
+                rdoNu.setSelected(true);
+            }
+            String tenChucVu = layTenChucVuTuMa(nv.getMaCV());
+            cboChucVu.setSelectedItem(tenChucVu);
 
+            txtTenTaiKhoan.setText(nv.getTenTaiKhoan());
+            txtMatKhau.setText(nv.getMatKhau());
+            if (nv.isTrangThai()) {
+                rdoDangLam.setSelected(true);
+            } else {
+                rdoNghiViec.setSelected(true);
+            }
+
+            // Khóa các trường nếu không có quyền sửa
+            boolean coQuyenSua = phanQuyen.isNsSua();
+            txtHo.setEditable(coQuyenSua);
+            txtTen.setEditable(coQuyenSua);
+            txtSoDienThoai.setEditable(coQuyenSua);
+            rdoNam.setEnabled(coQuyenSua);
+            rdoNu.setEnabled(coQuyenSua);
+            cboChucVu.setEnabled(false);
+            txtTenTaiKhoan.setEditable(false);
+            txtMatKhau.setEditable(false);
+            rdoDangLam.setEnabled(false);
+            rdoNghiViec.setEnabled(false);
+        }
+    }
+    
     private javax.swing.ButtonGroup btnGroupGioiTinh;
     private javax.swing.ButtonGroup btnGroupTrangThai;
     private javax.swing.JButton btnLamMoi;
@@ -1014,10 +1126,4 @@ public class PnNhanVien extends javax.swing.JPanel {
     private javax.swing.JButton btnThayDoiChucVu;
     private javax.swing.JButton btnTinhLuong;
     private javax.swing.JPanel pnlRight;
-    private javax.swing.JPanel pnlDonNghiCaNhan;
-    private javax.swing.JScrollPane scrollDonNghi;
-    private javax.swing.JTable tblDonNghi;
-    private javax.swing.JTextField txtTuNgayNghi, txtDenNgayNghi, txtLyDoNghi;
-    private javax.swing.JButton btnNopDonNghi;
-    private javax.swing.JComboBox<String> cboLoaiNghi;
 }

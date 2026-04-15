@@ -10,9 +10,9 @@ import java.text.DecimalFormat;
 /**
  *
  * @author ltd9605
- *         Product entity class
+         SanPhamDTO entity class
  */
-public class Product {
+public class SanPhamDTO {
     private int ID;
     private String TenSP;
     private String ThuongHieu;
@@ -29,10 +29,10 @@ public class Product {
     private Boolean TrangThai;
 
     // Constructor rỗng (mặc định)
-    public Product() {
+    public SanPhamDTO() {
     }
 
-    public Product(int ID, String TenSP, String ThuongHieu, String XuatXu, int MaLoai, String TenLoai, String GioiTinh, BigDecimal GiaBan, int SoLuong, String HinhAnh, String MoTa, int maNCC, String TenNCC, Boolean TrangThai) {
+    public SanPhamDTO(int ID, String TenSP, String ThuongHieu, String XuatXu, int MaLoai, String TenLoai, String GioiTinh, BigDecimal GiaBan, int SoLuong, String HinhAnh, String MoTa, int maNCC, String TenNCC, Boolean TrangThai) {
         this.ID = ID;
         this.TenSP = TenSP;
         this.ThuongHieu = ThuongHieu;

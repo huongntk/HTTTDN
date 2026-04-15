@@ -46,6 +46,14 @@ public class PhieuNhapDTO {
     public void setTrangThai(int trangThai) {
         this.trangThai = trangThai;
     }
-    
+    private String tenNCC;
+
+    public String getTenNCC() {
+        return tenNCC;
+    }
+
+    public void setTenNCC(String tenNCC) {
+        this.tenNCC = tenNCC;
+    }
     
 }

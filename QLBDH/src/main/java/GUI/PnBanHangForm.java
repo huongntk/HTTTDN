@@ -8,7 +8,7 @@ import BUS.HoaDonBUS;
 import BUS.SanPhamBUS;
 import DTO.CTHoaDon;
 import DTO.PhanQuyen;
-import DTO.Product;
+import DTO.SanPhamDTO;
 import DTO.TaiKhoan;
 import UTIL.Auth;
 import java.util.ArrayList;
@@ -72,9 +72,9 @@ public class PnBanHangForm extends javax.swing.JPanel {
     private void loadDanhSachSanPham() {
         modelDSSP.setRowCount(0);
         
-        ArrayList<Product> listSP = sanPhamBUS.getSanPham(); 
+        ArrayList<SanPhamDTO> listSP = sanPhamBUS.getSanPham(); 
         
-        for (Product p : listSP) {
+        for (SanPhamDTO p : listSP) {
             
             Object[] row = new Object[]{
                 p.getID(),
@@ -121,10 +121,10 @@ public class PnBanHangForm extends javax.swing.JPanel {
         if (selectedRow >= 0) {
             try {
                 int productID = (int) modelDSSP.getValueAt(selectedRow, 0);
-                ArrayList<Product> list = sanPhamBUS.getSanPhamById(productID);
+                ArrayList<SanPhamDTO> list = sanPhamBUS.getSanPhamById(productID);
 
                 if (!list.isEmpty()) {
-                    Product p = list.get(0);
+                    SanPhamDTO p = list.get(0);
 
                     soLuongTonHienTai = p.getSoLuong();
 
@@ -182,7 +182,7 @@ public class PnBanHangForm extends javax.swing.JPanel {
     }
     
     private int getSoLuongTonGoc(int maSP) {
-        ArrayList<Product> productList = sanPhamBUS.getSanPhamById(maSP); 
+        ArrayList<SanPhamDTO> productList = sanPhamBUS.getSanPhamById(maSP); 
         if (!productList.isEmpty()) {
             return productList.get(0).getSoLuong();
         }
@@ -698,10 +698,10 @@ public class PnBanHangForm extends javax.swing.JPanel {
         }
 
         modelDSSP.setRowCount(0); // Xóa dữ liệu cũ
-        ArrayList<Product> listSP = sanPhamBUS.getSanPhamByName(searchName); // Lấy sản phẩm theo tên
+        ArrayList<SanPhamDTO> listSP = sanPhamBUS.getSanPhamByName(searchName); // Lấy sản phẩm theo tên
         
         // Đổ dữ liệu tìm kiếm vào bảng
-        for (Product p : listSP) {
+        for (SanPhamDTO p : listSP) {
             Object[] row = new Object[]{
                 p.getID(),
                 p.getTenSP(),

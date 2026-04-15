@@ -80,4 +80,12 @@ public class PhieuNhapBUS {
         
         return dao.updateTrangThai(maPN, trangThai);
     }
+    
+    public boolean updateMaNCC(int maPN, int maNCC){
+        return dao.updateMaNCC(maPN, maNCC);
+    }
+
+    public boolean updateNgayLap(int maPN, java.sql.Date ngay){
+        return dao.updateNgayLap(maPN, ngay);
+    }
 }

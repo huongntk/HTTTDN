@@ -7,7 +7,7 @@ package GUI;
 import BUS.CTSanPhamBUS;
 import BUS.SanPhamBUS;
 import DTO.PhanQuyen;
-import DTO.Product;
+import DTO.SanPhamDTO;
 import DTO.ProductDetail;
 
 import java.awt.Frame;
@@ -25,15 +25,16 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.*;
+import java.awt.Color;
 
 /**
  *
  * @author ltd96
  */
 public class PnSanPham extends javax.swing.JPanel {
-    private ArrayList<Product> list;
+    private ArrayList<SanPhamDTO> list;
     SanPhamBUS bus = new SanPhamBUS();
-    CTSanPhamBUS ctbus = new CTSanPhamBUS();
+    CTSanPhamBUS ctBus = new CTSanPhamBUS();
     private PhanQuyen phanQuyen;
     public PnSanPham(PhanQuyen pq) {
         initComponents();
@@ -483,12 +484,12 @@ public class PnSanPham extends javax.swing.JPanel {
             return;
         }
         int id = Integer.parseInt(jTable1.getValueAt(selectedRow, 0).toString());
-        ArrayList<Product> products = bus.getSanPhamById(id);
+        ArrayList<SanPhamDTO> products = bus.getSanPhamById(id);
         if (products.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Không tìm thấy sản phẩm với ID: " + id);
             return;
         }
-        Product selectedProduct = products.get(0);
+        SanPhamDTO selectedProduct = products.get(0);
         openEditDialog(selectedProduct);
         // TODO add your handling code here:
     }// GEN-LAST:event_btnSuaActionPerformed
@@ -535,26 +536,93 @@ public class PnSanPham extends javax.swing.JPanel {
         }
     }// GEN-LAST:event_btnXuatExcelActionPerformed
 
-    private void btnXoaActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_btnXoaActionPerformed
-        // TODO add your handling code here:
+        /**
+     * Kiểm tra tên sản phẩm đã tồn tại chưa (trừ sản phẩm hiện tại nếu có)
+     */
+    private boolean isTenSPExists(String tenSP, int excludeId) {
+        for (SanPhamDTO sp : list) {
+            if (sp.getID() != excludeId && sp.getTenSP().equalsIgnoreCase(tenSP.trim())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Kiểm tra sản phẩm có đang được tham chiếu trong phiếu nhập không
+     */
+    private boolean isSanPhamInUse(int maSP) {
+        // Kiểm tra xem có chi tiết phiếu nhập nào tham chiếu đến sản phẩm này không
+        return ctBus.isSanPhamInUse(maSP); // Cần thêm method này vào CTSanPhamBUS
+    }
+
+    /**
+     * Validate dữ liệu sản phẩm
+     */
+    private String validateSanPham(SanPhamDTO sp, boolean isAdd) {
+        if (sp.getTenSP() == null || sp.getTenSP().trim().isEmpty()) {
+            return "Tên sản phẩm không được để trống!";
+        }
+        if (sp.getTenSP().length() < 3 || sp.getTenSP().length() > 100) {
+            return "Tên sản phẩm phải có độ dài từ 3-100 ký tự!";
+        }
+        if (isAdd && isTenSPExists(sp.getTenSP(), -1)) {
+            return "Tên sản phẩm '" + sp.getTenSP() + "' đã tồn tại trong hệ thống!";
+        }
+        if (sp.getGiaBan() == null || sp.getGiaBan().compareTo(BigDecimal.ZERO) <= 0) {
+            return "Giá bán phải lớn hơn 0!";
+        }
+        if (sp.getSoLuong() < 0) {
+            return "Số lượng không được âm!";
+        }
+        if (sp.getThuongHieu() == null || sp.getThuongHieu().trim().isEmpty()) {
+            return "Vui lòng nhập thương hiệu!";
+        }
+        if (sp.getXuatXu() == null || sp.getXuatXu().trim().isEmpty()) {
+            return "Vui lòng nhập xuất xứ!";
+        }
+        if (sp.getMaNCC() <= 0) {
+            return "Vui lòng chọn nhà cung cấp hợp lệ!";
+        }
+        return null; // Không có lỗi
+    }
+    
+    private void btnXoaActionPerformed(java.awt.event.ActionEvent evt) {
         int row = jTable1.getSelectedRow();
         if (row == -1) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn một sản phẩm để xóa!");
             return;
         }
-        int confirm = JOptionPane.showConfirmDialog(
-                null,
-                "Bạn có chắc chắn muốn xóa sản phẩm này không?",
-                "Xác nhận xóa",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.WARNING_MESSAGE);
-        if (confirm == JOptionPane.YES_OPTION) {
-            int column = jTable1.getColumnModel().getColumnIndex("ID");
-            int selectedID = Integer.parseInt(jTable1.getValueAt(row, column).toString());
-            bus.deleteSanPham(selectedID);
-            loadDataToTable();
+
+        int selectedID = Integer.parseInt(jTable1.getValueAt(row, 0).toString());
+        String tenSP = jTable1.getValueAt(row, 1).toString();
+
+        // Kiểm tra sản phẩm có đang được sử dụng không
+        if (isSanPhamInUse(selectedID)) {
+            JOptionPane.showMessageDialog(this, 
+                "Không thể xóa sản phẩm '" + tenSP + "' vì đã có trong phiếu nhập hàng!\n"
+                + "Vui lòng xóa các phiếu nhập liên quan trước.", 
+                "Không thể xóa", JOptionPane.WARNING_MESSAGE);
+            return;
         }
-    }// GEN-LAST:event_btnXoaActionPerformed
+
+        int confirm = JOptionPane.showConfirmDialog(this,
+            "Bạn có chắc chắn muốn xóa sản phẩm '" + tenSP + "'?\n"
+            + "Hành động này không thể khôi phục!",
+            "Xác nhận xóa",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            boolean result = bus.deleteSanPham(selectedID);
+            if (result) {
+                JOptionPane.showMessageDialog(this, "Xóa sản phẩm thành công!");
+                loadDataToTable();
+            } else {
+                JOptionPane.showMessageDialog(this, "Xóa sản phẩm thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jTextField1ActionPerformed
         // TODO add your handling code here:
@@ -567,7 +635,7 @@ public class PnSanPham extends javax.swing.JPanel {
             loadDataToTable();
             return;
         }
-        ArrayList<Product> listBySearch = new ArrayList<>();
+        ArrayList<SanPhamDTO> listBySearch = new ArrayList<>();
         listBySearch = bus.getSanPhamByName(searchText);
         String[] columnNames = { "ID", "Tên sản phẩm", "Thương hiệu", "Xuất xứ", "Mã loại", "Giới tính",
                 "Giá bán",
@@ -582,7 +650,7 @@ public class PnSanPham extends javax.swing.JPanel {
                 return Object.class;
             }
         };
-        for (Product p : listBySearch) {
+        for (SanPhamDTO p : listBySearch) {
             String resourcePath = p.getHinhAnh(); // resourcePath sẽ là "/images/tommy-1782110-nu.jpg"
             URL imgURL = getClass().getResource(resourcePath);
             ImageIcon resizedIcon = null;
@@ -612,7 +680,7 @@ public class PnSanPham extends javax.swing.JPanel {
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jComboBox1ActionPerformed
         // TODO add your handling code here:
-        ArrayList<Product> listByCate = new ArrayList<>();
+        ArrayList<SanPhamDTO> listByCate = new ArrayList<>();
         int selectedIndex = jComboBox1.getSelectedIndex();
         if (selectedIndex == 0) {
             loadDataToTable();
@@ -631,7 +699,7 @@ public class PnSanPham extends javax.swing.JPanel {
                 return Object.class;
             }
         };
-        for (Product p : listByCate) {
+        for (SanPhamDTO p : listByCate) {
             String resourcePath = p.getHinhAnh();
             URL imgURL = getClass().getResource(resourcePath);
             ImageIcon resizedIcon = null;
@@ -698,7 +766,7 @@ public class PnSanPham extends javax.swing.JPanel {
         }
         detail.setChucNangKhac(jTextField14.getText());
         detail.setBaoHanh(jTextField15.getText());
-        boolean result = ctbus.updateCTSanPham(detail);
+        boolean result = ctBus.updateCTSanPham(detail);
         if (result) {
             JOptionPane.showMessageDialog(this, "Cập nhật chi tiết sản phẩm thành công!");
         } else {
@@ -770,7 +838,7 @@ public class PnSanPham extends javax.swing.JPanel {
                 return Object.class;
             }
         };
-        for (Product p : list) {
+        for (SanPhamDTO p : list) {
             String resourcePath = p.getHinhAnh();
             URL imgURL = getClass().getResource(resourcePath);
             ImageIcon resizedIcon = null;
@@ -819,7 +887,7 @@ public class PnSanPham extends javax.swing.JPanel {
                     return;
                 }
                 int selectedID = Integer.parseInt(jTable1.getValueAt(selected, 0).toString());
-                ProductDetail detail = ctbus.getDetail(selectedID);
+                ProductDetail detail = ctBus.getDetail(selectedID);
                 if (detail == null) {
                     jTextField2.setText("Chưa cập nhập");
                     jTextField3.setText("Chưa cập nhập");
@@ -878,214 +946,240 @@ public class PnSanPham extends javax.swing.JPanel {
         setEditable(false);
     }
 
-    private void openEditDialog(Product p) {
-        JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Sửa sản phẩm", true);
-        dialog.setSize(400, 500);
-        dialog.setLayout(new GridLayout(11, 2, 5, 5));
-        // Các phần tử
-        JTextField txtTenSP = new JTextField(p.getTenSP());
-        JTextField txtThuongHieu = new JTextField(p.getThuongHieu());
-        JTextField txtXuatXu = new JTextField(p.getXuatXu());
-        String[] loai = { "Hand-Winding", "Automatic", "Đồng hồ cơ lai" };
-        JComboBox cbLoai = new JComboBox(loai);
-        cbLoai.setSelectedItem(loai[p.getMaLoai() - 1]);
-        JTextField txtGioiTinh = new JTextField(p.getGioiTinh());
-        JTextField txtGiaBan = new JTextField(String.valueOf(p.getGiaBan()));
-        JTextField txtSoLuong = new JTextField(String.valueOf(p.getSoLuong()));
-        JTextField txtHinhAnh = new JTextField(p.getHinhAnh());
-        JTextField txtMoTa = new JTextField(p.getMoTa());
-        String[] ncc = { "Orient Japan", "Seiko Watch Corp" };
-        JComboBox cbNCC = new JComboBox(ncc);
-        // Thêm phần tử vào dialog
-        dialog.add(new JLabel("Tên sản phẩm:"));
-        dialog.add(txtTenSP);
-        dialog.add(new JLabel("Thương hiệu:"));
-        dialog.add(txtThuongHieu);
-        dialog.add(new JLabel("Xuất xứ:"));
-        dialog.add(txtXuatXu);
-        dialog.add(new JLabel("Loại:"));
-        dialog.add(cbLoai);
-        dialog.add(new JLabel("Giới tính:"));
-        dialog.add(txtGioiTinh);
-        dialog.add(new JLabel("Giá bán:"));
-        dialog.add(txtGiaBan);
-        dialog.add(new JLabel("Số lượng:"));
-        dialog.add(txtSoLuong);
-        dialog.add(new JLabel("Hình ảnh:"));
-        dialog.add(txtHinhAnh);
-        dialog.add(new JLabel("Mô tả:"));
-        dialog.add(txtMoTa);
-        dialog.add(new JLabel("Nhà cung cấp:"));
-        dialog.add(cbNCC);
-
-        JButton btnSave = new JButton("Lưu");
-        JButton btnCancel = new JButton("Hủy");
-
-        dialog.add(btnSave);
-        dialog.add(btnCancel);
-        // Sự kiện nút Hủy
-        btnCancel.addActionListener(e -> dialog.dispose());
-
-        // Sự kiện nút Lưu
-        btnSave.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    p.setTenSP(txtTenSP.getText());
-                    p.setThuongHieu(txtThuongHieu.getText());
-                    p.setXuatXu(txtXuatXu.getText());
-                    int maLoaiTmp = cbLoai.getSelectedIndex() + 1;
-                    p.setMaLoai(maLoaiTmp);
-                    p.setGioiTinh(txtGioiTinh.getText());
-                    // XỬ LÝ GIÁ BÁN CÓ DẤU CHẤM
-                    String giaBanStr = txtGiaBan.getText().trim().replace(".", ""); //, "");
-                    if (giaBanStr.isEmpty()) throw new NumberFormatException("Giá bán trống");
-                    BigDecimal giaBan = new BigDecimal(giaBanStr);
-                    if (giaBan.compareTo(BigDecimal.ZERO) <= 0) {
-                        throw new NumberFormatException("Giá bán phải > 0");
-                    }
-                    p.setGiaBan(giaBan);
-                    p.setSoLuong(Integer.parseInt(txtSoLuong.getText()));
-                    p.setHinhAnh(txtHinhAnh.getText());
-                    p.setMoTa(txtMoTa.getText());
-                    int maNccTmp = 0;
-                    String selectedNCC = (String) cbNCC.getSelectedItem(); // Lấy mục đã chọn
-
-                    if ("Orient Japan".equals(selectedNCC)) { // Sử dụng .equals()
-                        maNccTmp = 4;
-                    } else if ("Seiko Watch Corp".equals(selectedNCC)) { // Sử dụng .equals()
-                        maNccTmp = 5;
-                    }
-                    p.setMaNCC(maNccTmp);
-                    SanPhamBUS bus = new SanPhamBUS();
-                    boolean result = bus.updateSanPham(p);
-
-                    if (result) {
-                        JOptionPane.showMessageDialog(dialog, "Cập nhật thành công!");
-                        loadDataToTable();
-                    } else {
-                        JOptionPane.showMessageDialog(dialog, "Dữ liệu nhập không hợp lệ! Cập nhật thất bại!");
-                    }
-
-                    dialog.dispose();
-                } catch (NumberFormatException ex) {
-
-                    JOptionPane.showMessageDialog(dialog,
-                            "Lỗi: 'Giá bán' và 'Số lượng' phải là số và không được để trống!",
-                            "Lỗi đầu vào", JOptionPane.ERROR_MESSAGE);
+    private void openEditDialog(SanPhamDTO p) {
+    JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Sửa sản phẩm", true);
+    dialog.setSize(450, 550);
+    dialog.setLayout(new GridLayout(12, 2, 10, 10));
+    dialog.setLocationRelativeTo(this);
+    
+    // Các trường nhập liệu
+    JTextField txtTenSP = new JTextField(p.getTenSP());
+    JTextField txtThuongHieu = new JTextField(p.getThuongHieu());
+    JTextField txtXuatXu = new JTextField(p.getXuatXu());
+    
+    String[] loai = { "Hand-Winding", "Automatic", "Đồng hồ cơ lai" };
+    JComboBox<String> cbLoai = new JComboBox<>(loai);
+    cbLoai.setSelectedIndex(p.getMaLoai() - 1);
+    
+    JTextField txtGioiTinh = new JTextField(p.getGioiTinh());
+    JTextField txtGiaBan = new JTextField(String.format("%,.0f", p.getGiaBan()));
+    JTextField txtSoLuong = new JTextField(String.valueOf(p.getSoLuong()));
+    JTextField txtHinhAnh = new JTextField(p.getHinhAnh());
+    JTextField txtMoTa = new JTextField(p.getMoTa());
+    
+    String[] ncc = { "Orient Japan", "Seiko Watch Corp" };
+    JComboBox<String> cbNCC = new JComboBox<>(ncc);
+    int nccIndex = (p.getMaNCC() == 4) ? 0 : 1;
+    cbNCC.setSelectedIndex(nccIndex);
+    
+    // Thêm vào dialog
+    dialog.add(new JLabel("Tên sản phẩm:*")); dialog.add(txtTenSP);
+    dialog.add(new JLabel("Thương hiệu:*")); dialog.add(txtThuongHieu);
+    dialog.add(new JLabel("Xuất xứ:*")); dialog.add(txtXuatXu);
+    dialog.add(new JLabel("Loại:")); dialog.add(cbLoai);
+    dialog.add(new JLabel("Giới tính:")); dialog.add(txtGioiTinh);
+    dialog.add(new JLabel("Giá bán:*")); dialog.add(txtGiaBan);
+    dialog.add(new JLabel("Số lượng:")); dialog.add(txtSoLuong);
+    dialog.add(new JLabel("Hình ảnh:")); dialog.add(txtHinhAnh);
+    dialog.add(new JLabel("Mô tả:")); dialog.add(txtMoTa);
+    dialog.add(new JLabel("Nhà cung cấp:*")); dialog.add(cbNCC);
+    
+    JButton btnSave = new JButton("Lưu");
+    JButton btnCancel = new JButton("Hủy");
+    btnSave.setBackground(new Color(46, 204, 113));
+    btnCancel.setBackground(new Color(231, 76, 60));
+    
+    dialog.add(btnSave);
+    dialog.add(btnCancel);
+    
+    // Xử lý format giá tiền khi nhập
+    txtGiaBan.addFocusListener(new java.awt.event.FocusAdapter() {
+        public void focusLost(java.awt.event.FocusEvent evt) {
+            try {
+                String value = txtGiaBan.getText().replaceAll("[^\\d]", "");
+                if (!value.isEmpty()) {
+                    long number = Long.parseLong(value);
+                    txtGiaBan.setText(String.format("%,d", number));
                 }
+            } catch (NumberFormatException ex) {
+                // Giữ nguyên
             }
-        });
-
-        dialog.setLocationRelativeTo(this);
-        dialog.setVisible(true);
-    }
+        }
+        public void focusGained(java.awt.event.FocusEvent evt) {
+            txtGiaBan.setText(txtGiaBan.getText().replaceAll("[^\\d]", ""));
+        }
+    });
+    
+    btnCancel.addActionListener(e -> dialog.dispose());
+    
+    btnSave.addActionListener(e -> {
+        try {
+            String tenSP = txtTenSP.getText().trim();
+            // Kiểm tra trùng tên (trừ chính nó)
+            if (isTenSPExists(tenSP, p.getID())) {
+                JOptionPane.showMessageDialog(dialog, "Tên sản phẩm '" + tenSP + "' đã tồn tại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            p.setTenSP(tenSP);
+            p.setThuongHieu(txtThuongHieu.getText().trim());
+            p.setXuatXu(txtXuatXu.getText().trim());
+            p.setMaLoai(cbLoai.getSelectedIndex() + 1);
+            p.setGioiTinh(txtGioiTinh.getText().trim());
+            
+            String giaBanStr = txtGiaBan.getText().trim().replaceAll("[^\\d]", "");
+            if (giaBanStr.isEmpty()) throw new NumberFormatException();
+            BigDecimal giaBan = new BigDecimal(giaBanStr);
+            if (giaBan.compareTo(BigDecimal.ZERO) <= 0) throw new NumberFormatException();
+            p.setGiaBan(giaBan);
+            
+            int soLuong = Integer.parseInt(txtSoLuong.getText().trim());
+            if (soLuong < 0) throw new NumberFormatException();
+            p.setSoLuong(soLuong);
+            
+            p.setHinhAnh(txtHinhAnh.getText().trim());
+            p.setMoTa(txtMoTa.getText().trim());
+            
+            int maNccTmp = cbNCC.getSelectedIndex() == 0 ? 4 : 5;
+            p.setMaNCC(maNccTmp);
+            
+            // Validate
+            String error = validateSanPham(p, false);
+            if (error != null) {
+                JOptionPane.showMessageDialog(dialog, error, "Lỗi nhập liệu", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            boolean result = bus.updateSanPham(p);
+            if (result) {
+                JOptionPane.showMessageDialog(dialog, "Cập nhật thành công!");
+                loadDataToTable();
+                dialog.dispose();
+            } else {
+                JOptionPane.showMessageDialog(dialog, "Cập nhật thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(dialog,
+                "Lỗi: 'Giá bán' phải là số dương, 'Số lượng' phải là số không âm!",
+                "Lỗi đầu vào", JOptionPane.ERROR_MESSAGE);
+        }
+    });
+    
+    dialog.setVisible(true);
+}
+    
     private void openAddDialog() {
     JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Thêm sản phẩm mới", true);
-    dialog.setSize(400, 500);
-    dialog.setLayout(new GridLayout(11, 2, 5, 5));
-
-    // Các trường nhập liệu (Trống)
+    dialog.setSize(450, 550);
+    dialog.setLayout(new GridLayout(12, 2, 10, 10));
+    dialog.setLocationRelativeTo(this);
+    
+    // Các trường nhập liệu
     JTextField txtTenSP = new JTextField();
     JTextField txtThuongHieu = new JTextField();
     JTextField txtXuatXu = new JTextField();
     
     String[] loai = { "Hand-Winding", "Automatic", "Đồng hồ cơ lai" };
-    JComboBox cbLoai = new JComboBox(loai);
+    JComboBox<String> cbLoai = new JComboBox<>(loai);
     
     JTextField txtGioiTinh = new JTextField();
     JTextField txtGiaBan = new JTextField();
-    JTextField txtSoLuong = new JTextField();
-    JTextField txtHinhAnh = new JTextField("/images/"); // Gợi ý đường dẫn mặc định
+    JTextField txtSoLuong = new JTextField("0");
+    JTextField txtHinhAnh = new JTextField("/images/");
     JTextField txtMoTa = new JTextField();
     
     String[] ncc = { "Orient Japan", "Seiko Watch Corp" };
-    JComboBox cbNCC = new JComboBox(ncc);
-
-    // Thêm phần tử vào dialog
-    dialog.add(new JLabel("Tên sản phẩm:")); dialog.add(txtTenSP);
-    dialog.add(new JLabel("Thương hiệu:")); dialog.add(txtThuongHieu);
-    dialog.add(new JLabel("Xuất xứ:")); dialog.add(txtXuatXu);
+    JComboBox<String> cbNCC = new JComboBox<>(ncc);
+    
+    // Thêm vào dialog
+    dialog.add(new JLabel("Tên sản phẩm:*")); dialog.add(txtTenSP);
+    dialog.add(new JLabel("Thương hiệu:*")); dialog.add(txtThuongHieu);
+    dialog.add(new JLabel("Xuất xứ:*")); dialog.add(txtXuatXu);
     dialog.add(new JLabel("Loại:")); dialog.add(cbLoai);
     dialog.add(new JLabel("Giới tính:")); dialog.add(txtGioiTinh);
-    dialog.add(new JLabel("Giá bán:")); dialog.add(txtGiaBan);
+    dialog.add(new JLabel("Giá bán:*")); dialog.add(txtGiaBan);
     dialog.add(new JLabel("Số lượng:")); dialog.add(txtSoLuong);
     dialog.add(new JLabel("Hình ảnh:")); dialog.add(txtHinhAnh);
     dialog.add(new JLabel("Mô tả:")); dialog.add(txtMoTa);
-    dialog.add(new JLabel("Nhà cung cấp:")); dialog.add(cbNCC);
-
+    dialog.add(new JLabel("Nhà cung cấp:*")); dialog.add(cbNCC);
+    
     JButton btnAdd = new JButton("Thêm mới");
     JButton btnCancel = new JButton("Hủy");
-
+    btnAdd.setBackground(new Color(46, 204, 113));
+    btnCancel.setBackground(new Color(231, 76, 60));
+    
     dialog.add(btnAdd);
     dialog.add(btnCancel);
-
-    // Sự kiện nút Hủy
-    btnCancel.addActionListener(e -> dialog.dispose());
-
-    // Sự kiện nút Thêm mới
-    btnAdd.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
+    
+    // Format giá tiền
+    txtGiaBan.addFocusListener(new java.awt.event.FocusAdapter() {
+        public void focusLost(java.awt.event.FocusEvent evt) {
             try {
-                // Validate cơ bản
-                if(txtTenSP.getText().isEmpty() || txtGiaBan.getText().isEmpty() || txtSoLuong.getText().isEmpty()){
-                    JOptionPane.showMessageDialog(dialog, "Vui lòng nhập đầy đủ Tên, Giá và Số lượng!");
-                    return;
+                String value = txtGiaBan.getText().replaceAll("[^\\d]", "");
+                if (!value.isEmpty()) {
+                    long number = Long.parseLong(value);
+                    txtGiaBan.setText(String.format("%,d", number));
                 }
-
-                Product p = new Product();
-                p.setTenSP(txtTenSP.getText());
-                p.setThuongHieu(txtThuongHieu.getText());
-                p.setXuatXu(txtXuatXu.getText());
-                p.setMaLoai(cbLoai.getSelectedIndex() + 1);
-                p.setGioiTinh(txtGioiTinh.getText());
-                // XỬ LÝ GIÁ BÁN CÓ DẤU CHẤM
-                String giaBanStr = txtGiaBan.getText().trim().replace(".", ""); //, "");
-                if (giaBanStr.isEmpty()) throw new NumberFormatException("Giá bán trống");
-                BigDecimal giaBan = new BigDecimal(giaBanStr);
-                if (giaBan.compareTo(BigDecimal.ZERO) <= 0) {
-                    throw new NumberFormatException("Giá bán phải > 0");
-                }
-                p.setGiaBan(giaBan);
-                p.setSoLuong(Integer.parseInt(txtSoLuong.getText()));
-                p.setHinhAnh(txtHinhAnh.getText());
-                p.setMoTa(txtMoTa.getText());
-
-                // Xử lý mã NCC
-                String selectedNCC = (String) cbNCC.getSelectedItem();
-                int maNccTmp = 0;
-                if ("Orient Japan".equals(selectedNCC)) {
-                    maNccTmp = 4;
-                } else if ("Seiko Watch Corp".equals(selectedNCC)) {
-                    maNccTmp = 5;
-                }
-                p.setMaNCC(maNccTmp);
-
-                // Gọi BUS để thêm vào Database
-                int newID = bus.insertSanPham(p);
-                ProductDetail newCT = new ProductDetail(newID);
-                boolean result = ctbus.insertCTSanPham(newCT);
-                if ((newID > 0) && result ) {
-                    JOptionPane.showMessageDialog(dialog, "Thêm sản phẩm thành công!");
-                    loadDataToTable(); // Load lại bảng
-                    dialog.dispose(); // Đóng dialog
-                } else {
-                    JOptionPane.showMessageDialog(dialog, "Thêm thất bại! Vui lòng kiểm tra lại thông tin.");
-                }
-
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(dialog, 
-                    "Lỗi: 'Giá bán' và 'Số lượng' phải là số hợp lệ!", 
-                    "Lỗi đầu vào", JOptionPane.ERROR_MESSAGE);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(dialog, "Lỗi hệ thống: " + ex.getMessage());
-            }
+            } catch (NumberFormatException ex) {}
+        }
+        public void focusGained(java.awt.event.FocusEvent evt) {
+            txtGiaBan.setText(txtGiaBan.getText().replaceAll("[^\\d]", ""));
         }
     });
-
-    dialog.setLocationRelativeTo(null);
+    
+    btnCancel.addActionListener(e -> dialog.dispose());
+    
+    btnAdd.addActionListener(e -> {
+        try {
+            SanPhamDTO p = new SanPhamDTO();
+            p.setTenSP(txtTenSP.getText().trim());
+            p.setThuongHieu(txtThuongHieu.getText().trim());
+            p.setXuatXu(txtXuatXu.getText().trim());
+            p.setMaLoai(cbLoai.getSelectedIndex() + 1);
+            p.setGioiTinh(txtGioiTinh.getText().trim());
+            
+            String giaBanStr = txtGiaBan.getText().trim().replaceAll("[^\\d]", "");
+            if (giaBanStr.isEmpty()) throw new NumberFormatException();
+            BigDecimal giaBan = new BigDecimal(giaBanStr);
+            if (giaBan.compareTo(BigDecimal.ZERO) <= 0) throw new NumberFormatException();
+            p.setGiaBan(giaBan);
+            
+            int soLuong = Integer.parseInt(txtSoLuong.getText().trim());
+            if (soLuong < 0) throw new NumberFormatException();
+            p.setSoLuong(soLuong);
+            
+            p.setHinhAnh(txtHinhAnh.getText().trim());
+            p.setMoTa(txtMoTa.getText().trim());
+            p.setMaNCC(cbNCC.getSelectedIndex() == 0 ? 4 : 5);
+            
+            // Validate
+            String error = validateSanPham(p, true);
+            if (error != null) {
+                JOptionPane.showMessageDialog(dialog, error, "Lỗi nhập liệu", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            int newID = bus.insertSanPham(p);
+            if (newID > 0) {
+                // Tạo chi tiết sản phẩm mặc định
+                ProductDetail newCT = new ProductDetail(newID);
+                ctBus.insertCTSanPham(newCT);
+                JOptionPane.showMessageDialog(dialog, "Thêm sản phẩm thành công!");
+                loadDataToTable();
+                dialog.dispose();
+            } else {
+                JOptionPane.showMessageDialog(dialog, "Thêm sản phẩm thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(dialog, 
+                "Lỗi: 'Giá bán' phải là số dương, 'Số lượng' phải là số không âm!", 
+                "Lỗi đầu vào", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(dialog, "Lỗi hệ thống: " + ex.getMessage());
+        }
+    });
+    
     dialog.setVisible(true);
 }
 }
