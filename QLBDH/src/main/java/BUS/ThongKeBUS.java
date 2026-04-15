@@ -169,7 +169,7 @@ public class ThongKeBUS {
                     Map<String, Object> row = new HashMap<>();
                     row.put("MaNV", rs.getInt("MaNV"));
                     row.put("HoTen", rs.getString("HoTen"));
-                    row.put("ChucVu", rs.getString("ChucVu"));
+                    row.put("MaCV", rs.getString("MaCV"));
                     row.put("TongLuong", rs.getDouble("TongLuong"));
                     row.put("TongThuong", rs.getDouble("TongThuong"));
                     result.add(row);
@@ -191,11 +191,11 @@ public class ThongKeBUS {
         } else {
             condition = "l.Nam = ?";
         }
-        return "SELECT nv.MaNV, nv.Ho + ' ' + nv.Ten AS HoTen, nv.ChucVu, " +
-               "SUM(l.ThucLinh) AS TongLuong, SUM(l.Thuong) AS TongThuong " +
-               "FROM Luong l JOIN NhanVien nv ON l.MaNV = nv.MaNV " +
+        return "SELECT nv.MaNV, nv.Ho + ' ' + nv.Ten AS HoTen, nv.MaCV, " +
+               "SUM(l.TongLuong) AS TongLuong, SUM(l.Thuong) AS TongThuong " +
+               "FROM BangLuong l JOIN NhanVien nv ON l.MaNV = nv.MaNV " +
                "WHERE " + condition + " AND nv.TrangThai = 1 " +
-               "GROUP BY nv.MaNV, nv.Ho, nv.Ten, nv.ChucVu";
+               "GROUP BY nv.MaNV, nv.Ho, nv.Ten, nv.MaCV";
     }
 
     private void setLuongParameters(PreparedStatement ps, int thang, int quy, int nam) throws SQLException {
