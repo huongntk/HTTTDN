@@ -9,7 +9,7 @@ public class DBConnect {
     // ✅ Thông tin kết nối SQL Server
     private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=QLBanDongHo;encrypt=false";
     private static final String USER = "sa";
-    private static final String PASSWORD = "12345";
+    private static final String PASSWORD = "123456";
 
     // ✅ Hàm trả về đối tượng Connection
     public static Connection getConnection() {

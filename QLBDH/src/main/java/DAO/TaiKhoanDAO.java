@@ -10,6 +10,7 @@ public class TaiKhoanDAO {
     public TaiKhoan login(String user, String pass) {
         TaiKhoan tk = null;
         String sql = "SELECT * FROM TaiKhoan WHERE TaiKhoan=? AND MatKhau=? AND TrangThai=1";
+        System.out.println("Login with: [" + user + "] / [" + pass + "]");
         try (ResultSet rs = DataProvider.executeQuery(sql,user, pass)) {
 
 
