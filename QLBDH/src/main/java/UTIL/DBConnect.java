@@ -6,16 +6,10 @@ import java.sql.SQLException;
 
 public class DBConnect {
 
-    // ✅ Thông tin kết nối SQL Server
     private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=QLBanDongHo;encrypt=false";
     private static final String USER = "sa";
-<<<<<<< HEAD
     private static final String PASSWORD = "123456";
-=======
-    private static final String PASSWORD = "18012003";
->>>>>>> 8524a171399401413e54706df2ca0cf43b4ec2c8
 
-    // ✅ Hàm trả về đối tượng Connection
     public static Connection getConnection() {
         Connection conn = null;
         try {

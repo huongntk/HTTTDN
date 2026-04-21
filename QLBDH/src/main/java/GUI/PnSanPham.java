@@ -37,13 +37,9 @@ import java.awt.Color;
 public class PnSanPham extends javax.swing.JPanel {
     private ArrayList<SanPhamDTO> list;
     SanPhamBUS bus = new SanPhamBUS();
-<<<<<<< HEAD
     CTSanPhamBUS ctbus = new CTSanPhamBUS();
     private java.util.Map<Integer, String> loaiMap = new java.util.HashMap<>();
     private java.util.Map<Integer, String> nccMap = new java.util.HashMap<>();
-=======
-    CTSanPhamBUS ctBus = new CTSanPhamBUS();
->>>>>>> 8524a171399401413e54706df2ca0cf43b4ec2c8
     private PhanQuyen phanQuyen;
 
     public PnSanPham(PhanQuyen pq) {
@@ -128,7 +124,7 @@ public class PnSanPham extends javax.swing.JPanel {
         jPanel1.setBackground(new java.awt.Color(204, 204, 204));
 
         btnSua.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/sua.png"))); // NOI18N
-        btnSua.setText("Chỉnh sửa");
+        btnSua.setText("ChÃƒÂ¡Ã‚Â»Ã¢â‚¬Â°nh sÃƒÂ¡Ã‚Â»Ã‚Â­a");
         btnSua.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSuaActionPerformed(evt);
@@ -136,14 +132,14 @@ public class PnSanPham extends javax.swing.JPanel {
         });
 
         btnXoa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/xoa.png"))); // NOI18N
-        btnXoa.setText("Xoá sản phẩm");
+        btnXoa.setText("XoÃƒÆ’Ã‚Â¡ sÃƒÂ¡Ã‚ÂºÃ‚Â£n phÃƒÂ¡Ã‚ÂºÃ‚Â©m");
         btnXoa.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnXoaActionPerformed(evt);
             }
         });
 
-        btnXuatExcel.setText("Xuất Excel");
+        btnXuatExcel.setText("XuÃƒÂ¡Ã‚ÂºÃ‚Â¥t Excel");
         btnXuatExcel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnXuatExcelActionPerformed(evt);
@@ -151,7 +147,7 @@ public class PnSanPham extends javax.swing.JPanel {
         });
 
         btnThem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/them.png"))); // NOI18N
-        btnThem.setText("Thêm sản phẩm");
+        btnThem.setText("ThÃƒÆ’Ã‚Âªm sÃƒÂ¡Ã‚ÂºÃ‚Â£n phÃƒÂ¡Ã‚ÂºÃ‚Â©m");
         btnThem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnThemActionPerformed(evt);
@@ -160,7 +156,7 @@ public class PnSanPham extends javax.swing.JPanel {
 
         btnLamMoi.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnLamMoi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/refresh.png"))); // NOI18N
-        btnLamMoi.setText("Làm mới");
+        btnLamMoi.setText("LÃƒÆ’Ã‚Â m mÃƒÂ¡Ã‚Â»Ã¢â‚¬Âºi");
         btnLamMoi.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnLamMoiActionPerformed(evt);
@@ -207,22 +203,22 @@ public class PnSanPham extends javax.swing.JPanel {
         jLabel2.setBackground(new java.awt.Color(204, 204, 204));
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("Chi tiết sản phẩm");
+        jLabel2.setText("Chi tiÃƒÂ¡Ã‚ÂºÃ‚Â¿t sÃƒÂ¡Ã‚ÂºÃ‚Â£n phÃƒÂ¡Ã‚ÂºÃ‚Â©m");
 
-        jLabel3.setText("Đường kính");
-        jLabel4.setText("Độ dày");
-        jLabel5.setText("Màu sắc");
-        jLabel6.setText("Vỏ");
-        jLabel7.setText("Dây");
-        jLabel8.setText("Kính");
-        jLabel9.setText("Kiểu dáng");
-        jLabel10.setText("Bộ máy");
-        jLabel11.setText("Năng lượng cơ");
-        jLabel12.setText("Thời gian");
-        jLabel13.setText("Chống nước");
-        jLabel14.setText("Trọng lượng");
-        jLabel15.setText("Chức năng khác");
-        jLabel16.setText("Bảo hành");
+        jLabel3.setText("Ãƒâ€žÃ‚ÂÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Âng kÃƒÆ’Ã‚Â­nh");
+        jLabel4.setText("Ãƒâ€žÃ‚ÂÃƒÂ¡Ã‚Â»Ã¢â€žÂ¢ dÃƒÆ’Ã‚Â y");
+        jLabel5.setText("MÃƒÆ’Ã‚Â u sÃƒÂ¡Ã‚ÂºÃ‚Â¯c");
+        jLabel6.setText("VÃƒÂ¡Ã‚Â»Ã‚Â");
+        jLabel7.setText("DÃƒÆ’Ã‚Â¢y");
+        jLabel8.setText("KÃƒÆ’Ã‚Â­nh");
+        jLabel9.setText("KiÃƒÂ¡Ã‚Â»Ã†â€™u dÃƒÆ’Ã‚Â¡ng");
+        jLabel10.setText("BÃƒÂ¡Ã‚Â»Ã¢â€žÂ¢ mÃƒÆ’Ã‚Â¡y");
+        jLabel11.setText("NÃƒâ€žÃ†â€™ng lÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Â£ng cÃƒâ€ Ã‚Â¡");
+        jLabel12.setText("ThÃƒÂ¡Ã‚Â»Ã‚Âi gian");
+        jLabel13.setText("ChÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœng nÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã¢â‚¬Âºc");
+        jLabel14.setText("TrÃƒÂ¡Ã‚Â»Ã‚Âng lÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Â£ng");
+        jLabel15.setText("ChÃƒÂ¡Ã‚Â»Ã‚Â©c nÃƒâ€žÃ†â€™ng khÃƒÆ’Ã‚Â¡c");
+        jLabel16.setText("BÃƒÂ¡Ã‚ÂºÃ‚Â£o hÃƒÆ’Ã‚Â nh");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -370,7 +366,7 @@ public class PnSanPham extends javax.swing.JPanel {
         jScrollPane1.setViewportView(jTable1);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel1.setText("Danh sách sản phẩm");
+        jLabel1.setText("Danh sÃƒÆ’Ã‚Â¡ch sÃƒÂ¡Ã‚ÂºÃ‚Â£n phÃƒÂ¡Ã‚ÂºÃ‚Â©m");
 
         jTextField1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -378,21 +374,21 @@ public class PnSanPham extends javax.swing.JPanel {
             }
         });
 
-        jButton5.setText("Tìm kiếm");
+        jButton5.setText("TÃƒÆ’Ã‚Â¬m kiÃƒÂ¡Ã‚ÂºÃ‚Â¿m");
         jButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton5ActionPerformed(evt);
             }
         });
 
-        btnCapNhat.setText("Cập nhật");
+        btnCapNhat.setText("CÃƒÂ¡Ã‚ÂºÃ‚Â­p nhÃƒÂ¡Ã‚ÂºÃ‚Â­t");
         btnCapNhat.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCapNhatActionPerformed(evt);
             }
         });
 
-        btnLuu.setText("Lưu");
+        btnLuu.setText("LÃƒâ€ Ã‚Â°u");
         btnLuu.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnLuuActionPerformed(evt);
@@ -459,13 +455,13 @@ public class PnSanPham extends javax.swing.JPanel {
     private void btnSuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuaActionPerformed
         int selectedRow = jTable1.getSelectedRow();
         if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn một sản phẩm để chỉnh sửa!");
+            JOptionPane.showMessageDialog(this, "Vui lÃƒÆ’Ã‚Â²ng chÃƒÂ¡Ã‚Â»Ã‚Ân mÃƒÂ¡Ã‚Â»Ã¢â€žÂ¢t sÃƒÂ¡Ã‚ÂºÃ‚Â£n phÃƒÂ¡Ã‚ÂºÃ‚Â©m Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã†â€™ chÃƒÂ¡Ã‚Â»Ã¢â‚¬Â°nh sÃƒÂ¡Ã‚Â»Ã‚Â­a!");
             return;
         }
         int id = Integer.parseInt(jTable1.getValueAt(selectedRow, 0).toString());
         ArrayList<SanPhamDTO> products = bus.getSanPhamById(id);
         if (products.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Không tìm thấy sản phẩm với ID: " + id);
+            JOptionPane.showMessageDialog(this, "KhÃƒÆ’Ã‚Â´ng tÃƒÆ’Ã‚Â¬m thÃƒÂ¡Ã‚ÂºÃ‚Â¥y sÃƒÂ¡Ã‚ÂºÃ‚Â£n phÃƒÂ¡Ã‚ÂºÃ‚Â©m vÃƒÂ¡Ã‚Â»Ã¢â‚¬Âºi ID: " + id);
             return;
         }
         SanPhamDTO selectedProduct = products.get(0);
@@ -474,7 +470,7 @@ public class PnSanPham extends javax.swing.JPanel {
 
     private void btnXuatExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXuatExcelActionPerformed
         JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogTitle("Chọn nơi lưu file Excel");
+        fileChooser.setDialogTitle("ChÃƒÂ¡Ã‚Â»Ã‚Ân nÃƒâ€ Ã‚Â¡i lÃƒâ€ Ã‚Â°u file Excel");
         int userSelection = fileChooser.showSaveDialog(this);
         if (userSelection == JFileChooser.APPROVE_OPTION) {
             File fileToSave = fileChooser.getSelectedFile();
@@ -482,7 +478,7 @@ public class PnSanPham extends javax.swing.JPanel {
                 fileToSave = new File(fileToSave.getAbsolutePath() + ".xlsx");
             }
             try (Workbook workbook = new XSSFWorkbook()) {
-                Sheet sheet = workbook.createSheet("Danh sách sản phẩm");
+                Sheet sheet = workbook.createSheet("Danh sÃƒÆ’Ã‚Â¡ch sÃƒÂ¡Ã‚ÂºÃ‚Â£n phÃƒÂ¡Ã‚ÂºÃ‚Â©m");
                 TableModel model = jTable1.getModel();
                 Row headerRow = sheet.createRow(0);
                 for (int i = 0; i < model.getColumnCount(); i++) {
@@ -502,109 +498,33 @@ public class PnSanPham extends javax.swing.JPanel {
                     workbook.write(out);
                 }
 
-                JOptionPane.showMessageDialog(this, "Xuất Excel thành công!");
+                JOptionPane.showMessageDialog(this, "XuÃƒÂ¡Ã‚ÂºÃ‚Â¥t Excel thÃƒÆ’Ã‚Â nh cÃƒÆ’Ã‚Â´ng!");
             } catch (Exception e) {
                 e.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Lỗi khi xuất Excel: " + e.getMessage());
+                JOptionPane.showMessageDialog(this, "LÃƒÂ¡Ã‚Â»Ã¢â‚¬â€i khi xuÃƒÂ¡Ã‚ÂºÃ‚Â¥t Excel: " + e.getMessage());
             }
         }
     }//GEN-LAST:event_btnXuatExcelActionPerformed
 
-<<<<<<< HEAD
     private void btnXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaActionPerformed
-=======
-        /**
-     * Kiểm tra tên sản phẩm đã tồn tại chưa (trừ sản phẩm hiện tại nếu có)
-     */
-    private boolean isTenSPExists(String tenSP, int excludeId) {
-        for (SanPhamDTO sp : list) {
-            if (sp.getID() != excludeId && sp.getTenSP().equalsIgnoreCase(tenSP.trim())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Kiểm tra sản phẩm có đang được tham chiếu trong phiếu nhập không
-     */
-    private boolean isSanPhamInUse(int maSP) {
-        // Kiểm tra xem có chi tiết phiếu nhập nào tham chiếu đến sản phẩm này không
-        return ctBus.isSanPhamInUse(maSP); // Cần thêm method này vào CTSanPhamBUS
-    }
-
-    /**
-     * Validate dữ liệu sản phẩm
-     */
-    private String validateSanPham(SanPhamDTO sp, boolean isAdd) {
-        if (sp.getTenSP() == null || sp.getTenSP().trim().isEmpty()) {
-            return "Tên sản phẩm không được để trống!";
-        }
-        if (sp.getTenSP().length() < 3 || sp.getTenSP().length() > 100) {
-            return "Tên sản phẩm phải có độ dài từ 3-100 ký tự!";
-        }
-        if (isAdd && isTenSPExists(sp.getTenSP(), -1)) {
-            return "Tên sản phẩm '" + sp.getTenSP() + "' đã tồn tại trong hệ thống!";
-        }
-        if (sp.getGiaBan() == null || sp.getGiaBan().compareTo(BigDecimal.ZERO) <= 0) {
-            return "Giá bán phải lớn hơn 0!";
-        }
-        if (sp.getSoLuong() < 0) {
-            return "Số lượng không được âm!";
-        }
-        if (sp.getThuongHieu() == null || sp.getThuongHieu().trim().isEmpty()) {
-            return "Vui lòng nhập thương hiệu!";
-        }
-        if (sp.getXuatXu() == null || sp.getXuatXu().trim().isEmpty()) {
-            return "Vui lòng nhập xuất xứ!";
-        }
-        if (sp.getMaNCC() <= 0) {
-            return "Vui lòng chọn nhà cung cấp hợp lệ!";
-        }
-        return null; // Không có lỗi
-    }
-    
-    private void btnXoaActionPerformed(java.awt.event.ActionEvent evt) {
->>>>>>> 8524a171399401413e54706df2ca0cf43b4ec2c8
         int row = jTable1.getSelectedRow();
         if (row == -1) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn một sản phẩm để xóa!");
+            JOptionPane.showMessageDialog(this, "Vui lÃƒÆ’Ã‚Â²ng chÃƒÂ¡Ã‚Â»Ã‚Ân mÃƒÂ¡Ã‚Â»Ã¢â€žÂ¢t sÃƒÂ¡Ã‚ÂºÃ‚Â£n phÃƒÂ¡Ã‚ÂºÃ‚Â©m Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã†â€™ xÃƒÆ’Ã‚Â³a!");
             return;
         }
 
         int selectedID = Integer.parseInt(jTable1.getValueAt(row, 0).toString());
         String tenSP = jTable1.getValueAt(row, 1).toString();
 
-        // Kiểm tra sản phẩm có đang được sử dụng không
+        // KiÃƒÂ¡Ã‚Â»Ã†â€™m tra sÃƒÂ¡Ã‚ÂºÃ‚Â£n phÃƒÂ¡Ã‚ÂºÃ‚Â©m cÃƒÆ’Ã‚Â³ Ãƒâ€žÃ¢â‚¬Ëœang Ãƒâ€žÃ¢â‚¬ËœÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Â£c sÃƒÂ¡Ã‚Â»Ã‚Â­ dÃƒÂ¡Ã‚Â»Ã‚Â¥ng khÃƒÆ’Ã‚Â´ng
         if (isSanPhamInUse(selectedID)) {
             JOptionPane.showMessageDialog(this, 
-                "Không thể xóa sản phẩm '" + tenSP + "' vì đã có trong phiếu nhập hàng!\n"
-                + "Vui lòng xóa các phiếu nhập liên quan trước.", 
-                "Không thể xóa", JOptionPane.WARNING_MESSAGE);
+                "KhÃƒÆ’Ã‚Â´ng thÃƒÂ¡Ã‚Â»Ã†â€™ xÃƒÆ’Ã‚Â³a sÃƒÂ¡Ã‚ÂºÃ‚Â£n phÃƒÂ¡Ã‚ÂºÃ‚Â©m '" + tenSP + "' vÃƒÆ’Ã‚Â¬ Ãƒâ€žÃ¢â‚¬ËœÃƒÆ’Ã‚Â£ cÃƒÆ’Ã‚Â³ trong phiÃƒÂ¡Ã‚ÂºÃ‚Â¿u nhÃƒÂ¡Ã‚ÂºÃ‚Â­p hÃƒÆ’Ã‚Â ng!\n"
+                + "Vui lÃƒÆ’Ã‚Â²ng xÃƒÆ’Ã‚Â³a cÃƒÆ’Ã‚Â¡c phiÃƒÂ¡Ã‚ÂºÃ‚Â¿u nhÃƒÂ¡Ã‚ÂºÃ‚Â­p liÃƒÆ’Ã‚Âªn quan trÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã¢â‚¬Âºc.", 
+                "KhÃƒÆ’Ã‚Â´ng thÃƒÂ¡Ã‚Â»Ã†â€™ xÃƒÆ’Ã‚Â³a", JOptionPane.WARNING_MESSAGE);
             return;
         }
-<<<<<<< HEAD
     }//GEN-LAST:event_btnXoaActionPerformed
-=======
-
-        int confirm = JOptionPane.showConfirmDialog(this,
-            "Bạn có chắc chắn muốn xóa sản phẩm '" + tenSP + "'?\n"
-            + "Hành động này không thể khôi phục!",
-            "Xác nhận xóa",
-            JOptionPane.YES_NO_OPTION,
-            JOptionPane.WARNING_MESSAGE);
-
-        if (confirm == JOptionPane.YES_OPTION) {
-            boolean result = bus.deleteSanPham(selectedID);
-            if (result) {
-                JOptionPane.showMessageDialog(this, "Xóa sản phẩm thành công!");
-                loadDataToTable();
-            } else {
-                JOptionPane.showMessageDialog(this, "Xóa sản phẩm thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-    }
->>>>>>> 8524a171399401413e54706df2ca0cf43b4ec2c8
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
     }//GEN-LAST:event_jTextField1ActionPerformed
@@ -618,8 +538,8 @@ public class PnSanPham extends javax.swing.JPanel {
         ArrayList<SanPhamDTO> listBySearch = new ArrayList<>();
         listBySearch = bus.getSanPhamByName(searchText);
 
-        String[] columnNames = { "ID", "Tên sản phẩm", "Thương hiệu", "Xuất xứ", "Loại", "Giới tính",
-                "Giá bán", "Số lượng", "Hình ảnh", "Mô tả", "Nhà cung cấp" };
+        String[] columnNames = { "ID", "TÃƒÆ’Ã‚Âªn sÃƒÂ¡Ã‚ÂºÃ‚Â£n phÃƒÂ¡Ã‚ÂºÃ‚Â©m", "ThÃƒâ€ Ã‚Â°Ãƒâ€ Ã‚Â¡ng hiÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡u", "XuÃƒÂ¡Ã‚ÂºÃ‚Â¥t xÃƒÂ¡Ã‚Â»Ã‚Â©", "LoÃƒÂ¡Ã‚ÂºÃ‚Â¡i", "GiÃƒÂ¡Ã‚Â»Ã¢â‚¬Âºi tÃƒÆ’Ã‚Â­nh",
+                "GiÃƒÆ’Ã‚Â¡ bÃƒÆ’Ã‚Â¡n", "SÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ lÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Â£ng", "HÃƒÆ’Ã‚Â¬nh ÃƒÂ¡Ã‚ÂºÃ‚Â£nh", "MÃƒÆ’Ã‚Â´ tÃƒÂ¡Ã‚ÂºÃ‚Â£", "NhÃƒÆ’Ã‚Â  cung cÃƒÂ¡Ã‚ÂºÃ‚Â¥p" };
 
         DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
             @Override
@@ -630,61 +550,8 @@ public class PnSanPham extends javax.swing.JPanel {
                 return Object.class;
             }
         };
-<<<<<<< HEAD
 
-        for (Product p : listBySearch) {
-=======
         for (SanPhamDTO p : listBySearch) {
-            String resourcePath = p.getHinhAnh(); // resourcePath sẽ là "/images/tommy-1782110-nu.jpg"
-            URL imgURL = getClass().getResource(resourcePath);
-            ImageIcon resizedIcon = null;
-
-            if (imgURL != null) {
-                ImageIcon icon = new ImageIcon(imgURL);
-                if (icon.getImage() != null) {
-                    Image img = icon.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
-                    resizedIcon = new ImageIcon(img);
-                } else {
-                    System.err.println("Ảnh bị lỗi hoặc không đọc được: " + resourcePath);
-                    resizedIcon = new ImageIcon("/images/check-icon.png"); // ảnh dự phòng
-                }
-            } else {
-                System.err.println("Không tìm thấy ảnh tại: " + resourcePath);
-                resizedIcon = new ImageIcon("/images/check-icon.png"); // ảnh dự phòng
-            }
-
-            Object[] row = { p.getID(), p.getTenSP(), p.getThuongHieu(), p.getXuatXu(), p.getMaLoai(),
-                    p.getGioiTinh(), p.getGiaBan(), p.getSoLuong(), resizedIcon,
-                    p.getMoTa(),
-                    p.getMaNCC() };
-            model.addRow(row);
-        }
-        jTable1.setModel(model);
-    }// GEN-LAST:event_jButton5ActionPerformed
-
-    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jComboBox1ActionPerformed
-        // TODO add your handling code here:
-        ArrayList<SanPhamDTO> listByCate = new ArrayList<>();
-        int selectedIndex = jComboBox1.getSelectedIndex();
-        if (selectedIndex == 0) {
-            loadDataToTable();
-            return;
-        }
-        listByCate = bus.getSanPhamByCate(selectedIndex);
-        String[] columnNames = { "ID", "Tên sản phẩm", "Thương hiệu", "Xuất xứ", "Mã loại", "Giới tính",
-                "Giá bán",
-                "Số lượng", "Hình ảnh", "Mô tả", "Mã NCC" };
-        DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
-            @Override
-            public Class<?> getColumnClass(int columnIndex) {
-                if (columnIndex == 8) {
-                    return ImageIcon.class;
-                }
-                return Object.class;
-            }
-        };
-        for (SanPhamDTO p : listByCate) {
->>>>>>> 8524a171399401413e54706df2ca0cf43b4ec2c8
             String resourcePath = p.getHinhAnh();
             URL imgURL = getClass().getResource(resourcePath);
             ImageIcon resizedIcon = null;
@@ -695,11 +562,11 @@ public class PnSanPham extends javax.swing.JPanel {
                     Image img = icon.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
                     resizedIcon = new ImageIcon(img);
                 } else {
-                    System.err.println("Ảnh bị lỗi hoặc không đọc được: " + resourcePath);
+                    System.err.println("ÃƒÂ¡Ã‚ÂºÃ‚Â¢nh bÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ lÃƒÂ¡Ã‚Â»Ã¢â‚¬â€i hoÃƒÂ¡Ã‚ÂºÃ‚Â·c khÃƒÆ’Ã‚Â´ng Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã‚Âc Ãƒâ€žÃ¢â‚¬ËœÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Â£c: " + resourcePath);
                     resizedIcon = new ImageIcon("/images/check-icon.png");
                 }
             } else {
-                System.err.println("Không tìm thấy ảnh tại: " + resourcePath);
+                System.err.println("KhÃƒÆ’Ã‚Â´ng tÃƒÆ’Ã‚Â¬m thÃƒÂ¡Ã‚ÂºÃ‚Â¥y ÃƒÂ¡Ã‚ÂºÃ‚Â£nh tÃƒÂ¡Ã‚ÂºÃ‚Â¡i: " + resourcePath);
                 resizedIcon = new ImageIcon("/images/check-icon.png");
             }
 
@@ -708,7 +575,7 @@ public class PnSanPham extends javax.swing.JPanel {
                 p.getTenSP(),
                 p.getThuongHieu(),
                 p.getXuatXu(),
-                loaiMap.getOrDefault(p.getMaLoai(), "Loại " + p.getMaLoai()),
+                loaiMap.getOrDefault(p.getMaLoai(), "LoÃƒÂ¡Ã‚ÂºÃ‚Â¡i " + p.getMaLoai()),
                 p.getGioiTinh(),
                 p.getGiaBan(),
                 p.getSoLuong(),
@@ -724,7 +591,7 @@ public class PnSanPham extends javax.swing.JPanel {
     private void btnCapNhatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCapNhatActionPerformed
         int selectedRow = jTable1.getSelectedRow();
         if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn một sản phẩm để cập nhật chi tiết!");
+            JOptionPane.showMessageDialog(this, "Vui lÃƒÆ’Ã‚Â²ng chÃƒÂ¡Ã‚Â»Ã‚Ân mÃƒÂ¡Ã‚Â»Ã¢â€žÂ¢t sÃƒÂ¡Ã‚ÂºÃ‚Â£n phÃƒÂ¡Ã‚ÂºÃ‚Â©m Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã†â€™ cÃƒÂ¡Ã‚ÂºÃ‚Â­p nhÃƒÂ¡Ã‚ÂºÃ‚Â­t chi tiÃƒÂ¡Ã‚ÂºÃ‚Â¿t!");
             return;
         }
         setEditable(true);
@@ -733,7 +600,7 @@ public class PnSanPham extends javax.swing.JPanel {
     private void btnLuuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLuuActionPerformed
         int selectedRow = jTable1.getSelectedRow();
         if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn một sản phẩm để lưu chi tiết!");
+            JOptionPane.showMessageDialog(this, "Vui lÃƒÆ’Ã‚Â²ng chÃƒÂ¡Ã‚Â»Ã‚Ân mÃƒÂ¡Ã‚Â»Ã¢â€žÂ¢t sÃƒÂ¡Ã‚ÂºÃ‚Â£n phÃƒÂ¡Ã‚ÂºÃ‚Â©m Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã†â€™ lÃƒâ€ Ã‚Â°u chi tiÃƒÂ¡Ã‚ÂºÃ‚Â¿t!");
             return;
         }
         int id = Integer.parseInt(jTable1.getValueAt(selectedRow, 0).toString());
@@ -752,7 +619,7 @@ public class PnSanPham extends javax.swing.JPanel {
         detail.setKieuMat(jTextField12.getText());
 
         String trongLuongText = jTextField13.getText();
-        if (trongLuongText == null || trongLuongText.trim().isEmpty() || trongLuongText.equals("Chưa cập nhập")) {
+        if (trongLuongText == null || trongLuongText.trim().isEmpty() || trongLuongText.equals("ChÃƒâ€ Ã‚Â°a cÃƒÂ¡Ã‚ÂºÃ‚Â­p nhÃƒÂ¡Ã‚ÂºÃ‚Â­p")) {
             detail.setTrongLuong(0.0f);
         } else {
             detail.setTrongLuong(Float.valueOf(trongLuongText));
@@ -760,16 +627,12 @@ public class PnSanPham extends javax.swing.JPanel {
 
         detail.setChucNangKhac(jTextField14.getText());
         detail.setBaoHanh(jTextField15.getText());
-<<<<<<< HEAD
         boolean result = ctbus.updateCTSanPham(detail);
 
-=======
-        boolean result = ctBus.updateCTSanPham(detail);
->>>>>>> 8524a171399401413e54706df2ca0cf43b4ec2c8
         if (result) {
-            JOptionPane.showMessageDialog(this, "Cập nhật chi tiết sản phẩm thành công!");
+            JOptionPane.showMessageDialog(this, "CÃƒÂ¡Ã‚ÂºÃ‚Â­p nhÃƒÂ¡Ã‚ÂºÃ‚Â­t chi tiÃƒÂ¡Ã‚ÂºÃ‚Â¿t sÃƒÂ¡Ã‚ÂºÃ‚Â£n phÃƒÂ¡Ã‚ÂºÃ‚Â©m thÃƒÆ’Ã‚Â nh cÃƒÆ’Ã‚Â´ng!");
         } else {
-            JOptionPane.showMessageDialog(this, "Cập nhật thất bại!");
+            JOptionPane.showMessageDialog(this, "CÃƒÂ¡Ã‚ÂºÃ‚Â­p nhÃƒÂ¡Ã‚ÂºÃ‚Â­t thÃƒÂ¡Ã‚ÂºÃ‚Â¥t bÃƒÂ¡Ã‚ÂºÃ‚Â¡i!");
         }
         setEditable(false);
     }//GEN-LAST:event_btnLuuActionPerformed
@@ -824,8 +687,8 @@ public class PnSanPham extends javax.swing.JPanel {
 
     private void loadDataToTable() {
         list = bus.getSanPham();
-        String[] columnNames = { "ID", "Tên sản phẩm", "Thương hiệu", "Xuất xứ", "Loại", "Giới tính",
-                "Giá bán", "Số lượng", "Hình ảnh", "Mô tả", "Nhà cung cấp" };
+        String[] columnNames = { "ID", "TÃƒÆ’Ã‚Âªn sÃƒÂ¡Ã‚ÂºÃ‚Â£n phÃƒÂ¡Ã‚ÂºÃ‚Â©m", "ThÃƒâ€ Ã‚Â°Ãƒâ€ Ã‚Â¡ng hiÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡u", "XuÃƒÂ¡Ã‚ÂºÃ‚Â¥t xÃƒÂ¡Ã‚Â»Ã‚Â©", "LoÃƒÂ¡Ã‚ÂºÃ‚Â¡i", "GiÃƒÂ¡Ã‚Â»Ã¢â‚¬Âºi tÃƒÆ’Ã‚Â­nh",
+                "GiÃƒÆ’Ã‚Â¡ bÃƒÆ’Ã‚Â¡n", "SÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ lÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Â£ng", "HÃƒÆ’Ã‚Â¬nh ÃƒÂ¡Ã‚ÂºÃ‚Â£nh", "MÃƒÆ’Ã‚Â´ tÃƒÂ¡Ã‚ÂºÃ‚Â£", "NhÃƒÆ’Ã‚Â  cung cÃƒÂ¡Ã‚ÂºÃ‚Â¥p" };
 
         DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
             @Override
@@ -836,12 +699,8 @@ public class PnSanPham extends javax.swing.JPanel {
                 return Object.class;
             }
         };
-<<<<<<< HEAD
 
-        for (Product p : list) {
-=======
         for (SanPhamDTO p : list) {
->>>>>>> 8524a171399401413e54706df2ca0cf43b4ec2c8
             String resourcePath = p.getHinhAnh();
             URL imgURL = getClass().getResource(resourcePath);
             ImageIcon resizedIcon = null;
@@ -852,11 +711,11 @@ public class PnSanPham extends javax.swing.JPanel {
                     Image img = icon.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
                     resizedIcon = new ImageIcon(img);
                 } else {
-                    System.err.println("Ảnh bị lỗi hoặc không đọc được: " + resourcePath);
+                    System.err.println("ÃƒÂ¡Ã‚ÂºÃ‚Â¢nh bÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ lÃƒÂ¡Ã‚Â»Ã¢â‚¬â€i hoÃƒÂ¡Ã‚ÂºÃ‚Â·c khÃƒÆ’Ã‚Â´ng Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã‚Âc Ãƒâ€žÃ¢â‚¬ËœÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Â£c: " + resourcePath);
                     resizedIcon = new ImageIcon("/images/check-icon.png");
                 }
             } else {
-                System.err.println("Không tìm thấy ảnh tại: " + resourcePath);
+                System.err.println("KhÃƒÆ’Ã‚Â´ng tÃƒÆ’Ã‚Â¬m thÃƒÂ¡Ã‚ÂºÃ‚Â¥y ÃƒÂ¡Ã‚ÂºÃ‚Â£nh tÃƒÂ¡Ã‚ÂºÃ‚Â¡i: " + resourcePath);
                 resizedIcon = new ImageIcon("/images/check-icon.png");
             }
 
@@ -865,7 +724,7 @@ public class PnSanPham extends javax.swing.JPanel {
                 p.getTenSP(),
                 p.getThuongHieu(),
                 p.getXuatXu(),
-                loaiMap.getOrDefault(p.getMaLoai(), "Loại " + p.getMaLoai()),
+                loaiMap.getOrDefault(p.getMaLoai(), "LoÃƒÂ¡Ã‚ÂºÃ‚Â¡i " + p.getMaLoai()),
                 p.getGioiTinh(),
                 p.getGiaBan(),
                 p.getSoLuong(),
@@ -900,22 +759,22 @@ public class PnSanPham extends javax.swing.JPanel {
                     return;
                 }
                 int selectedID = Integer.parseInt(jTable1.getValueAt(selected, 0).toString());
-                ProductDetail detail = ctBus.getDetail(selectedID);
+                ProductDetail detail = ctbus.getDetail(selectedID);
                 if (detail == null) {
-                    jTextField2.setText("Chưa cập nhập");
-                    jTextField3.setText("Chưa cập nhập");
-                    jTextField4.setText("Chưa cập nhập");
-                    jTextField5.setText("Chưa cập nhập");
-                    jTextField6.setText("Chưa cập nhập");
-                    jTextField7.setText("Chưa cập nhập");
-                    jTextField8.setText("Chưa cập nhập");
-                    jTextField9.setText("Chưa cập nhập");
-                    jTextField10.setText("Chưa cập nhập");
-                    jTextField11.setText("Chưa cập nhập");
-                    jTextField12.setText("Chưa cập nhập");
-                    jTextField13.setText("Chưa cập nhập");
-                    jTextField14.setText("Chưa cập nhập");
-                    jTextField15.setText("Chưa cập nhập");
+                    jTextField2.setText("ChÃƒâ€ Ã‚Â°a cÃƒÂ¡Ã‚ÂºÃ‚Â­p nhÃƒÂ¡Ã‚ÂºÃ‚Â­p");
+                    jTextField3.setText("ChÃƒâ€ Ã‚Â°a cÃƒÂ¡Ã‚ÂºÃ‚Â­p nhÃƒÂ¡Ã‚ÂºÃ‚Â­p");
+                    jTextField4.setText("ChÃƒâ€ Ã‚Â°a cÃƒÂ¡Ã‚ÂºÃ‚Â­p nhÃƒÂ¡Ã‚ÂºÃ‚Â­p");
+                    jTextField5.setText("ChÃƒâ€ Ã‚Â°a cÃƒÂ¡Ã‚ÂºÃ‚Â­p nhÃƒÂ¡Ã‚ÂºÃ‚Â­p");
+                    jTextField6.setText("ChÃƒâ€ Ã‚Â°a cÃƒÂ¡Ã‚ÂºÃ‚Â­p nhÃƒÂ¡Ã‚ÂºÃ‚Â­p");
+                    jTextField7.setText("ChÃƒâ€ Ã‚Â°a cÃƒÂ¡Ã‚ÂºÃ‚Â­p nhÃƒÂ¡Ã‚ÂºÃ‚Â­p");
+                    jTextField8.setText("ChÃƒâ€ Ã‚Â°a cÃƒÂ¡Ã‚ÂºÃ‚Â­p nhÃƒÂ¡Ã‚ÂºÃ‚Â­p");
+                    jTextField9.setText("ChÃƒâ€ Ã‚Â°a cÃƒÂ¡Ã‚ÂºÃ‚Â­p nhÃƒÂ¡Ã‚ÂºÃ‚Â­p");
+                    jTextField10.setText("ChÃƒâ€ Ã‚Â°a cÃƒÂ¡Ã‚ÂºÃ‚Â­p nhÃƒÂ¡Ã‚ÂºÃ‚Â­p");
+                    jTextField11.setText("ChÃƒâ€ Ã‚Â°a cÃƒÂ¡Ã‚ÂºÃ‚Â­p nhÃƒÂ¡Ã‚ÂºÃ‚Â­p");
+                    jTextField12.setText("ChÃƒâ€ Ã‚Â°a cÃƒÂ¡Ã‚ÂºÃ‚Â­p nhÃƒÂ¡Ã‚ÂºÃ‚Â­p");
+                    jTextField13.setText("ChÃƒâ€ Ã‚Â°a cÃƒÂ¡Ã‚ÂºÃ‚Â­p nhÃƒÂ¡Ã‚ÂºÃ‚Â­p");
+                    jTextField14.setText("ChÃƒâ€ Ã‚Â°a cÃƒÂ¡Ã‚ÂºÃ‚Â­p nhÃƒÂ¡Ã‚ÂºÃ‚Â­p");
+                    jTextField15.setText("ChÃƒâ€ Ã‚Â°a cÃƒÂ¡Ã‚ÂºÃ‚Â­p nhÃƒÂ¡Ã‚ÂºÃ‚Â­p");
                 } else {
                     jTextField2.setText(detail.getDuongKinhMat());
                     jTextField3.setText(detail.getDoDayMat());
@@ -952,7 +811,9 @@ public class PnSanPham extends javax.swing.JPanel {
         jTextField14.setEditable(editable);
         jTextField15.setEditable(editable);
     }
-
+    private boolean isSanPhamInUse(int maSP) {
+    return false; // tạm thời return false, có thể implement sau
+}
     private void loadData() {
         loaiMap.clear();
         for (Loai l : new LoaiDAO().getAll()) {
@@ -966,9 +827,8 @@ public class PnSanPham extends javax.swing.JPanel {
         setEditable(false);
     }
 
-<<<<<<< HEAD
-    private void openEditDialog(Product p) {
-        JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Sửa sản phẩm", true);
+    private void openEditDialog(SanPhamDTO p) {
+        JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "SÃƒÂ¡Ã‚Â»Ã‚Â­a sÃƒÂ¡Ã‚ÂºÃ‚Â£n phÃƒÂ¡Ã‚ÂºÃ‚Â©m", true);
         dialog.setSize(400, 500);
         dialog.setLayout(new GridLayout(11, 2, 5, 5));
 
@@ -997,29 +857,29 @@ public class PnSanPham extends javax.swing.JPanel {
         String[] ncc = { "Orient Japan", "Seiko Watch Corp" };
         JComboBox cbNCC = new JComboBox(ncc);
 
-        dialog.add(new JLabel("Tên sản phẩm:"));
+        dialog.add(new JLabel("TÃƒÆ’Ã‚Âªn sÃƒÂ¡Ã‚ÂºÃ‚Â£n phÃƒÂ¡Ã‚ÂºÃ‚Â©m:"));
         dialog.add(txtTenSP);
-        dialog.add(new JLabel("Thương hiệu:"));
+        dialog.add(new JLabel("ThÃƒâ€ Ã‚Â°Ãƒâ€ Ã‚Â¡ng hiÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡u:"));
         dialog.add(txtThuongHieu);
-        dialog.add(new JLabel("Xuất xứ:"));
+        dialog.add(new JLabel("XuÃƒÂ¡Ã‚ÂºÃ‚Â¥t xÃƒÂ¡Ã‚Â»Ã‚Â©:"));
         dialog.add(txtXuatXu);
-        dialog.add(new JLabel("Loại:"));
+        dialog.add(new JLabel("LoÃƒÂ¡Ã‚ÂºÃ‚Â¡i:"));
         dialog.add(cbLoai);
-        dialog.add(new JLabel("Giới tính:"));
+        dialog.add(new JLabel("GiÃƒÂ¡Ã‚Â»Ã¢â‚¬Âºi tÃƒÆ’Ã‚Â­nh:"));
         dialog.add(txtGioiTinh);
-        dialog.add(new JLabel("Giá bán:"));
+        dialog.add(new JLabel("GiÃƒÆ’Ã‚Â¡ bÃƒÆ’Ã‚Â¡n:"));
         dialog.add(txtGiaBan);
-        dialog.add(new JLabel("Số lượng:"));
+        dialog.add(new JLabel("SÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ lÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Â£ng:"));
         dialog.add(txtSoLuong);
-        dialog.add(new JLabel("Hình ảnh:"));
+        dialog.add(new JLabel("HÃƒÆ’Ã‚Â¬nh ÃƒÂ¡Ã‚ÂºÃ‚Â£nh:"));
         dialog.add(txtHinhAnh);
-        dialog.add(new JLabel("Mô tả:"));
+        dialog.add(new JLabel("MÃƒÆ’Ã‚Â´ tÃƒÂ¡Ã‚ÂºÃ‚Â£:"));
         dialog.add(txtMoTa);
-        dialog.add(new JLabel("Nhà cung cấp:"));
+        dialog.add(new JLabel("NhÃƒÆ’Ã‚Â  cung cÃƒÂ¡Ã‚ÂºÃ‚Â¥p:"));
         dialog.add(cbNCC);
 
-        JButton btnSave = new JButton("Lưu");
-        JButton btnCancel = new JButton("Hủy");
+        JButton btnSave = new JButton("LÃƒâ€ Ã‚Â°u");
+        JButton btnCancel = new JButton("HÃƒÂ¡Ã‚Â»Ã‚Â§y");
 
         dialog.add(btnSave);
         dialog.add(btnCancel);
@@ -1038,10 +898,10 @@ public class PnSanPham extends javax.swing.JPanel {
                     p.setGioiTinh(txtGioiTinh.getText());
 
                     String giaBanStr = txtGiaBan.getText().trim().replace(".", "");
-                    if (giaBanStr.isEmpty()) throw new NumberFormatException("Giá bán trống");
+                    if (giaBanStr.isEmpty()) throw new NumberFormatException("Gia ban trong");
                     BigDecimal giaBan = new BigDecimal(giaBanStr);
                     if (giaBan.compareTo(BigDecimal.ZERO) <= 0) {
-                        throw new NumberFormatException("Giá bán phải > 0");
+                        throw new NumberFormatException("Gia ban phai > 0");
                     }
                     p.setGiaBan(giaBan);
                     p.setSoLuong(Integer.parseInt(txtSoLuong.getText()));
@@ -1062,78 +922,19 @@ public class PnSanPham extends javax.swing.JPanel {
                     boolean result = bus.updateSanPham(p);
 
                     if (result) {
-                        JOptionPane.showMessageDialog(dialog, "Cập nhật thành công!");
+                        JOptionPane.showMessageDialog(dialog, "Cap nhat thanh cong!");
                         loadDataToTable();
                     } else {
-                        JOptionPane.showMessageDialog(dialog, "Dữ liệu nhập không hợp lệ! Cập nhật thất bại!");
+                        JOptionPane.showMessageDialog(dialog, "Cap nhat that bai!");
                     }
 
                     dialog.dispose();
                 } catch (NumberFormatException ex) {
                     JOptionPane.showMessageDialog(dialog,
-                            "Lỗi: 'Giá bán' và 'Số lượng' phải là số và không được để trống!",
-                            "Lỗi đầu vào", JOptionPane.ERROR_MESSAGE);
-=======
-    private void openEditDialog(SanPhamDTO p) {
-    JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Sửa sản phẩm", true);
-    dialog.setSize(450, 550);
-    dialog.setLayout(new GridLayout(12, 2, 10, 10));
-    dialog.setLocationRelativeTo(this);
-    
-    // Các trường nhập liệu
-    JTextField txtTenSP = new JTextField(p.getTenSP());
-    JTextField txtThuongHieu = new JTextField(p.getThuongHieu());
-    JTextField txtXuatXu = new JTextField(p.getXuatXu());
-    
-    String[] loai = { "Hand-Winding", "Automatic", "Đồng hồ cơ lai" };
-    JComboBox<String> cbLoai = new JComboBox<>(loai);
-    cbLoai.setSelectedIndex(p.getMaLoai() - 1);
-    
-    JTextField txtGioiTinh = new JTextField(p.getGioiTinh());
-    JTextField txtGiaBan = new JTextField(String.format("%,.0f", p.getGiaBan()));
-    JTextField txtSoLuong = new JTextField(String.valueOf(p.getSoLuong()));
-    JTextField txtHinhAnh = new JTextField(p.getHinhAnh());
-    JTextField txtMoTa = new JTextField(p.getMoTa());
-    
-    String[] ncc = { "Orient Japan", "Seiko Watch Corp" };
-    JComboBox<String> cbNCC = new JComboBox<>(ncc);
-    int nccIndex = (p.getMaNCC() == 4) ? 0 : 1;
-    cbNCC.setSelectedIndex(nccIndex);
-    
-    // Thêm vào dialog
-    dialog.add(new JLabel("Tên sản phẩm:*")); dialog.add(txtTenSP);
-    dialog.add(new JLabel("Thương hiệu:*")); dialog.add(txtThuongHieu);
-    dialog.add(new JLabel("Xuất xứ:*")); dialog.add(txtXuatXu);
-    dialog.add(new JLabel("Loại:")); dialog.add(cbLoai);
-    dialog.add(new JLabel("Giới tính:")); dialog.add(txtGioiTinh);
-    dialog.add(new JLabel("Giá bán:*")); dialog.add(txtGiaBan);
-    dialog.add(new JLabel("Số lượng:")); dialog.add(txtSoLuong);
-    dialog.add(new JLabel("Hình ảnh:")); dialog.add(txtHinhAnh);
-    dialog.add(new JLabel("Mô tả:")); dialog.add(txtMoTa);
-    dialog.add(new JLabel("Nhà cung cấp:*")); dialog.add(cbNCC);
-    
-    JButton btnSave = new JButton("Lưu");
-    JButton btnCancel = new JButton("Hủy");
-    btnSave.setBackground(new Color(46, 204, 113));
-    btnCancel.setBackground(new Color(231, 76, 60));
-    
-    dialog.add(btnSave);
-    dialog.add(btnCancel);
-    
-    // Xử lý format giá tiền khi nhập
-    txtGiaBan.addFocusListener(new java.awt.event.FocusAdapter() {
-        public void focusLost(java.awt.event.FocusEvent evt) {
-            try {
-                String value = txtGiaBan.getText().replaceAll("[^\\d]", "");
-                if (!value.isEmpty()) {
-                    long number = Long.parseLong(value);
-                    txtGiaBan.setText(String.format("%,d", number));
->>>>>>> 8524a171399401413e54706df2ca0cf43b4ec2c8
+                        "Loi: 'Gia ban' va 'So luong' phai la so va khong duoc de trong!",
+                        "Loi dau vao", JOptionPane.ERROR_MESSAGE);
                 }
-            } catch (NumberFormatException ex) {
-                // Giữ nguyên
             }
-<<<<<<< HEAD
         });
 
         dialog.setLocationRelativeTo(this);
@@ -1141,7 +942,7 @@ public class PnSanPham extends javax.swing.JPanel {
     }
 
     private void openAddDialog() {
-        JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Thêm sản phẩm mới", true);
+        JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "ThÃƒÆ’Ã‚Âªm sÃƒÂ¡Ã‚ÂºÃ‚Â£n phÃƒÂ¡Ã‚ÂºÃ‚Â©m mÃƒÂ¡Ã‚Â»Ã¢â‚¬Âºi", true);
         dialog.setSize(400, 500);
         dialog.setLayout(new GridLayout(11, 2, 5, 5));
 
@@ -1165,19 +966,19 @@ public class PnSanPham extends javax.swing.JPanel {
         String[] ncc = { "Orient Japan", "Seiko Watch Corp" };
         JComboBox cbNCC = new JComboBox(ncc);
 
-        dialog.add(new JLabel("Tên sản phẩm:")); dialog.add(txtTenSP);
-        dialog.add(new JLabel("Thương hiệu:")); dialog.add(txtThuongHieu);
-        dialog.add(new JLabel("Xuất xứ:")); dialog.add(txtXuatXu);
-        dialog.add(new JLabel("Loại:")); dialog.add(cbLoai);
-        dialog.add(new JLabel("Giới tính:")); dialog.add(txtGioiTinh);
-        dialog.add(new JLabel("Giá bán:")); dialog.add(txtGiaBan);
-        dialog.add(new JLabel("Số lượng:")); dialog.add(txtSoLuong);
-        dialog.add(new JLabel("Hình ảnh:")); dialog.add(txtHinhAnh);
-        dialog.add(new JLabel("Mô tả:")); dialog.add(txtMoTa);
-        dialog.add(new JLabel("Nhà cung cấp:")); dialog.add(cbNCC);
+        dialog.add(new JLabel("TÃƒÆ’Ã‚Âªn sÃƒÂ¡Ã‚ÂºÃ‚Â£n phÃƒÂ¡Ã‚ÂºÃ‚Â©m:")); dialog.add(txtTenSP);
+        dialog.add(new JLabel("ThÃƒâ€ Ã‚Â°Ãƒâ€ Ã‚Â¡ng hiÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡u:")); dialog.add(txtThuongHieu);
+        dialog.add(new JLabel("XuÃƒÂ¡Ã‚ÂºÃ‚Â¥t xÃƒÂ¡Ã‚Â»Ã‚Â©:")); dialog.add(txtXuatXu);
+        dialog.add(new JLabel("LoÃƒÂ¡Ã‚ÂºÃ‚Â¡i:")); dialog.add(cbLoai);
+        dialog.add(new JLabel("GiÃƒÂ¡Ã‚Â»Ã¢â‚¬Âºi tÃƒÆ’Ã‚Â­nh:")); dialog.add(txtGioiTinh);
+        dialog.add(new JLabel("GiÃƒÆ’Ã‚Â¡ bÃƒÆ’Ã‚Â¡n:")); dialog.add(txtGiaBan);
+        dialog.add(new JLabel("SÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ lÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Â£ng:")); dialog.add(txtSoLuong);
+        dialog.add(new JLabel("HÃƒÆ’Ã‚Â¬nh ÃƒÂ¡Ã‚ÂºÃ‚Â£nh:")); dialog.add(txtHinhAnh);
+        dialog.add(new JLabel("MÃƒÆ’Ã‚Â´ tÃƒÂ¡Ã‚ÂºÃ‚Â£:")); dialog.add(txtMoTa);
+        dialog.add(new JLabel("NhÃƒÆ’Ã‚Â  cung cÃƒÂ¡Ã‚ÂºÃ‚Â¥p:")); dialog.add(cbNCC);
 
-        JButton btnAdd = new JButton("Thêm mới");
-        JButton btnCancel = new JButton("Hủy");
+        JButton btnAdd = new JButton("ThÃƒÆ’Ã‚Âªm mÃƒÂ¡Ã‚Â»Ã¢â‚¬Âºi");
+        JButton btnCancel = new JButton("HÃƒÂ¡Ã‚Â»Ã‚Â§y");
 
         dialog.add(btnAdd);
         dialog.add(btnCancel);
@@ -1189,11 +990,11 @@ public class PnSanPham extends javax.swing.JPanel {
             public void actionPerformed(ActionEvent e) {
                 try {
                     if (txtTenSP.getText().isEmpty() || txtGiaBan.getText().isEmpty() || txtSoLuong.getText().isEmpty()) {
-                        JOptionPane.showMessageDialog(dialog, "Vui lòng nhập đầy đủ Tên, Giá và Số lượng!");
+                        JOptionPane.showMessageDialog(dialog, "Vui lÃƒÆ’Ã‚Â²ng nhÃƒÂ¡Ã‚ÂºÃ‚Â­p Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚ÂºÃ‚Â§y Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã‚Â§ TÃƒÆ’Ã‚Âªn, GiÃƒÆ’Ã‚Â¡ vÃƒÆ’Ã‚Â  SÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ lÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Â£ng!");
                         return;
                     }
 
-                    Product p = new Product();
+                    SanPhamDTO p = new SanPhamDTO();
                     p.setTenSP(txtTenSP.getText());
                     p.setThuongHieu(txtThuongHieu.getText());
                     p.setXuatXu(txtXuatXu.getText());
@@ -1201,10 +1002,10 @@ public class PnSanPham extends javax.swing.JPanel {
                     p.setGioiTinh(txtGioiTinh.getText());
 
                     String giaBanStr = txtGiaBan.getText().trim().replace(".", "");
-                    if (giaBanStr.isEmpty()) throw new NumberFormatException("Giá bán trống");
+                    if (giaBanStr.isEmpty()) throw new NumberFormatException("GiÃƒÆ’Ã‚Â¡ bÃƒÆ’Ã‚Â¡n trÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœng");
                     BigDecimal giaBan = new BigDecimal(giaBanStr);
                     if (giaBan.compareTo(BigDecimal.ZERO) <= 0) {
-                        throw new NumberFormatException("Giá bán phải > 0");
+                        throw new NumberFormatException("GiÃƒÆ’Ã‚Â¡ bÃƒÆ’Ã‚Â¡n phÃƒÂ¡Ã‚ÂºÃ‚Â£i > 0");
                     }
                     p.setGiaBan(giaBan);
                     p.setSoLuong(Integer.parseInt(txtSoLuong.getText()));
@@ -1225,20 +1026,20 @@ public class PnSanPham extends javax.swing.JPanel {
                     boolean result = ctbus.insertCTSanPham(newCT);
 
                     if ((newID > 0) && result) {
-                        JOptionPane.showMessageDialog(dialog, "Thêm sản phẩm thành công!");
+                        JOptionPane.showMessageDialog(dialog, "ThÃƒÆ’Ã‚Âªm sÃƒÂ¡Ã‚ÂºÃ‚Â£n phÃƒÂ¡Ã‚ÂºÃ‚Â©m thÃƒÆ’Ã‚Â nh cÃƒÆ’Ã‚Â´ng!");
                         loadDataToTable();
                         dialog.dispose();
                     } else {
-                        JOptionPane.showMessageDialog(dialog, "Thêm thất bại! Vui lòng kiểm tra lại thông tin.");
+                        JOptionPane.showMessageDialog(dialog, "ThÃƒÆ’Ã‚Âªm thÃƒÂ¡Ã‚ÂºÃ‚Â¥t bÃƒÂ¡Ã‚ÂºÃ‚Â¡i! Vui lÃƒÆ’Ã‚Â²ng kiÃƒÂ¡Ã‚Â»Ã†â€™m tra lÃƒÂ¡Ã‚ÂºÃ‚Â¡i thÃƒÆ’Ã‚Â´ng tin.");
                     }
 
                 } catch (NumberFormatException ex) {
                     JOptionPane.showMessageDialog(dialog,
-                            "Lỗi: 'Giá bán' và 'Số lượng' phải là số hợp lệ!",
-                            "Lỗi đầu vào", JOptionPane.ERROR_MESSAGE);
+                            "LÃƒÂ¡Ã‚Â»Ã¢â‚¬â€i: 'GiÃƒÆ’Ã‚Â¡ bÃƒÆ’Ã‚Â¡n' vÃƒÆ’Ã‚Â  'SÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ lÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Â£ng' phÃƒÂ¡Ã‚ÂºÃ‚Â£i lÃƒÆ’Ã‚Â  sÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ hÃƒÂ¡Ã‚Â»Ã‚Â£p lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡!",
+                            "LÃƒÂ¡Ã‚Â»Ã¢â‚¬â€i Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚ÂºÃ‚Â§u vÃƒÆ’Ã‚Â o", JOptionPane.ERROR_MESSAGE);
                 } catch (Exception ex) {
                     ex.printStackTrace();
-                    JOptionPane.showMessageDialog(dialog, "Lỗi hệ thống: " + ex.getMessage());
+                    JOptionPane.showMessageDialog(dialog, "LÃƒÂ¡Ã‚Â»Ã¢â‚¬â€i hÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡ thÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœng: " + ex.getMessage());
                 }
             }
         });
@@ -1246,184 +1047,7 @@ public class PnSanPham extends javax.swing.JPanel {
         dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
     }
-=======
-        }
-        public void focusGained(java.awt.event.FocusEvent evt) {
-            txtGiaBan.setText(txtGiaBan.getText().replaceAll("[^\\d]", ""));
-        }
-    });
-    
-    btnCancel.addActionListener(e -> dialog.dispose());
-    
-    btnSave.addActionListener(e -> {
-        try {
-            String tenSP = txtTenSP.getText().trim();
-            // Kiểm tra trùng tên (trừ chính nó)
-            if (isTenSPExists(tenSP, p.getID())) {
-                JOptionPane.showMessageDialog(dialog, "Tên sản phẩm '" + tenSP + "' đã tồn tại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            
-            p.setTenSP(tenSP);
-            p.setThuongHieu(txtThuongHieu.getText().trim());
-            p.setXuatXu(txtXuatXu.getText().trim());
-            p.setMaLoai(cbLoai.getSelectedIndex() + 1);
-            p.setGioiTinh(txtGioiTinh.getText().trim());
-            
-            String giaBanStr = txtGiaBan.getText().trim().replaceAll("[^\\d]", "");
-            if (giaBanStr.isEmpty()) throw new NumberFormatException();
-            BigDecimal giaBan = new BigDecimal(giaBanStr);
-            if (giaBan.compareTo(BigDecimal.ZERO) <= 0) throw new NumberFormatException();
-            p.setGiaBan(giaBan);
-            
-            int soLuong = Integer.parseInt(txtSoLuong.getText().trim());
-            if (soLuong < 0) throw new NumberFormatException();
-            p.setSoLuong(soLuong);
-            
-            p.setHinhAnh(txtHinhAnh.getText().trim());
-            p.setMoTa(txtMoTa.getText().trim());
-            
-            int maNccTmp = cbNCC.getSelectedIndex() == 0 ? 4 : 5;
-            p.setMaNCC(maNccTmp);
-            
-            // Validate
-            String error = validateSanPham(p, false);
-            if (error != null) {
-                JOptionPane.showMessageDialog(dialog, error, "Lỗi nhập liệu", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            
-            boolean result = bus.updateSanPham(p);
-            if (result) {
-                JOptionPane.showMessageDialog(dialog, "Cập nhật thành công!");
-                loadDataToTable();
-                dialog.dispose();
-            } else {
-                JOptionPane.showMessageDialog(dialog, "Cập nhật thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            }
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(dialog,
-                "Lỗi: 'Giá bán' phải là số dương, 'Số lượng' phải là số không âm!",
-                "Lỗi đầu vào", JOptionPane.ERROR_MESSAGE);
-        }
-    });
-    
-    dialog.setVisible(true);
 }
-    
-    private void openAddDialog() {
-    JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Thêm sản phẩm mới", true);
-    dialog.setSize(450, 550);
-    dialog.setLayout(new GridLayout(12, 2, 10, 10));
-    dialog.setLocationRelativeTo(this);
-    
-    // Các trường nhập liệu
-    JTextField txtTenSP = new JTextField();
-    JTextField txtThuongHieu = new JTextField();
-    JTextField txtXuatXu = new JTextField();
-    
-    String[] loai = { "Hand-Winding", "Automatic", "Đồng hồ cơ lai" };
-    JComboBox<String> cbLoai = new JComboBox<>(loai);
-    
-    JTextField txtGioiTinh = new JTextField();
-    JTextField txtGiaBan = new JTextField();
-    JTextField txtSoLuong = new JTextField("0");
-    JTextField txtHinhAnh = new JTextField("/images/");
-    JTextField txtMoTa = new JTextField();
-    
-    String[] ncc = { "Orient Japan", "Seiko Watch Corp" };
-    JComboBox<String> cbNCC = new JComboBox<>(ncc);
-    
-    // Thêm vào dialog
-    dialog.add(new JLabel("Tên sản phẩm:*")); dialog.add(txtTenSP);
-    dialog.add(new JLabel("Thương hiệu:*")); dialog.add(txtThuongHieu);
-    dialog.add(new JLabel("Xuất xứ:*")); dialog.add(txtXuatXu);
-    dialog.add(new JLabel("Loại:")); dialog.add(cbLoai);
-    dialog.add(new JLabel("Giới tính:")); dialog.add(txtGioiTinh);
-    dialog.add(new JLabel("Giá bán:*")); dialog.add(txtGiaBan);
-    dialog.add(new JLabel("Số lượng:")); dialog.add(txtSoLuong);
-    dialog.add(new JLabel("Hình ảnh:")); dialog.add(txtHinhAnh);
-    dialog.add(new JLabel("Mô tả:")); dialog.add(txtMoTa);
-    dialog.add(new JLabel("Nhà cung cấp:*")); dialog.add(cbNCC);
-    
-    JButton btnAdd = new JButton("Thêm mới");
-    JButton btnCancel = new JButton("Hủy");
-    btnAdd.setBackground(new Color(46, 204, 113));
-    btnCancel.setBackground(new Color(231, 76, 60));
-    
-    dialog.add(btnAdd);
-    dialog.add(btnCancel);
-    
-    // Format giá tiền
-    txtGiaBan.addFocusListener(new java.awt.event.FocusAdapter() {
-        public void focusLost(java.awt.event.FocusEvent evt) {
-            try {
-                String value = txtGiaBan.getText().replaceAll("[^\\d]", "");
-                if (!value.isEmpty()) {
-                    long number = Long.parseLong(value);
-                    txtGiaBan.setText(String.format("%,d", number));
-                }
-            } catch (NumberFormatException ex) {}
-        }
-        public void focusGained(java.awt.event.FocusEvent evt) {
-            txtGiaBan.setText(txtGiaBan.getText().replaceAll("[^\\d]", ""));
-        }
-    });
-    
-    btnCancel.addActionListener(e -> dialog.dispose());
-    
-    btnAdd.addActionListener(e -> {
-        try {
-            SanPhamDTO p = new SanPhamDTO();
-            p.setTenSP(txtTenSP.getText().trim());
-            p.setThuongHieu(txtThuongHieu.getText().trim());
-            p.setXuatXu(txtXuatXu.getText().trim());
-            p.setMaLoai(cbLoai.getSelectedIndex() + 1);
-            p.setGioiTinh(txtGioiTinh.getText().trim());
-            
-            String giaBanStr = txtGiaBan.getText().trim().replaceAll("[^\\d]", "");
-            if (giaBanStr.isEmpty()) throw new NumberFormatException();
-            BigDecimal giaBan = new BigDecimal(giaBanStr);
-            if (giaBan.compareTo(BigDecimal.ZERO) <= 0) throw new NumberFormatException();
-            p.setGiaBan(giaBan);
-            
-            int soLuong = Integer.parseInt(txtSoLuong.getText().trim());
-            if (soLuong < 0) throw new NumberFormatException();
-            p.setSoLuong(soLuong);
-            
-            p.setHinhAnh(txtHinhAnh.getText().trim());
-            p.setMoTa(txtMoTa.getText().trim());
-            p.setMaNCC(cbNCC.getSelectedIndex() == 0 ? 4 : 5);
-            
-            // Validate
-            String error = validateSanPham(p, true);
-            if (error != null) {
-                JOptionPane.showMessageDialog(dialog, error, "Lỗi nhập liệu", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            
-            int newID = bus.insertSanPham(p);
-            if (newID > 0) {
-                // Tạo chi tiết sản phẩm mặc định
-                ProductDetail newCT = new ProductDetail(newID);
-                ctBus.insertCTSanPham(newCT);
-                JOptionPane.showMessageDialog(dialog, "Thêm sản phẩm thành công!");
-                loadDataToTable();
-                dialog.dispose();
-            } else {
-                JOptionPane.showMessageDialog(dialog, "Thêm sản phẩm thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            }
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(dialog, 
-                "Lỗi: 'Giá bán' phải là số dương, 'Số lượng' phải là số không âm!", 
-                "Lỗi đầu vào", JOptionPane.ERROR_MESSAGE);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(dialog, "Lỗi hệ thống: " + ex.getMessage());
-        }
-    });
-    
-    dialog.setVisible(true);
-}
->>>>>>> 8524a171399401413e54706df2ca0cf43b4ec2c8
-}
+
+
+
