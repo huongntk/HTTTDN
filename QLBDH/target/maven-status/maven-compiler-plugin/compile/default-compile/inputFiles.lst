@@ -1,5 +1,6 @@
 C:\HTTTDN\HTTTDN\QLBDH\src\main\java\DAO\PhanQuyenDAO.java
 C:\HTTTDN\HTTTDN\QLBDH\src\main\java\BUS\DonNghiBUS.java
+C:\HTTTDN\HTTTDN\QLBDH\src\main\java\BUS\LuongCoBanTheoChucVuBUS.java
 C:\HTTTDN\HTTTDN\QLBDH\src\main\java\DTO\CTPhieuNhapDTO.java
 C:\HTTTDN\HTTTDN\QLBDH\src\main\java\DTO\ProductDetail.java
 C:\HTTTDN\HTTTDN\QLBDH\src\main\java\GUI\AdminFrame.java
@@ -26,7 +27,6 @@ C:\HTTTDN\HTTTDN\QLBDH\src\main\java\DAO\KhachHangDAO.java
 C:\HTTTDN\HTTTDN\QLBDH\src\main\java\DAO\TaiKhoanDAO.java
 C:\HTTTDN\HTTTDN\QLBDH\src\main\java\BUS\ThongKeBUS.java
 C:\HTTTDN\HTTTDN\QLBDH\src\main\java\DAO\NhaCungCapDAO.java
-C:\HTTTDN\HTTTDN\QLBDH\src\main\java\DAO\LuongDAO.java
 C:\HTTTDN\HTTTDN\QLBDH\src\main\java\DAO\ThongKeDAO.java
 C:\HTTTDN\HTTTDN\QLBDH\src\main\java\DAO\PhieuNhapDAO.java
 C:\HTTTDN\HTTTDN\QLBDH\src\main\java\BUS\CTPhieuNhapBUS.java
@@ -34,12 +34,14 @@ C:\HTTTDN\HTTTDN\QLBDH\src\main\java\BUS\NhanVienBUS.java
 C:\HTTTDN\HTTTDN\QLBDH\src\main\java\DTO\LichSuChucVu.java
 C:\HTTTDN\HTTTDN\QLBDH\src\main\java\GUI\PnChamCong.java
 C:\HTTTDN\HTTTDN\QLBDH\src\main\java\GUI\PnCTPhieuNhap.java
+C:\HTTTDN\HTTTDN\QLBDH\src\main\java\GUI\FrmInBangLuongNam.java
 C:\HTTTDN\HTTTDN\QLBDH\src\main\java\GUI\PnTaiKhoan.java
 C:\HTTTDN\HTTTDN\QLBDH\src\main\java\DAO\NhanVienDAO.java
 C:\HTTTDN\HTTTDN\QLBDH\src\main\java\DAO\CTHoaDonDAO.java
 C:\HTTTDN\HTTTDN\QLBDH\src\main\java\DTO\PhieuNhapDTO.java
 C:\HTTTDN\HTTTDN\QLBDH\src\main\java\GUI\PnNhaCungCap.java
 C:\HTTTDN\HTTTDN\QLBDH\src\main\java\DTO\NhaCungCapDTO.java
+C:\HTTTDN\HTTTDN\QLBDH\src\main\java\DTO\SanPhamDTO.java
 C:\HTTTDN\HTTTDN\QLBDH\src\main\java\BUS\KhachHangBUS.java
 C:\HTTTDN\HTTTDN\QLBDH\src\main\java\BUS\PhanQuyenBUS.java
 C:\HTTTDN\HTTTDN\QLBDH\src\main\java\BUS\CTSanPhamBUS.java
@@ -67,12 +69,12 @@ C:\HTTTDN\HTTTDN\QLBDH\src\main\java\DTO\DonNghiDTO.java
 C:\HTTTDN\HTTTDN\QLBDH\src\main\java\BUS\KhuyenMaiBUS.java
 C:\HTTTDN\HTTTDN\QLBDH\src\main\java\DTO\HoaDon.java
 C:\HTTTDN\HTTTDN\QLBDH\src\main\java\GUI\PnSanPham.java
-C:\HTTTDN\HTTTDN\QLBDH\src\main\java\DTO\Product.java
 C:\HTTTDN\HTTTDN\QLBDH\src\main\java\BUS\BangLuongBUS.java
 C:\HTTTDN\HTTTDN\QLBDH\src\main\java\GUI\XuatHD.java
 C:\HTTTDN\HTTTDN\QLBDH\src\main\java\GUI\PnKhuyenMai.java
 C:\HTTTDN\HTTTDN\QLBDH\src\main\java\DAO\CTPhieuNhapDAO.java
 C:\HTTTDN\HTTTDN\QLBDH\src\main\java\com\mycompany\qlbdt\QLBDH.java
+C:\HTTTDN\HTTTDN\QLBDH\src\main\java\GUI\FrmSuaLuongCoBan.java
 C:\HTTTDN\HTTTDN\QLBDH\src\main\java\BUS\LichSuChucVuBUS.java
 C:\HTTTDN\HTTTDN\QLBDH\src\main\java\DTO\CTHoaDon.java
 C:\HTTTDN\HTTTDN\QLBDH\src\main\java\DAO\DataProvider.java

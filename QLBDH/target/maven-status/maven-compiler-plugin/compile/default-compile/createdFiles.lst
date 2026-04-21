@@ -6,6 +6,7 @@ DAO\DataProvider.class
 GUI\PnKhuyenMai$11.class
 GUI\FrmDuyetNghi.class
 GUI\PnHoaDonForm$7.class
+GUI\PnChamCong$CaLamInfo.class
 DAO\BangLuongDAO.class
 DTO\KhuyenMai.class
 GUI\PnNhaCungCap.class
@@ -13,6 +14,7 @@ GUI\FrmDoiMatKhau$6.class
 GUI\PnHoaDonForm$1.class
 GUI\DlgXemDonCuaToi.class
 GUI\PnNhanVien.class
+GUI\PnPhieuNhap$4.class
 GUI\PnLuong$3.class
 BUS\HoaDonBUS.class
 GUI\PnNhanVien$2.class
@@ -23,6 +25,7 @@ DTO\TaiKhoan.class
 GUI\MainFrame$5.class
 GUI\FrmTinhLuong.class
 DAO\LichSuChucVuDAO.class
+GUI\PnNhaCungCap$2.class
 GUI\PnBanHangForm$7.class
 BUS\KhuyenMaiBUS.class
 GUI\FrmDoiMatKhau.class
@@ -56,7 +59,6 @@ GUI\PnLuong$2.class
 GUI\MainFrame$10.class
 GUI\FrmXemLuong.class
 BUS\ThongKeBUS.class
-GUI\PnSanPham$13.class
 GUI\MainFrame$6.class
 GUI\PnPhieuNhap.class
 GUI\PnSanPham$10.class
@@ -86,17 +88,18 @@ GUI\PnHoaDonForm$12.class
 DAO\ThongKeDAO.class
 GUI\PnLuong$5.class
 GUI\PnNhapHang.class
-GUI\PnSanPham$12.class
 GUI\PnHoaDonForm$9.class
 GUI\MainFrame$8.class
 GUI\PnSanPham$6.class
 GUI\PnHoaDonForm$11.class
 GUI\PnNhanVien$4.class
 DTO\CTHoaDon.class
+BUS\LuongCoBanTheoChucVuBUS.class
 GUI\FrmDoiMatKhau$4.class
 GUI\PnKhuyenMai$3.class
 GUI\MainFrame$7.class
 GUI\FrmDoiMatKhau$3.class
+GUI\FrmInBangLuongNam.class
 DTO\HoaDon.class
 GUI\PnBanHangForm$11.class
 GUI\PnSanPham$7.class
@@ -105,7 +108,6 @@ com\mycompany\qlbdt\QLBDH.class
 GUI\PnBanHangForm$9.class
 GUI\PnCTPhieuNhap$1.class
 GUI\PnHoaDonForm$4.class
-DTO\Product.class
 GUI\PnPhanQuyen.class
 GUI\MainFrame$11.class
 DAO\ChamCongDAO.class
@@ -114,6 +116,8 @@ GUI\PnSanPham$2.class
 GUI\PnTaiKhoan$1.class
 GUI\DlgXemDonCuaToi$1.class
 GUI\FrmDangNhap$2.class
+GUI\PnLuong$6.class
+GUI\FrmSuaLuongCoBan.class
 GUI\FrmDuyetNghi$1.class
 GUI\PnPhieuNhap$1.class
 GUI\MainFrame$12.class
@@ -129,8 +133,11 @@ GUI\PnKhuyenMai$2.class
 UTIL\Auth.class
 DTO\PhieuNhapDTO.class
 GUI\PnNhaCungCap$1.class
+GUI\PnChamCong$3.class
+GUI\PnPhieuNhap$2.class
 DAO\KhuyenMaiDAO.class
 GUI\PnLuong$1.class
+DTO\SanPhamDTO.class
 DTO\NhaCungCapDTO.class
 GUI\PnKhuyenMai.class
 UTIL\DBConnect.class
@@ -139,6 +146,7 @@ GUI\PnCTPhieuNhap$2.class
 BUS\LichSuChucVuBUS.class
 GUI\FrmDangNhap$3.class
 GUI\PnSanPham$3.class
+GUI\PnPhieuNhap$3.class
 BUS\PhanQuyenBUS.class
 GUI\PnKhuyenMai$7.class
 DAO\TaiKhoanDAO.class
@@ -155,7 +163,6 @@ GUI\PnBanHangForm$8.class
 BUS\PhieuNhapBUS.class
 DAO\LuongCoBanTheoChucVuDAO.class
 BUS\DonNghiBUS.class
-DAO\LuongDAO.class
 DAO\SanphamDAO.class
 GUI\PnBanHang.class
 GUI\PnKhachHang.class
