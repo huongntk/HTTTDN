@@ -59,7 +59,6 @@ GUI\PnLuong$2.class
 GUI\MainFrame$10.class
 GUI\FrmXemLuong.class
 BUS\ThongKeBUS.class
-GUI\PnSanPham$13.class
 GUI\MainFrame$6.class
 GUI\PnPhieuNhap.class
 GUI\PnSanPham$10.class
@@ -89,7 +88,6 @@ GUI\PnHoaDonForm$12.class
 DAO\ThongKeDAO.class
 GUI\PnLuong$5.class
 GUI\PnNhapHang.class
-GUI\PnSanPham$12.class
 GUI\PnHoaDonForm$9.class
 GUI\MainFrame$8.class
 GUI\PnSanPham$6.class

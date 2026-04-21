@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
- */
 package GUI;
 
 import BUS.CTSanPhamBUS;
@@ -28,12 +24,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.*;
-import java.awt.Color;
 
-/**
- *
- * @author ltd96
- */
 public class PnSanPham extends javax.swing.JPanel {
     private ArrayList<SanPhamDTO> list;
     SanPhamBUS bus = new SanPhamBUS();
@@ -123,40 +114,40 @@ public class PnSanPham extends javax.swing.JPanel {
 
         jPanel1.setBackground(new java.awt.Color(204, 204, 204));
 
-        btnSua.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/sua.png"))); // NOI18N
-        btnSua.setText("ChÃƒÂ¡Ã‚Â»Ã¢â‚¬Â°nh sÃƒÂ¡Ã‚Â»Ã‚Â­a");
+        btnSua.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/sua.png")));
+        btnSua.setText("Ch\u1ec9nh s\u1eeda");
         btnSua.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSuaActionPerformed(evt);
             }
         });
 
-        btnXoa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/xoa.png"))); // NOI18N
-        btnXoa.setText("XoÃƒÆ’Ã‚Â¡ sÃƒÂ¡Ã‚ÂºÃ‚Â£n phÃƒÂ¡Ã‚ÂºÃ‚Â©m");
+        btnXoa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/xoa.png")));
+        btnXoa.setText("Xo\u00e1 s\u1ea3n ph\u1ea9m");
         btnXoa.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnXoaActionPerformed(evt);
             }
         });
 
-        btnXuatExcel.setText("XuÃƒÂ¡Ã‚ÂºÃ‚Â¥t Excel");
+        btnXuatExcel.setText("Xu\u1ea5t Excel");
         btnXuatExcel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnXuatExcelActionPerformed(evt);
             }
         });
 
-        btnThem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/them.png"))); // NOI18N
-        btnThem.setText("ThÃƒÆ’Ã‚Âªm sÃƒÂ¡Ã‚ÂºÃ‚Â£n phÃƒÂ¡Ã‚ÂºÃ‚Â©m");
+        btnThem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/them.png")));
+        btnThem.setText("Th\u00eam s\u1ea3n ph\u1ea9m");
         btnThem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnThemActionPerformed(evt);
             }
         });
 
-        btnLamMoi.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        btnLamMoi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/refresh.png"))); // NOI18N
-        btnLamMoi.setText("LÃƒÆ’Ã‚Â m mÃƒÂ¡Ã‚Â»Ã¢â‚¬Âºi");
+        btnLamMoi.setFont(new java.awt.Font("Segoe UI", 0, 14));
+        btnLamMoi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/refresh.png")));
+        btnLamMoi.setText("L\u00e0m m\u1edbi");
         btnLamMoi.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnLamMoiActionPerformed(evt);
@@ -201,24 +192,24 @@ public class PnSanPham extends javax.swing.JPanel {
         jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
 
         jLabel2.setBackground(new java.awt.Color(204, 204, 204));
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 14));
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("Chi tiÃƒÂ¡Ã‚ÂºÃ‚Â¿t sÃƒÂ¡Ã‚ÂºÃ‚Â£n phÃƒÂ¡Ã‚ÂºÃ‚Â©m");
+        jLabel2.setText("Chi ti\u1ebft s\u1ea3n ph\u1ea9m");
 
-        jLabel3.setText("Ãƒâ€žÃ‚ÂÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Âng kÃƒÆ’Ã‚Â­nh");
-        jLabel4.setText("Ãƒâ€žÃ‚ÂÃƒÂ¡Ã‚Â»Ã¢â€žÂ¢ dÃƒÆ’Ã‚Â y");
-        jLabel5.setText("MÃƒÆ’Ã‚Â u sÃƒÂ¡Ã‚ÂºÃ‚Â¯c");
-        jLabel6.setText("VÃƒÂ¡Ã‚Â»Ã‚Â");
-        jLabel7.setText("DÃƒÆ’Ã‚Â¢y");
-        jLabel8.setText("KÃƒÆ’Ã‚Â­nh");
-        jLabel9.setText("KiÃƒÂ¡Ã‚Â»Ã†â€™u dÃƒÆ’Ã‚Â¡ng");
-        jLabel10.setText("BÃƒÂ¡Ã‚Â»Ã¢â€žÂ¢ mÃƒÆ’Ã‚Â¡y");
-        jLabel11.setText("NÃƒâ€žÃ†â€™ng lÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Â£ng cÃƒâ€ Ã‚Â¡");
-        jLabel12.setText("ThÃƒÂ¡Ã‚Â»Ã‚Âi gian");
-        jLabel13.setText("ChÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœng nÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã¢â‚¬Âºc");
-        jLabel14.setText("TrÃƒÂ¡Ã‚Â»Ã‚Âng lÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Â£ng");
-        jLabel15.setText("ChÃƒÂ¡Ã‚Â»Ã‚Â©c nÃƒâ€žÃ†â€™ng khÃƒÆ’Ã‚Â¡c");
-        jLabel16.setText("BÃƒÂ¡Ã‚ÂºÃ‚Â£o hÃƒÆ’Ã‚Â nh");
+        jLabel3.setText("\u0110\u01b0\u1eddng k\u00ednh");
+        jLabel4.setText("\u0110\u1ed9 d\u00e0y");
+        jLabel5.setText("M\u00e0u s\u1eafc");
+        jLabel6.setText("V\u1ecf");
+        jLabel7.setText("D\u00e2y");
+        jLabel8.setText("K\u00ednh");
+        jLabel9.setText("Ki\u1ec3u d\u00e1ng");
+        jLabel10.setText("B\u1ed9 m\u00e1y");
+        jLabel11.setText("N\u0103ng l\u01b0\u1ee3ng c\u01a1");
+        jLabel12.setText("Th\u1eddi gian");
+        jLabel13.setText("Ch\u1ed1ng n\u01b0\u1edbc");
+        jLabel14.setText("Tr\u1ecdng l\u01b0\u1ee3ng");
+        jLabel15.setText("Ch\u1ee9c n\u0103ng kh\u00e1c");
+        jLabel16.setText("B\u1ea3o h\u00e0nh");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -352,21 +343,14 @@ public class PnSanPham extends javax.swing.JPanel {
         jScrollPane1.setBackground(new java.awt.Color(204, 204, 204));
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
+            new Object [][] {},
+            new String [] {"ID", "T\u00ean s\u1ea3n ph\u1ea9m", "Th\u01b0\u01a1ng hi\u1ec7u", "Xu\u1ea5t x\u1ee9", "Lo\u1ea1i", "Gi\u1edbi t\u00ednh", "Gi\u00e1 b\u00e1n", "S\u1ed1 l\u01b0\u1ee3ng", "H\u00ecnh \u1ea3nh", "M\u00f4 t\u1ea3", "Nh\u00e0 cung c\u1ea5p"}
         ));
         jTable1.setRowHeight(40);
         jScrollPane1.setViewportView(jTable1);
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel1.setText("Danh sÃƒÆ’Ã‚Â¡ch sÃƒÂ¡Ã‚ÂºÃ‚Â£n phÃƒÂ¡Ã‚ÂºÃ‚Â©m");
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18));
+        jLabel1.setText("Danh s\u00e1ch s\u1ea3n ph\u1ea9m");
 
         jTextField1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -374,21 +358,21 @@ public class PnSanPham extends javax.swing.JPanel {
             }
         });
 
-        jButton5.setText("TÃƒÆ’Ã‚Â¬m kiÃƒÂ¡Ã‚ÂºÃ‚Â¿m");
+        jButton5.setText("T\u00ecm ki\u1ebfm");
         jButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton5ActionPerformed(evt);
             }
         });
 
-        btnCapNhat.setText("CÃƒÂ¡Ã‚ÂºÃ‚Â­p nhÃƒÂ¡Ã‚ÂºÃ‚Â­t");
+        btnCapNhat.setText("C\u1eadp nh\u1eadt");
         btnCapNhat.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCapNhatActionPerformed(evt);
             }
         });
 
-        btnLuu.setText("LÃƒâ€ Ã‚Â°u");
+        btnLuu.setText("L\u01b0u");
         btnLuu.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnLuuActionPerformed(evt);
@@ -455,13 +439,13 @@ public class PnSanPham extends javax.swing.JPanel {
     private void btnSuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuaActionPerformed
         int selectedRow = jTable1.getSelectedRow();
         if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Vui lÃƒÆ’Ã‚Â²ng chÃƒÂ¡Ã‚Â»Ã‚Ân mÃƒÂ¡Ã‚Â»Ã¢â€žÂ¢t sÃƒÂ¡Ã‚ÂºÃ‚Â£n phÃƒÂ¡Ã‚ÂºÃ‚Â©m Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã†â€™ chÃƒÂ¡Ã‚Â»Ã¢â‚¬Â°nh sÃƒÂ¡Ã‚Â»Ã‚Â­a!");
+            JOptionPane.showMessageDialog(this, "Vui l\u00f2ng ch\u1ecdn m\u1ed9t s\u1ea3n ph\u1ea9m \u0111\u1ec3 ch\u1ec9nh s\u1eeda!");
             return;
         }
         int id = Integer.parseInt(jTable1.getValueAt(selectedRow, 0).toString());
         ArrayList<SanPhamDTO> products = bus.getSanPhamById(id);
         if (products.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "KhÃƒÆ’Ã‚Â´ng tÃƒÆ’Ã‚Â¬m thÃƒÂ¡Ã‚ÂºÃ‚Â¥y sÃƒÂ¡Ã‚ÂºÃ‚Â£n phÃƒÂ¡Ã‚ÂºÃ‚Â©m vÃƒÂ¡Ã‚Â»Ã¢â‚¬Âºi ID: " + id);
+            JOptionPane.showMessageDialog(this, "Kh\u00f4ng t\u00ecm th\u1ea5y s\u1ea3n ph\u1ea9m v\u1edbi ID: " + id);
             return;
         }
         SanPhamDTO selectedProduct = products.get(0);
@@ -470,7 +454,7 @@ public class PnSanPham extends javax.swing.JPanel {
 
     private void btnXuatExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXuatExcelActionPerformed
         JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogTitle("ChÃƒÂ¡Ã‚Â»Ã‚Ân nÃƒâ€ Ã‚Â¡i lÃƒâ€ Ã‚Â°u file Excel");
+        fileChooser.setDialogTitle("Ch\u1ecdn n\u01a1i l\u01b0u file Excel");
         int userSelection = fileChooser.showSaveDialog(this);
         if (userSelection == JFileChooser.APPROVE_OPTION) {
             File fileToSave = fileChooser.getSelectedFile();
@@ -478,7 +462,7 @@ public class PnSanPham extends javax.swing.JPanel {
                 fileToSave = new File(fileToSave.getAbsolutePath() + ".xlsx");
             }
             try (Workbook workbook = new XSSFWorkbook()) {
-                Sheet sheet = workbook.createSheet("Danh sÃƒÆ’Ã‚Â¡ch sÃƒÂ¡Ã‚ÂºÃ‚Â£n phÃƒÂ¡Ã‚ÂºÃ‚Â©m");
+                Sheet sheet = workbook.createSheet("Danh s\u00e1ch s\u1ea3n ph\u1ea9m");
                 TableModel model = jTable1.getModel();
                 Row headerRow = sheet.createRow(0);
                 for (int i = 0; i < model.getColumnCount(); i++) {
@@ -497,11 +481,10 @@ public class PnSanPham extends javax.swing.JPanel {
                 try (FileOutputStream out = new FileOutputStream(fileToSave)) {
                     workbook.write(out);
                 }
-
-                JOptionPane.showMessageDialog(this, "XuÃƒÂ¡Ã‚ÂºÃ‚Â¥t Excel thÃƒÆ’Ã‚Â nh cÃƒÆ’Ã‚Â´ng!");
+                JOptionPane.showMessageDialog(this, "Xu\u1ea5t Excel th\u00e0nh c\u00f4ng!");
             } catch (Exception e) {
                 e.printStackTrace();
-                JOptionPane.showMessageDialog(this, "LÃƒÂ¡Ã‚Â»Ã¢â‚¬â€i khi xuÃƒÂ¡Ã‚ÂºÃ‚Â¥t Excel: " + e.getMessage());
+                JOptionPane.showMessageDialog(this, "L\u1ed7i khi xu\u1ea5t Excel: " + e.getMessage());
             }
         }
     }//GEN-LAST:event_btnXuatExcelActionPerformed
@@ -509,20 +492,16 @@ public class PnSanPham extends javax.swing.JPanel {
     private void btnXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaActionPerformed
         int row = jTable1.getSelectedRow();
         if (row == -1) {
-            JOptionPane.showMessageDialog(this, "Vui lÃƒÆ’Ã‚Â²ng chÃƒÂ¡Ã‚Â»Ã‚Ân mÃƒÂ¡Ã‚Â»Ã¢â€žÂ¢t sÃƒÂ¡Ã‚ÂºÃ‚Â£n phÃƒÂ¡Ã‚ÂºÃ‚Â©m Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã†â€™ xÃƒÆ’Ã‚Â³a!");
+            JOptionPane.showMessageDialog(this, "Vui l\u00f2ng ch\u1ecdn m\u1ed9t s\u1ea3n ph\u1ea9m \u0111\u1ec3 x\u00f3a!");
             return;
         }
-
-        int selectedID = Integer.parseInt(jTable1.getValueAt(row, 0).toString());
-        String tenSP = jTable1.getValueAt(row, 1).toString();
-
-        // KiÃƒÂ¡Ã‚Â»Ã†â€™m tra sÃƒÂ¡Ã‚ÂºÃ‚Â£n phÃƒÂ¡Ã‚ÂºÃ‚Â©m cÃƒÆ’Ã‚Â³ Ãƒâ€žÃ¢â‚¬Ëœang Ãƒâ€žÃ¢â‚¬ËœÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Â£c sÃƒÂ¡Ã‚Â»Ã‚Â­ dÃƒÂ¡Ã‚Â»Ã‚Â¥ng khÃƒÆ’Ã‚Â´ng
-        if (isSanPhamInUse(selectedID)) {
-            JOptionPane.showMessageDialog(this, 
-                "KhÃƒÆ’Ã‚Â´ng thÃƒÂ¡Ã‚Â»Ã†â€™ xÃƒÆ’Ã‚Â³a sÃƒÂ¡Ã‚ÂºÃ‚Â£n phÃƒÂ¡Ã‚ÂºÃ‚Â©m '" + tenSP + "' vÃƒÆ’Ã‚Â¬ Ãƒâ€žÃ¢â‚¬ËœÃƒÆ’Ã‚Â£ cÃƒÆ’Ã‚Â³ trong phiÃƒÂ¡Ã‚ÂºÃ‚Â¿u nhÃƒÂ¡Ã‚ÂºÃ‚Â­p hÃƒÆ’Ã‚Â ng!\n"
-                + "Vui lÃƒÆ’Ã‚Â²ng xÃƒÆ’Ã‚Â³a cÃƒÆ’Ã‚Â¡c phiÃƒÂ¡Ã‚ÂºÃ‚Â¿u nhÃƒÂ¡Ã‚ÂºÃ‚Â­p liÃƒÆ’Ã‚Âªn quan trÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã¢â‚¬Âºc.", 
-                "KhÃƒÆ’Ã‚Â´ng thÃƒÂ¡Ã‚Â»Ã†â€™ xÃƒÆ’Ã‚Â³a", JOptionPane.WARNING_MESSAGE);
-            return;
+        int confirm = JOptionPane.showConfirmDialog(null,
+            "B\u1ea1n c\u00f3 ch\u1eafc ch\u1eafn mu\u1ed1n x\u00f3a s\u1ea3n ph\u1ea9m n\u00e0y kh\u00f4ng?",
+            "X\u00e1c nh\u1eadn x\u00f3a", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+        if (confirm == JOptionPane.YES_OPTION) {
+            int selectedID = Integer.parseInt(jTable1.getValueAt(row, 0).toString());
+            bus.deleteSanPham(selectedID);
+            loadDataToTable();
         }
     }//GEN-LAST:event_btnXoaActionPerformed
 
@@ -535,55 +514,17 @@ public class PnSanPham extends javax.swing.JPanel {
             loadDataToTable();
             return;
         }
-        ArrayList<SanPhamDTO> listBySearch = new ArrayList<>();
-        listBySearch = bus.getSanPhamByName(searchText);
-
-        String[] columnNames = { "ID", "TÃƒÆ’Ã‚Âªn sÃƒÂ¡Ã‚ÂºÃ‚Â£n phÃƒÂ¡Ã‚ÂºÃ‚Â©m", "ThÃƒâ€ Ã‚Â°Ãƒâ€ Ã‚Â¡ng hiÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡u", "XuÃƒÂ¡Ã‚ÂºÃ‚Â¥t xÃƒÂ¡Ã‚Â»Ã‚Â©", "LoÃƒÂ¡Ã‚ÂºÃ‚Â¡i", "GiÃƒÂ¡Ã‚Â»Ã¢â‚¬Âºi tÃƒÆ’Ã‚Â­nh",
-                "GiÃƒÆ’Ã‚Â¡ bÃƒÆ’Ã‚Â¡n", "SÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ lÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Â£ng", "HÃƒÆ’Ã‚Â¬nh ÃƒÂ¡Ã‚ÂºÃ‚Â£nh", "MÃƒÆ’Ã‚Â´ tÃƒÂ¡Ã‚ÂºÃ‚Â£", "NhÃƒÆ’Ã‚Â  cung cÃƒÂ¡Ã‚ÂºÃ‚Â¥p" };
-
+        ArrayList<SanPhamDTO> listBySearch = bus.getSanPhamByName(searchText);
+        String[] columnNames = {"ID", "T\u00ean s\u1ea3n ph\u1ea9m", "Th\u01b0\u01a1ng hi\u1ec7u", "Xu\u1ea5t x\u1ee9", "Lo\u1ea1i", "Gi\u1edbi t\u00ednh", "Gi\u00e1 b\u00e1n", "S\u1ed1 l\u01b0\u1ee3ng", "H\u00ecnh \u1ea3nh", "M\u00f4 t\u1ea3", "Nh\u00e0 cung c\u1ea5p"};
         DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
             @Override
             public Class<?> getColumnClass(int columnIndex) {
-                if (columnIndex == 8) {
-                    return ImageIcon.class;
-                }
+                if (columnIndex == 8) return ImageIcon.class;
                 return Object.class;
             }
         };
-
         for (SanPhamDTO p : listBySearch) {
-            String resourcePath = p.getHinhAnh();
-            URL imgURL = getClass().getResource(resourcePath);
-            ImageIcon resizedIcon = null;
-
-            if (imgURL != null) {
-                ImageIcon icon = new ImageIcon(imgURL);
-                if (icon.getImage() != null) {
-                    Image img = icon.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
-                    resizedIcon = new ImageIcon(img);
-                } else {
-                    System.err.println("ÃƒÂ¡Ã‚ÂºÃ‚Â¢nh bÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ lÃƒÂ¡Ã‚Â»Ã¢â‚¬â€i hoÃƒÂ¡Ã‚ÂºÃ‚Â·c khÃƒÆ’Ã‚Â´ng Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã‚Âc Ãƒâ€žÃ¢â‚¬ËœÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Â£c: " + resourcePath);
-                    resizedIcon = new ImageIcon("/images/check-icon.png");
-                }
-            } else {
-                System.err.println("KhÃƒÆ’Ã‚Â´ng tÃƒÆ’Ã‚Â¬m thÃƒÂ¡Ã‚ÂºÃ‚Â¥y ÃƒÂ¡Ã‚ÂºÃ‚Â£nh tÃƒÂ¡Ã‚ÂºÃ‚Â¡i: " + resourcePath);
-                resizedIcon = new ImageIcon("/images/check-icon.png");
-            }
-
-            Object[] row = {
-                p.getID(),
-                p.getTenSP(),
-                p.getThuongHieu(),
-                p.getXuatXu(),
-                loaiMap.getOrDefault(p.getMaLoai(), "LoÃƒÂ¡Ã‚ÂºÃ‚Â¡i " + p.getMaLoai()),
-                p.getGioiTinh(),
-                p.getGiaBan(),
-                p.getSoLuong(),
-                resizedIcon,
-                p.getMoTa(),
-                nccMap.getOrDefault(p.getMaNCC(), "NCC " + p.getMaNCC())
-            };
-            model.addRow(row);
+            model.addRow(buildRow(p));
         }
         jTable1.setModel(model);
     }//GEN-LAST:event_jButton5ActionPerformed
@@ -591,7 +532,7 @@ public class PnSanPham extends javax.swing.JPanel {
     private void btnCapNhatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCapNhatActionPerformed
         int selectedRow = jTable1.getSelectedRow();
         if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Vui lÃƒÆ’Ã‚Â²ng chÃƒÂ¡Ã‚Â»Ã‚Ân mÃƒÂ¡Ã‚Â»Ã¢â€žÂ¢t sÃƒÂ¡Ã‚ÂºÃ‚Â£n phÃƒÂ¡Ã‚ÂºÃ‚Â©m Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã†â€™ cÃƒÂ¡Ã‚ÂºÃ‚Â­p nhÃƒÂ¡Ã‚ÂºÃ‚Â­t chi tiÃƒÂ¡Ã‚ÂºÃ‚Â¿t!");
+            JOptionPane.showMessageDialog(this, "Vui l\u00f2ng ch\u1ecdn m\u1ed9t s\u1ea3n ph\u1ea9m \u0111\u1ec3 c\u1eadp nh\u1eadt chi ti\u1ebft!");
             return;
         }
         setEditable(true);
@@ -600,7 +541,7 @@ public class PnSanPham extends javax.swing.JPanel {
     private void btnLuuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLuuActionPerformed
         int selectedRow = jTable1.getSelectedRow();
         if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Vui lÃƒÆ’Ã‚Â²ng chÃƒÂ¡Ã‚Â»Ã‚Ân mÃƒÂ¡Ã‚Â»Ã¢â€žÂ¢t sÃƒÂ¡Ã‚ÂºÃ‚Â£n phÃƒÂ¡Ã‚ÂºÃ‚Â©m Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã†â€™ lÃƒâ€ Ã‚Â°u chi tiÃƒÂ¡Ã‚ÂºÃ‚Â¿t!");
+            JOptionPane.showMessageDialog(this, "Vui l\u00f2ng ch\u1ecdn m\u1ed9t s\u1ea3n ph\u1ea9m \u0111\u1ec3 l\u01b0u chi ti\u1ebft!");
             return;
         }
         int id = Integer.parseInt(jTable1.getValueAt(selectedRow, 0).toString());
@@ -617,22 +558,19 @@ public class PnSanPham extends javax.swing.JPanel {
         detail.setThoiGianTruCoc(jTextField10.getText());
         detail.setDoChiuNuoc(jTextField11.getText());
         detail.setKieuMat(jTextField12.getText());
-
         String trongLuongText = jTextField13.getText();
-        if (trongLuongText == null || trongLuongText.trim().isEmpty() || trongLuongText.equals("ChÃƒâ€ Ã‚Â°a cÃƒÂ¡Ã‚ÂºÃ‚Â­p nhÃƒÂ¡Ã‚ÂºÃ‚Â­p")) {
+        if (trongLuongText == null || trongLuongText.trim().isEmpty() || trongLuongText.equals("Ch\u01b0a c\u1eadp nh\u1eadp")) {
             detail.setTrongLuong(0.0f);
         } else {
             detail.setTrongLuong(Float.valueOf(trongLuongText));
         }
-
         detail.setChucNangKhac(jTextField14.getText());
         detail.setBaoHanh(jTextField15.getText());
         boolean result = ctbus.updateCTSanPham(detail);
-
         if (result) {
-            JOptionPane.showMessageDialog(this, "CÃƒÂ¡Ã‚ÂºÃ‚Â­p nhÃƒÂ¡Ã‚ÂºÃ‚Â­t chi tiÃƒÂ¡Ã‚ÂºÃ‚Â¿t sÃƒÂ¡Ã‚ÂºÃ‚Â£n phÃƒÂ¡Ã‚ÂºÃ‚Â©m thÃƒÆ’Ã‚Â nh cÃƒÆ’Ã‚Â´ng!");
+            JOptionPane.showMessageDialog(this, "C\u1eadp nh\u1eadt chi ti\u1ebft s\u1ea3n ph\u1ea9m th\u00e0nh c\u00f4ng!");
         } else {
-            JOptionPane.showMessageDialog(this, "CÃƒÂ¡Ã‚ÂºÃ‚Â­p nhÃƒÂ¡Ã‚ÂºÃ‚Â­t thÃƒÂ¡Ã‚ÂºÃ‚Â¥t bÃƒÂ¡Ã‚ÂºÃ‚Â¡i!");
+            JOptionPane.showMessageDialog(this, "C\u1eadp nh\u1eadt th\u1ea5t b\u1ea1i!");
         }
         setEditable(false);
     }//GEN-LAST:event_btnLuuActionPerformed
@@ -685,54 +623,38 @@ public class PnSanPham extends javax.swing.JPanel {
     private javax.swing.JTextField jTextField9;
     // End of variables declaration//GEN-END:variables
 
+    private Object[] buildRow(SanPhamDTO p) {
+        String resourcePath = p.getHinhAnh();
+        URL imgURL = getClass().getResource(resourcePath);
+        ImageIcon resizedIcon = null;
+        if (imgURL != null) {
+            ImageIcon icon = new ImageIcon(imgURL);
+            if (icon.getImage() != null) {
+                Image img = icon.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
+                resizedIcon = new ImageIcon(img);
+            }
+        }
+        return new Object[]{
+            p.getID(), p.getTenSP(), p.getThuongHieu(), p.getXuatXu(),
+            loaiMap.getOrDefault(p.getMaLoai(), "Lo\u1ea1i " + p.getMaLoai()),
+            p.getGioiTinh(), p.getGiaBan(), p.getSoLuong(), resizedIcon,
+            p.getMoTa(),
+            nccMap.getOrDefault(p.getMaNCC(), "NCC " + p.getMaNCC())
+        };
+    }
+
     private void loadDataToTable() {
         list = bus.getSanPham();
-        String[] columnNames = { "ID", "TÃƒÆ’Ã‚Âªn sÃƒÂ¡Ã‚ÂºÃ‚Â£n phÃƒÂ¡Ã‚ÂºÃ‚Â©m", "ThÃƒâ€ Ã‚Â°Ãƒâ€ Ã‚Â¡ng hiÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡u", "XuÃƒÂ¡Ã‚ÂºÃ‚Â¥t xÃƒÂ¡Ã‚Â»Ã‚Â©", "LoÃƒÂ¡Ã‚ÂºÃ‚Â¡i", "GiÃƒÂ¡Ã‚Â»Ã¢â‚¬Âºi tÃƒÆ’Ã‚Â­nh",
-                "GiÃƒÆ’Ã‚Â¡ bÃƒÆ’Ã‚Â¡n", "SÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ lÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Â£ng", "HÃƒÆ’Ã‚Â¬nh ÃƒÂ¡Ã‚ÂºÃ‚Â£nh", "MÃƒÆ’Ã‚Â´ tÃƒÂ¡Ã‚ÂºÃ‚Â£", "NhÃƒÆ’Ã‚Â  cung cÃƒÂ¡Ã‚ÂºÃ‚Â¥p" };
-
+        String[] columnNames = {"ID", "T\u00ean s\u1ea3n ph\u1ea9m", "Th\u01b0\u01a1ng hi\u1ec7u", "Xu\u1ea5t x\u1ee9", "Lo\u1ea1i", "Gi\u1edbi t\u00ednh", "Gi\u00e1 b\u00e1n", "S\u1ed1 l\u01b0\u1ee3ng", "H\u00ecnh \u1ea3nh", "M\u00f4 t\u1ea3", "Nh\u00e0 cung c\u1ea5p"};
         DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
             @Override
             public Class<?> getColumnClass(int columnIndex) {
-                if (columnIndex == 8) {
-                    return ImageIcon.class;
-                }
+                if (columnIndex == 8) return ImageIcon.class;
                 return Object.class;
             }
         };
-
         for (SanPhamDTO p : list) {
-            String resourcePath = p.getHinhAnh();
-            URL imgURL = getClass().getResource(resourcePath);
-            ImageIcon resizedIcon = null;
-
-            if (imgURL != null) {
-                ImageIcon icon = new ImageIcon(imgURL);
-                if (icon.getImage() != null) {
-                    Image img = icon.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
-                    resizedIcon = new ImageIcon(img);
-                } else {
-                    System.err.println("ÃƒÂ¡Ã‚ÂºÃ‚Â¢nh bÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ lÃƒÂ¡Ã‚Â»Ã¢â‚¬â€i hoÃƒÂ¡Ã‚ÂºÃ‚Â·c khÃƒÆ’Ã‚Â´ng Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã‚Âc Ãƒâ€žÃ¢â‚¬ËœÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Â£c: " + resourcePath);
-                    resizedIcon = new ImageIcon("/images/check-icon.png");
-                }
-            } else {
-                System.err.println("KhÃƒÆ’Ã‚Â´ng tÃƒÆ’Ã‚Â¬m thÃƒÂ¡Ã‚ÂºÃ‚Â¥y ÃƒÂ¡Ã‚ÂºÃ‚Â£nh tÃƒÂ¡Ã‚ÂºÃ‚Â¡i: " + resourcePath);
-                resizedIcon = new ImageIcon("/images/check-icon.png");
-            }
-
-            Object[] row = {
-                p.getID(),
-                p.getTenSP(),
-                p.getThuongHieu(),
-                p.getXuatXu(),
-                loaiMap.getOrDefault(p.getMaLoai(), "LoÃƒÂ¡Ã‚ÂºÃ‚Â¡i " + p.getMaLoai()),
-                p.getGioiTinh(),
-                p.getGiaBan(),
-                p.getSoLuong(),
-                resizedIcon,
-                p.getMoTa(),
-                nccMap.getOrDefault(p.getMaNCC(), "NCC " + p.getMaNCC())
-            };
-            model.addRow(row);
+            model.addRow(buildRow(p));
         }
         jTable1.setModel(model);
     }
@@ -742,39 +664,13 @@ public class PnSanPham extends javax.swing.JPanel {
             if (!e.getValueIsAdjusting()) {
                 int selected = jTable1.getSelectedRow();
                 if (selected < 0) {
-                    jTextField2.setText("");
-                    jTextField3.setText("");
-                    jTextField4.setText("");
-                    jTextField5.setText("");
-                    jTextField6.setText("");
-                    jTextField7.setText("");
-                    jTextField8.setText("");
-                    jTextField9.setText("");
-                    jTextField10.setText("");
-                    jTextField11.setText("");
-                    jTextField12.setText("");
-                    jTextField13.setText("");
-                    jTextField14.setText("");
-                    jTextField15.setText("");
+                    clearDetailForm();
                     return;
                 }
                 int selectedID = Integer.parseInt(jTable1.getValueAt(selected, 0).toString());
                 ProductDetail detail = ctbus.getDetail(selectedID);
                 if (detail == null) {
-                    jTextField2.setText("ChÃƒâ€ Ã‚Â°a cÃƒÂ¡Ã‚ÂºÃ‚Â­p nhÃƒÂ¡Ã‚ÂºÃ‚Â­p");
-                    jTextField3.setText("ChÃƒâ€ Ã‚Â°a cÃƒÂ¡Ã‚ÂºÃ‚Â­p nhÃƒÂ¡Ã‚ÂºÃ‚Â­p");
-                    jTextField4.setText("ChÃƒâ€ Ã‚Â°a cÃƒÂ¡Ã‚ÂºÃ‚Â­p nhÃƒÂ¡Ã‚ÂºÃ‚Â­p");
-                    jTextField5.setText("ChÃƒâ€ Ã‚Â°a cÃƒÂ¡Ã‚ÂºÃ‚Â­p nhÃƒÂ¡Ã‚ÂºÃ‚Â­p");
-                    jTextField6.setText("ChÃƒâ€ Ã‚Â°a cÃƒÂ¡Ã‚ÂºÃ‚Â­p nhÃƒÂ¡Ã‚ÂºÃ‚Â­p");
-                    jTextField7.setText("ChÃƒâ€ Ã‚Â°a cÃƒÂ¡Ã‚ÂºÃ‚Â­p nhÃƒÂ¡Ã‚ÂºÃ‚Â­p");
-                    jTextField8.setText("ChÃƒâ€ Ã‚Â°a cÃƒÂ¡Ã‚ÂºÃ‚Â­p nhÃƒÂ¡Ã‚ÂºÃ‚Â­p");
-                    jTextField9.setText("ChÃƒâ€ Ã‚Â°a cÃƒÂ¡Ã‚ÂºÃ‚Â­p nhÃƒÂ¡Ã‚ÂºÃ‚Â­p");
-                    jTextField10.setText("ChÃƒâ€ Ã‚Â°a cÃƒÂ¡Ã‚ÂºÃ‚Â­p nhÃƒÂ¡Ã‚ÂºÃ‚Â­p");
-                    jTextField11.setText("ChÃƒâ€ Ã‚Â°a cÃƒÂ¡Ã‚ÂºÃ‚Â­p nhÃƒÂ¡Ã‚ÂºÃ‚Â­p");
-                    jTextField12.setText("ChÃƒâ€ Ã‚Â°a cÃƒÂ¡Ã‚ÂºÃ‚Â­p nhÃƒÂ¡Ã‚ÂºÃ‚Â­p");
-                    jTextField13.setText("ChÃƒâ€ Ã‚Â°a cÃƒÂ¡Ã‚ÂºÃ‚Â­p nhÃƒÂ¡Ã‚ÂºÃ‚Â­p");
-                    jTextField14.setText("ChÃƒâ€ Ã‚Â°a cÃƒÂ¡Ã‚ÂºÃ‚Â­p nhÃƒÂ¡Ã‚ÂºÃ‚Â­p");
-                    jTextField15.setText("ChÃƒâ€ Ã‚Â°a cÃƒÂ¡Ã‚ÂºÃ‚Â­p nhÃƒÂ¡Ã‚ÂºÃ‚Â­p");
+                    setDetailForm("Ch\u01b0a c\u1eadp nh\u1eadp");
                 } else {
                     jTextField2.setText(detail.getDuongKinhMat());
                     jTextField3.setText(detail.getDoDayMat());
@@ -795,40 +691,46 @@ public class PnSanPham extends javax.swing.JPanel {
         });
     }
 
-    private void setEditable(boolean editable) {
-        jTextField2.setEditable(editable);
-        jTextField3.setEditable(editable);
-        jTextField4.setEditable(editable);
-        jTextField5.setEditable(editable);
-        jTextField6.setEditable(editable);
-        jTextField7.setEditable(editable);
-        jTextField8.setEditable(editable);
-        jTextField9.setEditable(editable);
-        jTextField10.setEditable(editable);
-        jTextField11.setEditable(editable);
-        jTextField12.setEditable(editable);
-        jTextField13.setEditable(editable);
-        jTextField14.setEditable(editable);
-        jTextField15.setEditable(editable);
+    private void clearDetailForm() {
+        jTextField2.setText(""); jTextField3.setText(""); jTextField4.setText("");
+        jTextField5.setText(""); jTextField6.setText(""); jTextField7.setText("");
+        jTextField8.setText(""); jTextField9.setText(""); jTextField10.setText("");
+        jTextField11.setText(""); jTextField12.setText(""); jTextField13.setText("");
+        jTextField14.setText(""); jTextField15.setText("");
     }
-    private boolean isSanPhamInUse(int maSP) {
-    return false; // tạm thời return false, có thể implement sau
-}
+
+    private void setDetailForm(String value) {
+        jTextField2.setText(value); jTextField3.setText(value); jTextField4.setText(value);
+        jTextField5.setText(value); jTextField6.setText(value); jTextField7.setText(value);
+        jTextField8.setText(value); jTextField9.setText(value); jTextField10.setText(value);
+        jTextField11.setText(value); jTextField12.setText(value); jTextField13.setText(value);
+        jTextField14.setText(value); jTextField15.setText(value);
+    }
+
+    private void setEditable(boolean editable) {
+        jTextField2.setEditable(editable); jTextField3.setEditable(editable);
+        jTextField4.setEditable(editable); jTextField5.setEditable(editable);
+        jTextField6.setEditable(editable); jTextField7.setEditable(editable);
+        jTextField8.setEditable(editable); jTextField9.setEditable(editable);
+        jTextField10.setEditable(editable); jTextField11.setEditable(editable);
+        jTextField12.setEditable(editable); jTextField13.setEditable(editable);
+        jTextField14.setEditable(editable); jTextField15.setEditable(editable);
+    }
+
     private void loadData() {
         loaiMap.clear();
-        for (Loai l : new LoaiDAO().getAll()) {
+        for (Loai l : new LoaiDAO().getAll())
             loaiMap.put(l.getMaLoai(), l.getTenLoai());
-        }
-
-        nccMap = new NhaCungCapDAO().getMapNCC();
-
+        nccMap.clear();
+        for (DTO.NhaCungCapDTO n : new NhaCungCapDAO().getAll())
+            nccMap.put(n.getMaNCC(), n.getTenNCC());
         loadDataToTable();
         loadDataToDetailForm();
         setEditable(false);
     }
 
     private void openEditDialog(SanPhamDTO p) {
-        JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "SÃƒÂ¡Ã‚Â»Ã‚Â­a sÃƒÂ¡Ã‚ÂºÃ‚Â£n phÃƒÂ¡Ã‚ÂºÃ‚Â©m", true);
+        JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "S\u1eeda s\u1ea3n ph\u1ea9m", true);
         dialog.setSize(400, 500);
         dialog.setLayout(new GridLayout(11, 2, 5, 5));
 
@@ -836,17 +738,11 @@ public class PnSanPham extends javax.swing.JPanel {
         JTextField txtThuongHieu = new JTextField(p.getThuongHieu());
         JTextField txtXuatXu = new JTextField(p.getXuatXu());
 
-        LoaiDAO loaiDAO = new LoaiDAO();
-        ArrayList<Loai> dsLoai = loaiDAO.getAll();
+        ArrayList<Loai> dsLoai = new LoaiDAO().getAll();
         JComboBox<Loai> cbLoai = new JComboBox<>();
-        for (Loai l : dsLoai) {
-            cbLoai.addItem(l);
-        }
+        for (Loai l : dsLoai) cbLoai.addItem(l);
         for (int i = 0; i < dsLoai.size(); i++) {
-            if (dsLoai.get(i).getMaLoai() == p.getMaLoai()) {
-                cbLoai.setSelectedIndex(i);
-                break;
-            }
+            if (dsLoai.get(i).getMaLoai() == p.getMaLoai()) { cbLoai.setSelectedIndex(i); break; }
         }
 
         JTextField txtGioiTinh = new JTextField(p.getGioiTinh());
@@ -854,86 +750,52 @@ public class PnSanPham extends javax.swing.JPanel {
         JTextField txtSoLuong = new JTextField(String.valueOf(p.getSoLuong()));
         JTextField txtHinhAnh = new JTextField(p.getHinhAnh());
         JTextField txtMoTa = new JTextField(p.getMoTa());
-        String[] ncc = { "Orient Japan", "Seiko Watch Corp" };
-        JComboBox cbNCC = new JComboBox(ncc);
 
-        dialog.add(new JLabel("TÃƒÆ’Ã‚Âªn sÃƒÂ¡Ã‚ÂºÃ‚Â£n phÃƒÂ¡Ã‚ÂºÃ‚Â©m:"));
-        dialog.add(txtTenSP);
-        dialog.add(new JLabel("ThÃƒâ€ Ã‚Â°Ãƒâ€ Ã‚Â¡ng hiÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡u:"));
-        dialog.add(txtThuongHieu);
-        dialog.add(new JLabel("XuÃƒÂ¡Ã‚ÂºÃ‚Â¥t xÃƒÂ¡Ã‚Â»Ã‚Â©:"));
-        dialog.add(txtXuatXu);
-        dialog.add(new JLabel("LoÃƒÂ¡Ã‚ÂºÃ‚Â¡i:"));
-        dialog.add(cbLoai);
-        dialog.add(new JLabel("GiÃƒÂ¡Ã‚Â»Ã¢â‚¬Âºi tÃƒÆ’Ã‚Â­nh:"));
-        dialog.add(txtGioiTinh);
-        dialog.add(new JLabel("GiÃƒÆ’Ã‚Â¡ bÃƒÆ’Ã‚Â¡n:"));
-        dialog.add(txtGiaBan);
-        dialog.add(new JLabel("SÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ lÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Â£ng:"));
-        dialog.add(txtSoLuong);
-        dialog.add(new JLabel("HÃƒÆ’Ã‚Â¬nh ÃƒÂ¡Ã‚ÂºÃ‚Â£nh:"));
-        dialog.add(txtHinhAnh);
-        dialog.add(new JLabel("MÃƒÆ’Ã‚Â´ tÃƒÂ¡Ã‚ÂºÃ‚Â£:"));
-        dialog.add(txtMoTa);
-        dialog.add(new JLabel("NhÃƒÆ’Ã‚Â  cung cÃƒÂ¡Ã‚ÂºÃ‚Â¥p:"));
-        dialog.add(cbNCC);
+        ArrayList<DTO.NhaCungCapDTO> dsNCC = new NhaCungCapDAO().getAll();
+        JComboBox<DTO.NhaCungCapDTO> cbNCC = new JComboBox<>();
+        for (DTO.NhaCungCapDTO n : dsNCC) cbNCC.addItem(n);
+        for (int i = 0; i < dsNCC.size(); i++) {
+            if (dsNCC.get(i).getMaNCC() == p.getMaNCC()) { cbNCC.setSelectedIndex(i); break; }
+        }
 
-        JButton btnSave = new JButton("LÃƒâ€ Ã‚Â°u");
-        JButton btnCancel = new JButton("HÃƒÂ¡Ã‚Â»Ã‚Â§y");
+        dialog.add(new JLabel("T\u00ean s\u1ea3n ph\u1ea9m:")); dialog.add(txtTenSP);
+        dialog.add(new JLabel("Th\u01b0\u01a1ng hi\u1ec7u:")); dialog.add(txtThuongHieu);
+        dialog.add(new JLabel("Xu\u1ea5t x\u1ee9:")); dialog.add(txtXuatXu);
+        dialog.add(new JLabel("Lo\u1ea1i:")); dialog.add(cbLoai);
+        dialog.add(new JLabel("Gi\u1edbi t\u00ednh:")); dialog.add(txtGioiTinh);
+        dialog.add(new JLabel("Gi\u00e1 b\u00e1n:")); dialog.add(txtGiaBan);
+        dialog.add(new JLabel("S\u1ed1 l\u01b0\u1ee3ng:")); dialog.add(txtSoLuong);
+        dialog.add(new JLabel("H\u00ecnh \u1ea3nh:")); dialog.add(txtHinhAnh);
+        dialog.add(new JLabel("M\u00f4 t\u1ea3:")); dialog.add(txtMoTa);
+        dialog.add(new JLabel("Nh\u00e0 cung c\u1ea5p:")); dialog.add(cbNCC);
 
-        dialog.add(btnSave);
-        dialog.add(btnCancel);
+        JButton btnSave = new JButton("L\u01b0u");
+        JButton btnCancel = new JButton("H\u1ee7y");
+        dialog.add(btnSave); dialog.add(btnCancel);
 
         btnCancel.addActionListener(e -> dialog.dispose());
-
-        btnSave.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    p.setTenSP(txtTenSP.getText());
-                    p.setThuongHieu(txtThuongHieu.getText());
-                    p.setXuatXu(txtXuatXu.getText());
-                    int maLoaiTmp = ((Loai) cbLoai.getSelectedItem()).getMaLoai();
-                    p.setMaLoai(maLoaiTmp);
-                    p.setGioiTinh(txtGioiTinh.getText());
-
-                    String giaBanStr = txtGiaBan.getText().trim().replace(".", "");
-                    if (giaBanStr.isEmpty()) throw new NumberFormatException("Gia ban trong");
-                    BigDecimal giaBan = new BigDecimal(giaBanStr);
-                    if (giaBan.compareTo(BigDecimal.ZERO) <= 0) {
-                        throw new NumberFormatException("Gia ban phai > 0");
-                    }
-                    p.setGiaBan(giaBan);
-                    p.setSoLuong(Integer.parseInt(txtSoLuong.getText()));
-                    p.setHinhAnh(txtHinhAnh.getText());
-                    p.setMoTa(txtMoTa.getText());
-
-                    int maNccTmp = 0;
-                    String selectedNCC = (String) cbNCC.getSelectedItem();
-
-                    if ("Orient Japan".equals(selectedNCC)) {
-                        maNccTmp = 4;
-                    } else if ("Seiko Watch Corp".equals(selectedNCC)) {
-                        maNccTmp = 5;
-                    }
-                    p.setMaNCC(maNccTmp);
-
-                    SanPhamBUS bus = new SanPhamBUS();
-                    boolean result = bus.updateSanPham(p);
-
-                    if (result) {
-                        JOptionPane.showMessageDialog(dialog, "Cap nhat thanh cong!");
-                        loadDataToTable();
-                    } else {
-                        JOptionPane.showMessageDialog(dialog, "Cap nhat that bai!");
-                    }
-
-                    dialog.dispose();
-                } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(dialog,
-                        "Loi: 'Gia ban' va 'So luong' phai la so va khong duoc de trong!",
-                        "Loi dau vao", JOptionPane.ERROR_MESSAGE);
+        btnSave.addActionListener(e -> {
+            try {
+                p.setTenSP(txtTenSP.getText());
+                p.setThuongHieu(txtThuongHieu.getText());
+                p.setXuatXu(txtXuatXu.getText());
+                p.setMaLoai(((Loai) cbLoai.getSelectedItem()).getMaLoai());
+                p.setGioiTinh(txtGioiTinh.getText());
+                String giaBanStr = txtGiaBan.getText().trim().replace(".", "");
+                p.setGiaBan(new BigDecimal(giaBanStr));
+                p.setSoLuong(Integer.parseInt(txtSoLuong.getText()));
+                p.setHinhAnh(txtHinhAnh.getText());
+                p.setMoTa(txtMoTa.getText());
+                p.setMaNCC(((DTO.NhaCungCapDTO) cbNCC.getSelectedItem()).getMaNCC());
+                if (bus.updateSanPham(p)) {
+                    JOptionPane.showMessageDialog(dialog, "C\u1eadp nh\u1eadt th\u00e0nh c\u00f4ng!");
+                    loadDataToTable();
+                } else {
+                    JOptionPane.showMessageDialog(dialog, "C\u1eadp nh\u1eadt th\u1ea5t b\u1ea1i!");
                 }
+                dialog.dispose();
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(dialog, "L\u1ed7i: Gi\u00e1 b\u00e1n v\u00e0 s\u1ed1 l\u01b0\u1ee3ng ph\u1ea3i l\u00e0 s\u1ed1!", "L\u1ed7i", JOptionPane.ERROR_MESSAGE);
             }
         });
 
@@ -942,7 +804,7 @@ public class PnSanPham extends javax.swing.JPanel {
     }
 
     private void openAddDialog() {
-        JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "ThÃƒÆ’Ã‚Âªm sÃƒÂ¡Ã‚ÂºÃ‚Â£n phÃƒÂ¡Ã‚ÂºÃ‚Â©m mÃƒÂ¡Ã‚Â»Ã¢â‚¬Âºi", true);
+        JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Th\u00eam s\u1ea3n ph\u1ea9m m\u1edbi", true);
         dialog.setSize(400, 500);
         dialog.setLayout(new GridLayout(11, 2, 5, 5));
 
@@ -950,12 +812,9 @@ public class PnSanPham extends javax.swing.JPanel {
         JTextField txtThuongHieu = new JTextField();
         JTextField txtXuatXu = new JTextField();
 
-        LoaiDAO loaiDAO = new LoaiDAO();
-        ArrayList<Loai> dsLoai = loaiDAO.getAll();
+        ArrayList<Loai> dsLoai = new LoaiDAO().getAll();
         JComboBox<Loai> cbLoai = new JComboBox<>();
-        for (Loai l : dsLoai) {
-            cbLoai.addItem(l);
-        }
+        for (Loai l : dsLoai) cbLoai.addItem(l);
 
         JTextField txtGioiTinh = new JTextField();
         JTextField txtGiaBan = new JTextField();
@@ -963,84 +822,60 @@ public class PnSanPham extends javax.swing.JPanel {
         JTextField txtHinhAnh = new JTextField("/images/");
         JTextField txtMoTa = new JTextField();
 
-        String[] ncc = { "Orient Japan", "Seiko Watch Corp" };
-        JComboBox cbNCC = new JComboBox(ncc);
+        ArrayList<DTO.NhaCungCapDTO> dsNCC = new NhaCungCapDAO().getAll();
+        JComboBox<DTO.NhaCungCapDTO> cbNCC = new JComboBox<>();
+        for (DTO.NhaCungCapDTO n : dsNCC) cbNCC.addItem(n);
 
-        dialog.add(new JLabel("TÃƒÆ’Ã‚Âªn sÃƒÂ¡Ã‚ÂºÃ‚Â£n phÃƒÂ¡Ã‚ÂºÃ‚Â©m:")); dialog.add(txtTenSP);
-        dialog.add(new JLabel("ThÃƒâ€ Ã‚Â°Ãƒâ€ Ã‚Â¡ng hiÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡u:")); dialog.add(txtThuongHieu);
-        dialog.add(new JLabel("XuÃƒÂ¡Ã‚ÂºÃ‚Â¥t xÃƒÂ¡Ã‚Â»Ã‚Â©:")); dialog.add(txtXuatXu);
-        dialog.add(new JLabel("LoÃƒÂ¡Ã‚ÂºÃ‚Â¡i:")); dialog.add(cbLoai);
-        dialog.add(new JLabel("GiÃƒÂ¡Ã‚Â»Ã¢â‚¬Âºi tÃƒÆ’Ã‚Â­nh:")); dialog.add(txtGioiTinh);
-        dialog.add(new JLabel("GiÃƒÆ’Ã‚Â¡ bÃƒÆ’Ã‚Â¡n:")); dialog.add(txtGiaBan);
-        dialog.add(new JLabel("SÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ lÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Â£ng:")); dialog.add(txtSoLuong);
-        dialog.add(new JLabel("HÃƒÆ’Ã‚Â¬nh ÃƒÂ¡Ã‚ÂºÃ‚Â£nh:")); dialog.add(txtHinhAnh);
-        dialog.add(new JLabel("MÃƒÆ’Ã‚Â´ tÃƒÂ¡Ã‚ÂºÃ‚Â£:")); dialog.add(txtMoTa);
-        dialog.add(new JLabel("NhÃƒÆ’Ã‚Â  cung cÃƒÂ¡Ã‚ÂºÃ‚Â¥p:")); dialog.add(cbNCC);
+        dialog.add(new JLabel("T\u00ean s\u1ea3n ph\u1ea9m:")); dialog.add(txtTenSP);
+        dialog.add(new JLabel("Th\u01b0\u01a1ng hi\u1ec7u:")); dialog.add(txtThuongHieu);
+        dialog.add(new JLabel("Xu\u1ea5t x\u1ee9:")); dialog.add(txtXuatXu);
+        dialog.add(new JLabel("Lo\u1ea1i:")); dialog.add(cbLoai);
+        dialog.add(new JLabel("Gi\u1edbi t\u00ednh:")); dialog.add(txtGioiTinh);
+        dialog.add(new JLabel("Gi\u00e1 b\u00e1n:")); dialog.add(txtGiaBan);
+        dialog.add(new JLabel("S\u1ed1 l\u01b0\u1ee3ng:")); dialog.add(txtSoLuong);
+        dialog.add(new JLabel("H\u00ecnh \u1ea3nh:")); dialog.add(txtHinhAnh);
+        dialog.add(new JLabel("M\u00f4 t\u1ea3:")); dialog.add(txtMoTa);
+        dialog.add(new JLabel("Nh\u00e0 cung c\u1ea5p:")); dialog.add(cbNCC);
 
-        JButton btnAdd = new JButton("ThÃƒÆ’Ã‚Âªm mÃƒÂ¡Ã‚Â»Ã¢â‚¬Âºi");
-        JButton btnCancel = new JButton("HÃƒÂ¡Ã‚Â»Ã‚Â§y");
-
-        dialog.add(btnAdd);
-        dialog.add(btnCancel);
+        JButton btnAdd = new JButton("Th\u00eam m\u1edbi");
+        JButton btnCancel = new JButton("H\u1ee7y");
+        dialog.add(btnAdd); dialog.add(btnCancel);
 
         btnCancel.addActionListener(e -> dialog.dispose());
-
-        btnAdd.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    if (txtTenSP.getText().isEmpty() || txtGiaBan.getText().isEmpty() || txtSoLuong.getText().isEmpty()) {
-                        JOptionPane.showMessageDialog(dialog, "Vui lÃƒÆ’Ã‚Â²ng nhÃƒÂ¡Ã‚ÂºÃ‚Â­p Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚ÂºÃ‚Â§y Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã‚Â§ TÃƒÆ’Ã‚Âªn, GiÃƒÆ’Ã‚Â¡ vÃƒÆ’Ã‚Â  SÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ lÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Â£ng!");
-                        return;
-                    }
-
-                    SanPhamDTO p = new SanPhamDTO();
-                    p.setTenSP(txtTenSP.getText());
-                    p.setThuongHieu(txtThuongHieu.getText());
-                    p.setXuatXu(txtXuatXu.getText());
-                    p.setMaLoai(((Loai) cbLoai.getSelectedItem()).getMaLoai());
-                    p.setGioiTinh(txtGioiTinh.getText());
-
-                    String giaBanStr = txtGiaBan.getText().trim().replace(".", "");
-                    if (giaBanStr.isEmpty()) throw new NumberFormatException("GiÃƒÆ’Ã‚Â¡ bÃƒÆ’Ã‚Â¡n trÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœng");
-                    BigDecimal giaBan = new BigDecimal(giaBanStr);
-                    if (giaBan.compareTo(BigDecimal.ZERO) <= 0) {
-                        throw new NumberFormatException("GiÃƒÆ’Ã‚Â¡ bÃƒÆ’Ã‚Â¡n phÃƒÂ¡Ã‚ÂºÃ‚Â£i > 0");
-                    }
-                    p.setGiaBan(giaBan);
-                    p.setSoLuong(Integer.parseInt(txtSoLuong.getText()));
-                    p.setHinhAnh(txtHinhAnh.getText());
-                    p.setMoTa(txtMoTa.getText());
-
-                    String selectedNCC = (String) cbNCC.getSelectedItem();
-                    int maNccTmp = 0;
-                    if ("Orient Japan".equals(selectedNCC)) {
-                        maNccTmp = 4;
-                    } else if ("Seiko Watch Corp".equals(selectedNCC)) {
-                        maNccTmp = 5;
-                    }
-                    p.setMaNCC(maNccTmp);
-
-                    int newID = bus.insertSanPham(p);
-                    ProductDetail newCT = new ProductDetail(newID);
-                    boolean result = ctbus.insertCTSanPham(newCT);
-
-                    if ((newID > 0) && result) {
-                        JOptionPane.showMessageDialog(dialog, "ThÃƒÆ’Ã‚Âªm sÃƒÂ¡Ã‚ÂºÃ‚Â£n phÃƒÂ¡Ã‚ÂºÃ‚Â©m thÃƒÆ’Ã‚Â nh cÃƒÆ’Ã‚Â´ng!");
-                        loadDataToTable();
-                        dialog.dispose();
-                    } else {
-                        JOptionPane.showMessageDialog(dialog, "ThÃƒÆ’Ã‚Âªm thÃƒÂ¡Ã‚ÂºÃ‚Â¥t bÃƒÂ¡Ã‚ÂºÃ‚Â¡i! Vui lÃƒÆ’Ã‚Â²ng kiÃƒÂ¡Ã‚Â»Ã†â€™m tra lÃƒÂ¡Ã‚ÂºÃ‚Â¡i thÃƒÆ’Ã‚Â´ng tin.");
-                    }
-
-                } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(dialog,
-                            "LÃƒÂ¡Ã‚Â»Ã¢â‚¬â€i: 'GiÃƒÆ’Ã‚Â¡ bÃƒÆ’Ã‚Â¡n' vÃƒÆ’Ã‚Â  'SÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ lÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Â£ng' phÃƒÂ¡Ã‚ÂºÃ‚Â£i lÃƒÆ’Ã‚Â  sÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ hÃƒÂ¡Ã‚Â»Ã‚Â£p lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡!",
-                            "LÃƒÂ¡Ã‚Â»Ã¢â‚¬â€i Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚ÂºÃ‚Â§u vÃƒÆ’Ã‚Â o", JOptionPane.ERROR_MESSAGE);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(dialog, "LÃƒÂ¡Ã‚Â»Ã¢â‚¬â€i hÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡ thÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœng: " + ex.getMessage());
+        btnAdd.addActionListener(e -> {
+            try {
+                if (txtTenSP.getText().isEmpty() || txtGiaBan.getText().isEmpty() || txtSoLuong.getText().isEmpty()) {
+                    JOptionPane.showMessageDialog(dialog, "Vui l\u00f2ng nh\u1eadp \u0111\u1ea7y \u0111\u1ee7 T\u00ean, Gi\u00e1 v\u00e0 S\u1ed1 l\u01b0\u1ee3ng!");
+                    return;
                 }
+                SanPhamDTO p = new SanPhamDTO();
+                p.setTenSP(txtTenSP.getText());
+                p.setThuongHieu(txtThuongHieu.getText());
+                p.setXuatXu(txtXuatXu.getText());
+                p.setMaLoai(((Loai) cbLoai.getSelectedItem()).getMaLoai());
+                p.setGioiTinh(txtGioiTinh.getText());
+                String giaBanStr = txtGiaBan.getText().trim().replace(".", "");
+                p.setGiaBan(new BigDecimal(giaBanStr));
+                p.setSoLuong(Integer.parseInt(txtSoLuong.getText()));
+                p.setHinhAnh(txtHinhAnh.getText());
+                p.setMoTa(txtMoTa.getText());
+                p.setMaNCC(((DTO.NhaCungCapDTO) cbNCC.getSelectedItem()).getMaNCC());
+
+                int newID = bus.insertSanPham(p);
+                ProductDetail newCT = new ProductDetail(newID);
+                boolean result = ctbus.insertCTSanPham(newCT);
+                if (newID > 0 && result) {
+                    JOptionPane.showMessageDialog(dialog, "Th\u00eam s\u1ea3n ph\u1ea9m th\u00e0nh c\u00f4ng!");
+                    loadDataToTable();
+                    dialog.dispose();
+                } else {
+                    JOptionPane.showMessageDialog(dialog, "Th\u00eam th\u1ea5t b\u1ea1i!");
+                }
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(dialog, "L\u1ed7i: Gi\u00e1 b\u00e1n v\u00e0 s\u1ed1 l\u01b0\u1ee3ng ph\u1ea3i l\u00e0 s\u1ed1!", "L\u1ed7i", JOptionPane.ERROR_MESSAGE);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(dialog, "L\u1ed7i h\u1ec7 th\u1ed1ng: " + ex.getMessage());
             }
         });
 
@@ -1048,6 +883,3 @@ public class PnSanPham extends javax.swing.JPanel {
         dialog.setVisible(true);
     }
 }
-
-
-
