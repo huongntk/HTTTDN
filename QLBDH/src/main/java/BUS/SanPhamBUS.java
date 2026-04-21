@@ -4,28 +4,28 @@ import java.util.ArrayList;
 
 import DAO.SanphamDAO;
 import DAO.CTSanPhamDAO;
-import DTO.Product;
+import DTO.SanPhamDTO;
 
 public class SanPhamBUS {
     private SanphamDAO dao = new SanphamDAO();
 
-    public ArrayList<Product> getSanPham() {
+    public ArrayList<SanPhamDTO> getSanPham() {
         return dao.getALL();
     }
 
-    public ArrayList<Product> getSanPhamById(int id) {
+    public ArrayList<SanPhamDTO> getSanPhamById(int id) {
         return dao.getById(id);
     }
-    public ArrayList<Product> getSanPhamByCate(int maLoai){
+    public ArrayList<SanPhamDTO> getSanPhamByCate(int maLoai){
         return dao.getByCate(maLoai);
     }
-    public ArrayList<Product> getSanPhamByName(String searchName){
+    public ArrayList<SanPhamDTO> getSanPhamByName(String searchName){
         return dao.getByName(searchName);
     }
-    public int insertSanPham(Product p){
+    public int insertSanPham(SanPhamDTO p){
     return dao.insertSanPham(p);
     }
-    public boolean updateSanPham(Product p) {
+    public boolean updateSanPham(SanPhamDTO p) {
         return dao.updateSanPham(p);
     }
     public boolean deleteSanPham(int id) {
@@ -33,5 +33,9 @@ public class SanPhamBUS {
             return false;
         }
         return dao.deleteById(id);
+    }
+    // Cộng tồn kho khi nhập hàng
+    public boolean congTonKho(int maSP, int soLuongNhap) {
+        return dao.congTonKho(maSP, soLuongNhap);
     }
 }

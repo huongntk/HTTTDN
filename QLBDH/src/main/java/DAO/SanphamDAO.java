@@ -4,7 +4,7 @@
  */
 package DAO;
 
-import DTO.Product;
+import DTO.SanPhamDTO;
 import UTIL.DBConnect;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -20,8 +20,8 @@ import java.util.*;
  *         PRODUCT DATA ACCESS OBJECT
  */
 public class SanphamDAO {
-    public ArrayList<Product> getALL() {
-        ArrayList<Product> listTmp = new ArrayList();
+    public ArrayList<SanPhamDTO> getALL() {
+        ArrayList<SanPhamDTO> listTmp = new ArrayList();
         String sql = "SELECT SP.*, L.TenLoai, NCC.TenNCC "
                 + "FROM SanPham SP "
                 + "INNER JOIN LOAI L ON SP.MaLoai = L.MaLoai "
@@ -29,7 +29,7 @@ public class SanphamDAO {
         ResultSet rs = DataProvider.executeQuery(sql, 1);
         try {
             while (rs.next()) {
-                Product p = new Product();
+                SanPhamDTO p = new SanPhamDTO();
                 p.setID(rs.getInt("ID"));
                 p.setTenSP(rs.getString("TenSP"));
                 p.setThuongHieu(rs.getString("ThuongHieu"));
@@ -53,15 +53,15 @@ public class SanphamDAO {
         return listTmp;
     }
 
-    public ArrayList<Product> getById(int id) {
-        ArrayList<Product> listTmp = new ArrayList();
+    public ArrayList<SanPhamDTO> getById(int id) {
+        ArrayList<SanPhamDTO> listTmp = new ArrayList();
         String sql = "SELECT SP.*, L.TenLoai "
                 + "FROM SanPham SP "
                 + "INNER JOIN LOAI L ON SP.MaLoai = L.MaLoai WHERE SP.ID=? AND SP.TrangThai = 1";
         ResultSet rs = DataProvider.executeQuery(sql, id);
         try {
             while (rs.next()) {
-                Product p = new Product();
+                SanPhamDTO p = new SanPhamDTO();
                 p.setID(rs.getInt("ID"));
                 p.setTenSP(rs.getString("TenSP"));
                 p.setThuongHieu(rs.getString("ThuongHieu"));
@@ -83,13 +83,13 @@ public class SanphamDAO {
         return listTmp;
     }
 
-    public ArrayList<Product> getByCate(int maLoai) {
-        ArrayList<Product> listTmp = new ArrayList();
+    public ArrayList<SanPhamDTO> getByCate(int maLoai) {
+        ArrayList<SanPhamDTO> listTmp = new ArrayList();
         String sql = ("SELECT * FROM SanPham WHERE MaLoai = ? AND TrangThai = 1");
         ResultSet rs = DataProvider.executeQuery(sql, maLoai);
         try {
             while (rs.next()) {
-                Product p = new Product();
+                SanPhamDTO p = new SanPhamDTO();
                 p.setID(rs.getInt("ID"));
                 p.setTenSP(rs.getString("TenSP"));
                 p.setThuongHieu(rs.getString("ThuongHieu"));
@@ -111,7 +111,7 @@ public class SanphamDAO {
 
     }
 
-    public int insertSanPham(Product p) {
+    public int insertSanPham(SanPhamDTO p) {
         String sql = "INSERT INTO SanPham " +
                 "(TenSP, ThuongHieu, XuatXu, MaLoai, GioiTinh, GiaBan, SoLuong, HinhAnh, MoTa, maNCC,TrangThai) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,1)";
@@ -142,7 +142,7 @@ public class SanphamDAO {
         return newId;
     }
 
-    public boolean updateSanPham(Product p) {
+    public boolean updateSanPham(SanPhamDTO p) {
         String sql = "UPDATE SanPham SET TenSP=?, ThuongHieu=?, XuatXu=?, MaLoai=?, GioiTinh=?, GiaBan=?, " +
                 "SoLuong=?, HinhAnh=?, MoTa=?, MaNCC=? WHERE ID=?";
 
@@ -170,15 +170,15 @@ public class SanphamDAO {
         return true;
     }
 
-    public ArrayList<Product> getByName(String searchName) {
-        ArrayList<Product> listTmp = new ArrayList<>();
+    public ArrayList<SanPhamDTO> getByName(String searchName) {
+        ArrayList<SanPhamDTO> listTmp = new ArrayList<>();
 
         String sql = "SELECT * FROM SanPham WHERE TenSP LIKE ? AND TrangThai = 1";
 
         try (ResultSet rs = DataProvider.executeQuery(sql, "%" + searchName + "%")) {
 
             while (rs.next()) {
-                Product p = new Product();
+                SanPhamDTO p = new SanPhamDTO();
                 p.setID(rs.getInt("ID"));
                 p.setTenSP(rs.getString("TenSP"));
                 p.setThuongHieu(rs.getString("ThuongHieu"));
@@ -203,14 +203,14 @@ public class SanphamDAO {
 
 
     // Lấy 1 sản phẩm theo ID dựa trên getById(int) đã có
-public Product getOneById(int id) {
-    ArrayList<Product> list = getById(id);
+public SanPhamDTO getOneById(int id) {
+    ArrayList<SanPhamDTO> list = getById(id);
     return (list == null || list.isEmpty()) ? null : list.get(0);
 }
 
     // Lấy tất cả sản phẩm đang hoạt động của 1 nhà cung cấp
-    public List<Product> getByNccActive(int maNCC) {
-        List<Product> list = new ArrayList<>();
+    public List<SanPhamDTO> getByNccActive(int maNCC) {
+        List<SanPhamDTO> list = new ArrayList<>();
         String sql =
             "SELECT ID, TenSP, maNCC " +
             "FROM SanPham " +
@@ -219,7 +219,7 @@ public Product getOneById(int id) {
 
         try (ResultSet rs = DataProvider.executeQuery(sql, maNCC)) {
             while (rs != null && rs.next()) {
-                Product p = new Product();
+                SanPhamDTO p = new SanPhamDTO();
                 p.setID(rs.getInt("ID"));          // ✅ đúng cú pháp
                 p.setTenSP(rs.getString("TenSP"));  // ✅ đúng cú pháp
                 p.setMaNCC(rs.getInt("maNCC"));     // ✅ đúng cú pháp
@@ -231,8 +231,8 @@ public Product getOneById(int id) {
         return list;
     }
     
-    public Product selectById(int id) {
-        Product product = null;
+    public SanPhamDTO selectById(int id) {
+        SanPhamDTO product = null;
         // Giả định tên bảng là 'SanPham' và cột khóa chính là 'ID'
         String sql = "SELECT * FROM SanPham WHERE ID = ?"; 
 
@@ -244,13 +244,13 @@ public Product getOneById(int id) {
 
             try (ResultSet rs = pst.executeQuery()) {
                 if (rs.next()) {
-                    product = new Product();
-                    // Điền dữ liệu từ ResultSet vào đối tượng Product
+                    product = new SanPhamDTO();
+                    // Điền dữ liệu từ ResultSet vào đối tượng SanPhamDTO
                     product.setID(rs.getInt("ID"));
                     product.setTenSP(rs.getString("TenSP"));
                     product.setSoLuong(rs.getInt("SoLuong")); // Lấy số lượng tồn kho
                     product.setGiaBan(rs.getBigDecimal("GiaBan"));
-                    // ... các trường dữ liệu khác của Product DTO
+                    // ... các trường dữ liệu khác của SanPhamDTO DTO
                 }
             }
 
@@ -273,5 +273,18 @@ public Product getOneById(int id) {
             System.err.println("Lỗi lấy tên Mã GG: " + e.getMessage());
         }
         return tenSP != null ? tenSP : "Không hợp lệ";
+    }
+    // Cộng tồn kho
+    public boolean congTonKho(int maSP, int soLuongNhap) {
+        String sql = "UPDATE sanpham SET SoLuongTon = SoLuongTon + ? WHERE MaSP = ?";
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, soLuongNhap);
+            ps.setInt(2, maSP);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

@@ -11,16 +11,21 @@ public class PhieuNhapDAO {
     // Lấy toàn bộ danh sách phiếu nhập
     public List<PhieuNhapDTO> getAll() {
         List<PhieuNhapDTO> list = new ArrayList<>();
-        String sql = "SELECT MaPN, MaNCC, NgayLap, TongTien FROM PhieuNhap ORDER BY MaPN DESC";
-
+        String sql = "SELECT pn.MaPN, pn.MaNCC, ncc.TenNCC, pn.NgayLap, pn.TongTien " +
+             "FROM PhieuNhap pn " +
+             "LEFT JOIN NhaCungCap ncc ON pn.MaNCC = ncc.MaNCC " +
+             "ORDER BY pn.MaPN DESC";
         try (ResultSet rs = DataProvider.executeQuery(sql)) {
             while (rs.next()) {
                 PhieuNhapDTO pn = new PhieuNhapDTO(
                         rs.getInt("MaPN"),
                         rs.getObject("MaNCC") == null ? null : rs.getInt("MaNCC"),
+                        
                         rs.getDate("NgayLap"),
                         rs.getDouble("TongTien")
                 );
+                pn.setTenNCC(rs.getString("TenNCC"));
+
                 list.add(pn);
             }
         } catch (SQLException e) {
@@ -31,7 +36,10 @@ public class PhieuNhapDAO {
 
     // Lấy phiếu nhập theo mã
     public PhieuNhapDTO getById(int maPN) {
-        String sql = "SELECT MaPN, MaNCC, NgayLap, TongTien FROM PhieuNhap WHERE MaPN = ?";
+        String sql = "SELECT pn.MaPN, pn.MaNCC, ncc.TenNCC, pn.NgayLap, pn.TongTien " +
+                    "FROM PhieuNhap pn " +
+                    "LEFT JOIN NhaCungCap ncc ON pn.MaNCC = ncc.MaNCC " +
+                    "WHERE pn.MaPN = ?";
         try (ResultSet rs = DataProvider.executeQuery(sql, maPN)) {
             if (rs.next()) {
                 return new PhieuNhapDTO(
@@ -40,6 +48,7 @@ public class PhieuNhapDAO {
                         rs.getDate("NgayLap"),
                         rs.getDouble("TongTien")
                 );
+                
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -121,10 +130,11 @@ public class PhieuNhapDAO {
         try { parsedInt = Integer.parseInt(key); } catch (Exception ignore) {}
         String sql;
         if (parsedInt != null) {
-            sql = "SELECT MaPN, MaNCC, NgayLap, TongTien "
-                + "FROM PhieuNhap "
-                + "WHERE MaPN = ? OR MaNCC = ? "
-                + "ORDER BY MaPN DESC";
+           sql = "SELECT pn.MaPN, pn.MaNCC, ncc.TenNCC, pn.NgayLap, pn.TongTien " +
+                "FROM PhieuNhap pn " +
+                "LEFT JOIN NhaCungCap ncc ON pn.MaNCC = ncc.MaNCC " +
+                "WHERE pn.MaPN = ? OR pn.MaNCC = ? " +
+                "ORDER BY pn.MaPN DESC";
             try (ResultSet rs = DataProvider.executeQuery(sql, parsedInt, parsedInt)) {
                 while (rs.next()) {
                     PhieuNhapDTO pn = new PhieuNhapDTO(
@@ -133,6 +143,7 @@ public class PhieuNhapDAO {
                             rs.getDate("NgayLap"),
                             rs.getDouble("TongTien")
                     );
+                    pn.setTenNCC(rs.getString("TenNCC"));
                     list.add(pn);
                 }
             } catch (SQLException e) {
@@ -148,6 +159,18 @@ public class PhieuNhapDAO {
     public boolean updateTrangThai(int maPN, int trangThai) {
         String sql = "UPDATE PhieuNhap SET TrangThai = ? WHERE MaPN = ?";
         int rows = DataProvider.executeUpdate(sql, trangThai, maPN);
+        return rows > 0;
+    }
+    
+    public boolean updateMaNCC(int maPN, Integer maNCC) {
+        String sql = "UPDATE PhieuNhap SET MaNCC = ? WHERE MaPN = ?";
+        int rows = DataProvider.executeUpdate(sql, maNCC, maPN);
+        return rows > 0;
+    }
+    
+    public boolean updateNgayLap(int maPN, java.sql.Date ngayLap) {
+        String sql = "UPDATE PhieuNhap SET NgayLap = ? WHERE MaPN = ?";
+        int rows = DataProvider.executeUpdate(sql, ngayLap, maPN);
         return rows > 0;
     }
 }

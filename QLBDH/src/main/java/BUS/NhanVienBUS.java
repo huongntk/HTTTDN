@@ -62,17 +62,14 @@ public class NhanVienBUS {
         }
     }
 
-    public String suaNhanVien(NhanVienDTO nv) {
+    public String suaNhanVien(NhanVienDTO nv, String lyDo) {
         String validationError = validateFields(nv, false);
         if (validationError != null) {
             return validationError;
         }
 
-        if (nhanVienDAO.suaNhanVien(nv)) {
-            return "Sửa thông tin nhân viên thành công";
-        } else {
-            return "Sửa thông tin nhân viên thất bại";
-        }
+        boolean success = nhanVienDAO.suaNhanVien(nv, lyDo);
+        return success ? "Sửa nhân viên thành công!" : "Sửa nhân viên thất bại!";
     }
 
     public String xoaNhanVien(int maNV) {

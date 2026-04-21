@@ -70,7 +70,7 @@ public class FrmTinhLuong extends JFrame {
         int nam = (int) cbNam.getSelectedItem();
         model.setRowCount(0);
         for (NhanVienDTO nv : dsNhanVien) {
-            // Giả sử mỗi nhân viên có thể nhập thưởng/phạt riêng (ở đây tạm =0)
+            // Tính lương tạm thời với thưởng/phạt = 0
             BangLuongDTO bl = bangLuongBUS.tinhLuongChoNhanVien(nv.getMaNV(), thang, nam, 0, 0);
             if (bl != null) {
                 model.addRow(new Object[]{
@@ -79,7 +79,7 @@ public class FrmTinhLuong extends JFrame {
                 });
             }
         }
-        // Cho phép sửa trực tiếp cột thưởng, phạt
+        // Cho phép sửa cột thưởng (index 5) và phạt (index 6)
         table.getColumnModel().getColumn(5).setCellEditor(new DefaultCellEditor(new JTextField()));
         table.getColumnModel().getColumn(6).setCellEditor(new DefaultCellEditor(new JTextField()));
     }
@@ -89,10 +89,16 @@ public class FrmTinhLuong extends JFrame {
         int nam = (int) cbNam.getSelectedItem();
         for (int i = 0; i < model.getRowCount(); i++) {
             int maNV = (int) model.getValueAt(i, 0);
-            double thuong = Double.parseDouble(model.getValueAt(i, 5).toString());
-            double phat = Double.parseDouble(model.getValueAt(i, 6).toString());
+            double thuong = 0, phat = 0;
+            try {
+                thuong = Double.parseDouble(model.getValueAt(i, 5).toString());
+                phat = Double.parseDouble(model.getValueAt(i, 6).toString());
+            } catch (NumberFormatException e) {}
+            // Tính lại lương với thưởng/phạt đã nhập
             BangLuongDTO bl = bangLuongBUS.tinhLuongChoNhanVien(maNV, thang, nam, thuong, phat);
-            bangLuongBUS.luuBangLuong(bl);
+            if (bl != null) {
+                bangLuongBUS.luuBangLuong(bl);
+            }
         }
         JOptionPane.showMessageDialog(this, "Đã lưu bảng lương tháng " + thang + "/" + nam);
     }

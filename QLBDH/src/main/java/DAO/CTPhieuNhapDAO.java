@@ -84,4 +84,20 @@ public class CTPhieuNhapDAO {
         String sql = "UPDATE SanPham SET SoLuong = ISNULL(SoLuong,0) + ? WHERE ID = ?";
         DataProvider.executeUpdate(sql, soLuong, idSP);
     }
+    
+    
+    public boolean isSanPhamInUse(int maSP) {
+        String sql = "SELECT COUNT(*) FROM chitietphieunhap WHERE Id = ?";
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, maSP);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

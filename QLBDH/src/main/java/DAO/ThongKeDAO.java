@@ -1,187 +1,271 @@
-//package DAO;
-//
-//import java.sql.Connection;
-//import java.sql.ResultSet;
-//import java.sql.SQLException;
-//import java.sql.Statement;
-//import java.util.ArrayList;
-//import java.sql.Date;
-//
-//public class ThongKeDAO {
-//
-//    public ArrayList<Object[]> getTopSanPham(Date tuNgay, Date denNgay) {
-//        ArrayList<Object[]> danhSach = new ArrayList<>();
-//        String sql = "SELECT p.ID, p.TenSP, SUM(ct.soLuong) AS TongSoLuong, SUM(ct.thanhTien) AS TongGiaTri " +
-//                     "FROM CTHoaDon ct " + 
-//                     "JOIN SanPham p ON ct.ID = p.ID " + 
-//                     "JOIN HoaDon hd ON ct.maHD = hd.maHD " + 
-//                     "WHERE hd.ngayLap BETWEEN ? AND ? " + 
-//                     "GROUP BY p.ID, p.TenSP " +
-//                     "ORDER BY TongGiaTri DESC";
-//        
-//        ResultSet rs = null;
-//        try {
-//            rs = DataProvider.executeQuery(sql, tuNgay, denNgay);
-//            while (rs != null && rs.next()) {
-//                danhSach.add(new Object[]{
-//                    rs.getInt("ID"),
-//                    rs.getString("TenSP"),
-//                    rs.getInt("TongSoLuong"),
-//                    rs.getDouble("TongGiaTri") 
-//                });
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        } finally {
-//            closeResources(rs);
-//        }
-//        return danhSach;
-//    }
-//
-//    public ArrayList<Object[]> getTopKhachHang(Date tuNgay, Date denNgay) {
-//        ArrayList<Object[]> danhSach = new ArrayList<>();
-//        String sql = "SELECT kh.maKH, CONCAT(kh.ho, ' ', kh.ten) AS HoTen, COUNT(hd.maHD) AS TongSoHoaDon, SUM(hd.tongTien) AS TongChiTieu " +
-//                     "FROM HoaDon hd " + 
-//                     "JOIN KhachHang kh ON hd.maKH = kh.maKH " + 
-//                     "WHERE hd.ngayLap BETWEEN ? AND ? " + 
-//                     "GROUP BY kh.maKH, kh.ho, kh.ten " + 
-//                     "ORDER BY TongChiTieu DESC";
-//        
-//        ResultSet rs = null;
-//        try {
-//            rs = DataProvider.executeQuery(sql, tuNgay, denNgay);
-//            while (rs != null && rs.next()) {
-//                danhSach.add(new Object[]{
-//                    rs.getInt("maKH"),
-//                    rs.getString("HoTen"),
-//                    rs.getInt("TongSoHoaDon"),
-//                    rs.getDouble("TongChiTieu") 
-//                });
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        } finally {
-//            closeResources(rs);
-//        }
-//        return danhSach;
-//    }
-//
-//    public ArrayList<Object[]> getTopNhanVien(Date tuNgay, Date denNgay) {
-//        ArrayList<Object[]> danhSach = new ArrayList<>();
-//        String sql = "SELECT nv.maNV, CONCAT(nv.ho, ' ', nv.ten) AS HoTen, COUNT(hd.maHD) AS TongSoHoaDon, SUM(hd.tongTien) AS TongDoanhSo " +
-//                     "FROM HoaDon hd " + 
-//                     "JOIN NhanVien nv ON hd.maNV = nv.maNV " + 
-//                     "WHERE hd.ngayLap BETWEEN ? AND ? " + 
-//                     "GROUP BY nv.maNV, nv.ho, nv.ten " + 
-//                     "ORDER BY TongDoanhSo DESC";
-//        
-//        ResultSet rs = null;
-//        try {
-//            rs = DataProvider.executeQuery(sql, tuNgay, denNgay);
-//            while (rs != null && rs.next()) {
-//                danhSach.add(new Object[]{
-//                    rs.getInt("maNV"),
-//                    rs.getString("HoTen"),
-//                    rs.getInt("TongSoHoaDon"),
-//                    rs.getDouble("TongDoanhSo") 
-//                });
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        } finally {
-//            closeResources(rs);
-//        }
-//        return danhSach;
-//    }
-//    
-//    public double getTongDoanhThu(Date tuNgay, Date denNgay) {
-//        double tongDoanhThu = 0;
-//        String sql = "SELECT SUM(tongTien) AS Tong " +
-//                     "FROM HoaDon " + 
-//                     "WHERE ngayLap BETWEEN ? AND ?";
-//        
-//        ResultSet rs = null;
-//        try {
-//            rs = DataProvider.executeQuery(sql, tuNgay, denNgay);
-//            if (rs != null && rs.next()) {
-//                tongDoanhThu = rs.getDouble("Tong");
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        } finally {
-//            closeResources(rs);
-//        }
-//        return tongDoanhThu;
-//    }
-//
-//    private void closeResources(ResultSet rs) {
-//        if (rs != null) {
-//            try {
-//                Statement stmt = rs.getStatement();
-//                Connection conn = stmt.getConnection();
-//                rs.close();
-//                stmt.close();
-//                conn.close();
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
-//}
-
 package DAO;
-import DAO.DataProvider;
+
+import DTO.*;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 
 public class ThongKeDAO {
-    
-    // Thống kê doanh thu, giá vốn, lợi nhuận theo Quý của một năm
-    public ArrayList<HashMap<String, Object>> getLoiNhuanTheoQuy(int nam) {
-        ArrayList<HashMap<String, Object>> list = new ArrayList<>();
-        String sql = "SELECT DATEPART(QUARTER, ngayXuat) AS Quy, " +
-                     "SUM(ct.soLuong * ct.giaBan) AS DoanhThu, " +
-                     "SUM(ct.soLuong * sp.giaNhap) AS GiaVon " +
-                     "FROM HoaDon hd " +
-                     "JOIN CTHoaDon ct ON hd.MaHD = ct.maHD " +
-                     "JOIN SanPham sp ON ct.maSP = sp.maSP " +
-                     "WHERE YEAR(hd.ngayXuat) = ? " +
-                     "GROUP BY DATEPART(QUARTER, hd.NgayLap)";
-       
-        try (ResultSet rs = DataProvider.executeQuery(sql, nam)){
-            
-            while (rs !=null && rs.next()) {
-                HashMap<String, Object> map = new HashMap<>();
-                map.put("Quy", rs.getInt("Quy"));
-                map.put("DoanhThu", rs.getDouble("DoanhThu"));
-                map.put("GiaVon", rs.getDouble("GiaVon"));
-                map.put("LoiNhuan", rs.getDouble("DoanhThu") - rs.getDouble("GiaVon"));
-                list.add(map);
+
+    private Connection conn;
+
+    public ThongKeDAO(Connection conn) {
+        this.conn = conn;
+    }
+
+    // ==================== TIỆN ÍCH ====================
+    private String buildTimeCondition(int thang, int quy, int nam, String dateColumn) {
+        if (thang > 0) {
+            return "MONTH(" + dateColumn + ") = ? AND YEAR(" + dateColumn + ") = ?";
+        } else if (quy > 0) {
+            int startMonth = (quy - 1) * 3 + 1;
+            int endMonth = startMonth + 2;
+            return "MONTH(" + dateColumn + ") BETWEEN ? AND ? AND YEAR(" + dateColumn + ") = ?";
+        } else {
+            return "YEAR(" + dateColumn + ") = ?";
+        }
+    }
+
+    private int setTimeParameters(PreparedStatement ps, int index, int thang, int quy, int nam) throws SQLException {
+        if (thang > 0) {
+            ps.setInt(index++, thang);
+            ps.setInt(index++, nam);
+        } else if (quy > 0) {
+            int startMonth = (quy - 1) * 3 + 1;
+            int endMonth = startMonth + 2;
+            ps.setInt(index++, startMonth);
+            ps.setInt(index++, endMonth);
+            ps.setInt(index++, nam);
+        } else {
+            ps.setInt(index++, nam);
+        }
+        return index;
+    }
+
+    // ==================== KINH DOANH & LỢI NHUẬN ====================
+    public double getTongDoanhThu(int thang, int quy, int nam) throws SQLException {
+        String condition = buildTimeCondition(thang, quy, nam, "NgayLap");
+        String sql = "SELECT SUM(TongTien) FROM HoaDon WHERE " + condition + " AND TrangThai = N'Đã thanh toán'";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            setTimeParameters(ps, 1, thang, quy, nam);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    double value = rs.getDouble(1);
+                    return rs.wasNull() ? 0.0 : value;
+                }
             }
-        } catch (SQLException e) { e.printStackTrace(); }
+        }
+        return 0;
+    }
+
+    public double getTongGiaVon(int thang, int quy, int nam) throws SQLException {
+        String condition = buildTimeCondition(thang, quy, nam, "hd.NgayLap");
+
+        String sql = "SELECT SUM(ct.SoLuong * COALESCE(avg_gia.giaTB, 0)) " +
+                     "FROM CTHoaDon ct " +
+                     "JOIN HoaDon hd ON ct.MaHD = hd.MaHD " +
+                     "JOIN SanPham sp ON ct.ID = sp.ID " +
+                     "LEFT JOIN ( " +
+                     "    SELECT ctpn.id, SUM(ctpn.ThanhTien) * 1.0 / NULLIF(SUM(ctpn.SoLuong), 0) AS giaTB " +
+                     "    FROM CTPhieuNhap ctpn " +
+                     "    JOIN PhieuNhap pn ON ctpn.MaPN = pn.MaPN " +
+                     "    WHERE pn.TrangThai = 1 " +
+                     "    GROUP BY ctpn.id " +
+                     ") avg_gia ON ct.ID = avg_gia.id " +
+                     "WHERE " + condition + " AND hd.TrangThai = N'Đã thanh toán'";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            setTimeParameters(ps, 1, thang, quy, nam);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    double value = rs.getDouble(1);
+                    return rs.wasNull() ? 0.0 : value;
+                }
+            }
+        }
+        return 0;
+    }
+
+    public int getSoHoaDon(int thang, int quy, int nam) throws SQLException {
+        String condition = buildTimeCondition(thang, quy, nam, "NgayLap");
+        String sql = "SELECT COUNT(*) FROM HoaDon WHERE " + condition + " AND TrangThai = N'Đã thanh toán'";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            setTimeParameters(ps, 1, thang, quy, nam);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        }
+        return 0;
+    }
+
+    public int getTongSanPhamBanRa(int thang, int quy, int nam) throws SQLException {
+        String condition = buildTimeCondition(thang, quy, nam, "hd.NgayLap");
+        String sql = "SELECT SUM(ct.SoLuong) " +
+                     "FROM CTHoaDon ct " +
+                     "JOIN HoaDon hd ON ct.MaHD = hd.MaHD " +
+                     "WHERE " + condition + " AND hd.TrangThai = N'Đã thanh toán'";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            setTimeParameters(ps, 1, thang, quy, nam);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        }
+        return 0;
+    }
+
+    // ==================== KHO HÀNG & SẢN PHẨM ====================
+    public int getTongNhapSoLuong(int thang, int quy, int nam) throws SQLException {
+        String condition = buildTimeCondition(thang, quy, nam, "pn.NgayLap");
+        String sql = "SELECT SUM(ct.SoLuong) " +
+                     "FROM CTPhieuNhap ct " +
+                     "JOIN PhieuNhap pn ON ct.MaPN = pn.MaPN " +
+                     "WHERE " + condition + " AND pn.TrangThai = 1";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            setTimeParameters(ps, 1, thang, quy, nam);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        }
+        return 0;
+    }
+
+    public double getTongNhapGiaTri(int thang, int quy, int nam) throws SQLException {
+        String condition = buildTimeCondition(thang, quy, nam, "pn.NgayLap");
+        String sql = "SELECT SUM(ct.ThanhTien) " +
+                     "FROM CTPhieuNhap ct " +
+                     "JOIN PhieuNhap pn ON ct.MaPN = pn.MaPN " +
+                     "WHERE " + condition + " AND pn.TrangThai = 1";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            setTimeParameters(ps, 1, thang, quy, nam);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    double value = rs.getDouble(1);
+                    return rs.wasNull() ? 0.0 : value;
+                }
+            }
+        }
+        return 0;
+    }
+
+    public int getTongXuatSoLuong(int thang, int quy, int nam) throws SQLException {
+        return getTongSanPhamBanRa(thang, quy, nam);
+    }
+
+    public int getTonKhoHienTai() throws SQLException {
+        String sql = "SELECT SUM(SoLuong) FROM SanPham WHERE TrangThai = 1";
+        try (Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        }
+        return 0;
+    }
+
+    public ArrayList<Object[]> getTopSanPhamBanChay(int thang, int quy, int nam, int limit) throws SQLException {
+        String condition = buildTimeCondition(thang, quy, nam, "hd.NgayLap");
+        String sql = "SELECT TOP " + limit + " sp.TenSP, SUM(ct.SoLuong) AS TongBan " +
+                     "FROM CTHoaDon ct " +
+                     "JOIN HoaDon hd ON ct.MaHD = hd.MaHD " +
+                     "JOIN SanPham sp ON ct.ID = sp.ID " +
+                     "WHERE " + condition + " AND hd.TrangThai = N'Đã thanh toán' " +
+                     "GROUP BY sp.TenSP " +
+                     "ORDER BY TongBan DESC";
+
+        ArrayList<Object[]> list = new ArrayList<>();
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            setTimeParameters(ps, 1, thang, quy, nam);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(new Object[]{rs.getString("TenSP"), rs.getInt("TongBan")});
+                }
+            }
+        }
         return list;
     }
 
-    // Thống kê nhân sự và tổng lương theo tháng
-    public ArrayList<HashMap<String, Object>> getChiPhiNhanSu(int thang, int nam) {
-        ArrayList<HashMap<String, Object>> list = new ArrayList<>();
-        String sql = "SELECT cv.TenCV, COUNT(nv.MaNV) AS SoLuongNV, SUM(bl.TongLuong) AS TongChi " +
-                     "FROM NhanVien nv " +
-                     "JOIN ChucVu cv ON nv.MaCV = cv.MaCV " +
-                     "JOIN BangLuong bl ON nv.MaNV = bl.MaNV " +
-                     "WHERE bl.Thang = ? AND bl.Nam = ? " +
-                     "GROUP BY cv.TenCV";
-        try {
-            ResultSet rs = DataProvider.executeQuery(sql,thang,nam);
-            while (rs != null && rs.next()) {
-                HashMap<String, Object> map = new HashMap<>();
-                map.put("BoPhan", rs.getString("TenCV"));
-                map.put("SoNV", rs.getInt("SoLuongNV"));
-                map.put("TongChi", rs.getDouble("TongChi"));
-                list.add(map);
+    // ==================== NHÂN SỰ & CHI PHÍ LƯƠNG ====================
+    public double getTongChiPhiLuong(int thang, int quy, int nam) throws SQLException {
+        String sql;
+        if (thang > 0) {
+            sql = "SELECT SUM(TongLuong) FROM BangLuong WHERE Thang = ? AND Nam = ?";
+        } else if (quy > 0) {
+            int startMonth = (quy - 1) * 3 + 1;
+            int endMonth = startMonth + 2;
+            sql = "SELECT SUM(TongLuong) FROM BangLuong WHERE Thang BETWEEN ? AND ? AND Nam = ?";
+        } else {
+            sql = "SELECT SUM(TongLuong) FROM BangLuong WHERE Nam = ?";
+        }
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            if (thang > 0) {
+                ps.setInt(1, thang);
+                ps.setInt(2, nam);
+            } else if (quy > 0) {
+                int startMonth = (quy - 1) * 3 + 1;
+                int endMonth = startMonth + 2;
+                ps.setInt(1, startMonth);
+                ps.setInt(2, endMonth);
+                ps.setInt(3, nam);
+            } else {
+                ps.setInt(1, nam);
             }
-        } catch (SQLException e) { e.printStackTrace(); }
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    double value = rs.getDouble(1);
+                    return rs.wasNull() ? 0.0 : value;
+                }
+            }
+        }
+        return 0;
+    }
+
+    public int getSoNhanVienDangLam() throws SQLException {
+        String sql = "SELECT COUNT(*) FROM NhanVien WHERE TrangThai = 1";
+        try (Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        }
+        return 0;
+    }
+
+    public ArrayList<Object[]> getTopNhanVienBanHang(int thang, int quy, int nam, int limit) throws SQLException {
+        String condition = buildTimeCondition(thang, quy, nam, "hd.NgayLap");
+        String sql = "SELECT TOP " + limit +
+                     " nv.Ho + ' ' + nv.Ten AS HoTen, " +
+                     " COUNT(hd.MaHD) AS SoHD, SUM(hd.TongTien) AS DoanhSo " +
+                     "FROM HoaDon hd " +
+                     "JOIN NhanVien nv ON hd.MaNV = nv.MaNV " +
+                     "WHERE " + condition + " AND hd.TrangThai = N'Đã thanh toán' " +
+                     "GROUP BY nv.Ho, nv.Ten " +
+                     "ORDER BY DoanhSo DESC";
+
+        ArrayList<Object[]> list = new ArrayList<>();
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            setTimeParameters(ps, 1, thang, quy, nam);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(new Object[]{
+                        rs.getString("HoTen"),
+                        rs.getInt("SoHD"),
+                        rs.getDouble("DoanhSo")
+                    });
+                }
+            }
+        }
         return list;
     }
 }

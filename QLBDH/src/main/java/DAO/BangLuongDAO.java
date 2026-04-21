@@ -1,35 +1,35 @@
 package DAO;
 
 import DTO.BangLuongDTO;
-import DTO.NhanVienDTO;
 import java.sql.*;
 import java.util.ArrayList;
 
 public class BangLuongDAO {
 
-    public ArrayList<NhanVienDTO> selectAll() {
-        ArrayList<NhanVienDTO> list = new ArrayList<>();
-        String sql = "SELECT * FROM NhanVien";
+    public ArrayList<Object[]> selectAllNhanVienWithLuong() {
+        ArrayList<Object[]> list = new ArrayList<>();
+        String sql = "SELECT nv.MaNV, nv.Ho, nv.Ten, nv.MaCV, "
+                   + "ISNULL(lcb.LuongCoBan, 0) AS LuongCoBan, "
+                   + "ISNULL(lcb.PhuCapChucVu, 0) AS PhuCap "
+                   + "FROM NhanVien nv "
+                   + "LEFT JOIN LuongCoBanTheoChucVu lcb ON nv.MaCV = lcb.MaCV "
+                   + "WHERE nv.TrangThai = 1"; // chỉ lấy nhân viên đang làm việc
         try (ResultSet rs = DataProvider.executeQuery(sql)) {
             while (rs.next()) {
-                NhanVienDTO nv = new NhanVienDTO();
-                nv.setMaNV(rs.getInt("MaNV"));
-                nv.setHo(rs.getString("Ho"));
-                nv.setTen(rs.getString("Ten"));
-                nv.setGioiTinh(rs.getString("GioiTinh"));
-                nv.setSoDienThoai(rs.getString("SoDienThoai"));
-                nv.setMaCV(rs.getString("MaCV"));
-                nv.setMaQuyen(rs.getString("MaQuyen"));
-                nv.setTrangThai(rs.getBoolean("TrangThai"));
-                nv.setTenTaiKhoan(rs.getString("TenTaiKhoan"));
-                nv.setMatKhau(rs.getString("MatKhau"));
-                list.add(nv);
+                list.add(new Object[]{
+                    rs.getInt("MaNV"),
+                    rs.getString("Ho") + " " + rs.getString("Ten"),
+                    rs.getString("MaCV"),
+                    rs.getDouble("LuongCoBan"),
+                    rs.getDouble("PhuCap")
+                });
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return list;
     }
+
     // Thêm mới bảng lương
     public boolean insert(BangLuongDTO bl) {
         String sql = "INSERT INTO BangLuong (MaNV, Thang, Nam, LuongCoBan, PhuCap, Thuong, Phat, TongLuong, NgayTinh, GhiChu, TrangThai) "
@@ -65,16 +65,12 @@ public class BangLuongDAO {
     // Lấy bảng lương của một nhân viên theo tháng/năm
     public BangLuongDTO getByMaNVAndMonth(int maNV, int thang, int nam) {
         String sql = "SELECT * FROM BangLuong WHERE MaNV=? AND Thang=? AND Nam=?";
-        ResultSet rs = null;
-        try {
-            rs = DataProvider.executeQuery(sql, maNV, thang, nam);
-            if (rs != null && rs.next()) {
+        try (ResultSet rs = DataProvider.executeQuery(sql, maNV, thang, nam)) {
+            if (rs.next()) {
                 return mapResultSetToDTO(rs);
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            closeResultSet(rs);
         }
         return null;
     }
@@ -83,16 +79,12 @@ public class BangLuongDAO {
     public ArrayList<BangLuongDTO> getListByMaNV(int maNV) {
         ArrayList<BangLuongDTO> list = new ArrayList<>();
         String sql = "SELECT * FROM BangLuong WHERE MaNV=? ORDER BY Nam DESC, Thang DESC";
-        ResultSet rs = null;
-        try {
-            rs = DataProvider.executeQuery(sql, maNV);
-            while (rs != null && rs.next()) {
+        try (ResultSet rs = DataProvider.executeQuery(sql, maNV)) {
+            while (rs.next()) {
                 list.add(mapResultSetToDTO(rs));
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            closeResultSet(rs);
         }
         return list;
     }
@@ -101,16 +93,12 @@ public class BangLuongDAO {
     public ArrayList<BangLuongDTO> getListByMonth(int thang, int nam) {
         ArrayList<BangLuongDTO> list = new ArrayList<>();
         String sql = "SELECT * FROM BangLuong WHERE Thang=? AND Nam=?";
-        ResultSet rs = null;
-        try {
-            rs = DataProvider.executeQuery(sql, thang, nam);
-            while (rs != null && rs.next()) {
+        try (ResultSet rs = DataProvider.executeQuery(sql, thang, nam)) {
+            while (rs.next()) {
                 list.add(mapResultSetToDTO(rs));
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            closeResultSet(rs);
         }
         return list;
     }
@@ -118,14 +106,10 @@ public class BangLuongDAO {
     // Kiểm tra đã có bảng lương của nhân viên trong tháng/năm chưa
     public boolean kiemTraTonTai(int maNV, int thang, int nam) {
         String sql = "SELECT 1 FROM BangLuong WHERE MaNV=? AND Thang=? AND Nam=?";
-        ResultSet rs = null;
-        try {
-            rs = DataProvider.executeQuery(sql, maNV, thang, nam);
-            return rs != null && rs.next();
+        try (ResultSet rs = DataProvider.executeQuery(sql, maNV, thang, nam)) {
+            return rs.next();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            closeResultSet(rs);
         }
         return false;
     }
@@ -142,17 +126,17 @@ public class BangLuongDAO {
         }
     }
 
-    // Helper: đóng ResultSet và Statement (không đóng Connection)
-    private void closeResultSet(ResultSet rs) {
-        if (rs != null) {
-            try {
-                Statement stmt = rs.getStatement();
-                rs.close();
-                if (stmt != null) stmt.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
+    public ArrayList<BangLuongDTO> getByMaNVAndYear(int maNV, int nam) {
+        ArrayList<BangLuongDTO> list = new ArrayList<>();
+        String sql = "SELECT * FROM BangLuong WHERE MaNV = ? AND Nam = ? ORDER BY Thang";
+        try (ResultSet rs = DataProvider.executeQuery(sql, maNV, nam)) {
+            while (rs.next()) {
+                list.add(mapResultSetToDTO(rs));
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+        return list;
     }
 
     // Helper: chuyển ResultSet thành DTO

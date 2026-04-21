@@ -59,7 +59,7 @@ public class MainFrame extends javax.swing.JFrame {
         // 2. Phân quyền cho nhóm Nhân sự (Sử dụng các thuộc tính mới trong PhanQuyen.java)
         btnNhanVien.setVisible(phanQuyen.isNsXemDanhSach() || phanQuyen.isNsXemLuongCaNhan() || phanQuyen.isNsTaoDonNghi());
 
-        // 3. Phân quyền cho nhóm Bán hàng
+        // . Phân quyền cho nhóm Bán hàng
         // Nếu có quyền lập phiếu xuất thì hiện nút Bán Hàng
         btnBanHang.setVisible(phanQuyen.isBhLapPhieuXuat() || phanQuyen.isBhThongKeDoanhThu() || phanQuyen.isBhThongKeLoiNhuan());
 
@@ -113,7 +113,7 @@ public class MainFrame extends javax.swing.JFrame {
         btnDoiMatKhau = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Quản lý bán đồng hồ cơ\n\n");
+        setTitle("Quản lý bán điện thoại\n");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
         pnContent.setLayout(new java.awt.CardLayout());
@@ -299,7 +299,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         btnQuanLyLuong.setBackground(new java.awt.Color(0, 204, 204));
         btnQuanLyLuong.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        btnQuanLyLuong.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/bar-char.png"))); // NOI18N
+        btnQuanLyLuong.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/money.png"))); // NOI18N
         btnQuanLyLuong.setText("Quản lý lương");
         btnQuanLyLuong.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         btnQuanLyLuong.setBorderPainted(false);
@@ -318,7 +318,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         btnDuyetNghi.setBackground(new java.awt.Color(0, 204, 204));
         btnDuyetNghi.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        btnDuyetNghi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/bar-char.png"))); // NOI18N
+        btnDuyetNghi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/xacnhan.png"))); // NOI18N
         btnDuyetNghi.setText("Duyệt nghỉ");
         btnDuyetNghi.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         btnDuyetNghi.setBorderPainted(false);
@@ -337,7 +337,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         btnChamCong.setBackground(new java.awt.Color(0, 204, 204));
         btnChamCong.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        btnChamCong.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/bar-char.png"))); // NOI18N
+        btnChamCong.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/clock.png"))); // NOI18N
         btnChamCong.setText("Chấm công");
         btnChamCong.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         btnChamCong.setBorderPainted(false);
@@ -547,28 +547,44 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_btnDuyetNghiActionPerformed
 
     private void btnChamCongActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChamCongActionPerformed
-         pnContent.removeAll();
+        pnContent.removeAll();
         PnChamCong pn = new PnChamCong(phanQuyen);
+//        PnChamCong pn = new PnChamCong(phanQuyen, taiKhoan);
         pnContent.add(pn);
         pnContent.revalidate();
         pnContent.repaint();
         setButtonActive(btnChamCong);
     }//GEN-LAST:event_btnChamCongActionPerformed
-    private void setButtonActive(javax.swing.JButton active) {
-        for (javax.swing.JButton btn : menuButtons) {
-            if (btn == active) {
-                // Màu nền khi được chọn (Xanh dương) và viền trắng
-                btn.setBackground(new java.awt.Color(0, 102, 204)); 
-                btn.setForeground(java.awt.Color.WHITE);
-                btn.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.WHITE, 2));
-            } else {
-                // Màu nền mặc định và không viền (hoặc viền mặc định)
-                btn.setBackground(new java.awt.Color(255, 255, 255)); // Giả định nền trắng, bạn chỉnh theo màu gốc của bạn
-                btn.setForeground(java.awt.Color.BLACK);
-                btn.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-            }
+   
+    
+   private void setButtonActive(javax.swing.JButton active) {
+    for (javax.swing.JButton btn : menuButtons) {
+        if (btn == active) {
+            // Tạo hiệu ứng gradient
+            btn.setBackground(new java.awt.Color(0, 120, 215)); // Xanh sáng hơn
+            btn.setForeground(java.awt.Color.WHITE);
+            btn.setFont(btn.getFont().deriveFont(java.awt.Font.BOLD, 15f));
+            
+            // Thêm icon mũi tên chỉ bên trái để nổi bật
+            btn.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+            btn.setIconTextGap(15);
+            
+            btn.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                javax.swing.BorderFactory.createMatteBorder(0, 5, 0, 0, new java.awt.Color(255, 100, 0)), // Viền cam bên trái
+                javax.swing.BorderFactory.createEmptyBorder(8, 10, 8, 10)
+            ));
+            
+            // Thêm hiệu ứng shadow nhẹ
+            btn.setOpaque(true);
+        } else {
+            btn.setBackground(new java.awt.Color(170, 222, 215)); // Màu nền gốc của pnMenu
+            btn.setForeground(new java.awt.Color(50, 50, 50)); // Xám đậm
+            btn.setFont(btn.getFont().deriveFont(java.awt.Font.PLAIN, 14f));
+            btn.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 15, 8, 15));
+            btn.setIconTextGap(10);
         }
     }
+}
     
     public javax.swing.JPanel getPnContent() {
         return pnContent;

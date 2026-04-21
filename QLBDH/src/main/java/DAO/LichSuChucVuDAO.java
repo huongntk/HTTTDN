@@ -15,8 +15,8 @@ public class LichSuChucVuDAO {
                 LichSuChucVu ls = new LichSuChucVu();
                 ls.setMaLS(rs.getInt("MaLS"));
                 ls.setMaNV(rs.getInt("MaNV"));
-                ls.setMaCVu(rs.getString("MaCVu"));
-                ls.setMaCMoi(rs.getString("MaCMoi"));
+                ls.setMaCVu(rs.getString("MaCVCu"));
+                ls.setMaCMoi(rs.getString("MaCVMoi"));
                 ls.setNgayThayDoi(rs.getDate("NgayThayDoi"));
                 ls.setGhiChu(rs.getString("GhiChu"));
                 list.add(ls);
@@ -28,7 +28,7 @@ public class LichSuChucVuDAO {
     }
     
     public int insert(LichSuChucVu ls) {
-        String sql = "INSERT INTO LichSuChucVu (MaNV, MaCVu, MaCMoi, NgayThayDoi, GhiChu) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO LichSuChucVu (MaNV, MaCVCu, MaCVMoi, NgayThayDoi, GhiChu) VALUES (?, ?, ?, ?, ?)";
         return DataProvider.executeUpdate(sql, 
                 ls.getMaNV(), 
                 ls.getMaCVu(), 

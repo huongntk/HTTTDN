@@ -2,6 +2,7 @@ package DAO;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -78,5 +79,31 @@ public class LuongCoBanTheoChucVuDAO {
                 e.printStackTrace();
             }
         }
+    }
+    
+    // Thêm các phương thức sau vào DAO
+
+public boolean update(String maCV, double luongCoBan, double phuCap) {
+    String sql = "UPDATE LuongCoBanTheoChucVu SET LuongCoBan = ?, PhuCapChucVu = ? WHERE MaCV = ?";
+    try {
+        int rows = DataProvider.executeUpdate(sql, luongCoBan, phuCap, maCV);
+        return rows > 0;
+    } catch (Exception e) {
+        e.printStackTrace();
+        return false;
+    }
+}
+
+    public ArrayList<String> getAllChucVu() {
+        ArrayList<String> list = new ArrayList<>();
+        String sql = "SELECT MaCV FROM LuongCoBanTheoChucVu";
+        try (ResultSet rs = DataProvider.executeQuery(sql)) {
+            while (rs.next()) {
+                list.add(rs.getString("MaCV"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 }

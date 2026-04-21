@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class NhanVienDAO {
 
@@ -171,19 +172,33 @@ public class NhanVienDAO {
         }
     }
 
-    public boolean suaNhanVien(NhanVienDTO nv) {
+    public boolean suaNhanVien(NhanVienDTO nv, String lyDo) {
         String sqlNhanVien = "UPDATE NhanVien SET Ho = ?, Ten = ?, GioiTinh = ?, SoDienThoai = ?, MaCV = ?, TrangThai = ? WHERE MaNV = ?";
         String sqlTaiKhoan = "UPDATE TaiKhoan SET TaiKhoan = ?, MatKhau = ?, MaQuyen = ?, TrangThai = ? WHERE MaNV = ?";
-        
+        String sqlLichSu = "INSERT INTO LichSuChucVu (MaNV, MaCVCu, MaCVMoi, NgayThayDoi, GhiChu) VALUES (?, ?, ?, ?, ?)";
+
         Connection conn = null;
         PreparedStatement psNhanVien = null;
         PreparedStatement psTaiKhoan = null;
+        PreparedStatement psLichSu = null;
+        ResultSet rsOld = null;
 
         try {
             conn = DBConnect.getConnection();
             conn.setAutoCommit(false);
 
-            
+            // 1. Lấy chức vụ cũ
+            String oldMaCV = null;
+            String sqlSelectOld = "SELECT MaCV FROM NhanVien WHERE MaNV = ?";
+            try (PreparedStatement psSelect = conn.prepareStatement(sqlSelectOld)) {
+                psSelect.setInt(1, nv.getMaNV());
+                rsOld = psSelect.executeQuery();
+                if (rsOld.next()) {
+                    oldMaCV = rsOld.getString("MaCV");
+                }
+            }
+
+            // 2. Cập nhật NhanVien
             psNhanVien = conn.prepareStatement(sqlNhanVien);
             psNhanVien.setString(1, nv.getHo());
             psNhanVien.setString(2, nv.getTen());
@@ -192,26 +207,36 @@ public class NhanVienDAO {
             psNhanVien.setString(5, nv.getMaCV());
             psNhanVien.setBoolean(6, nv.isTrangThai());
             psNhanVien.setInt(7, nv.getMaNV());
-            
             int rowsAffectedNV = psNhanVien.executeUpdate();
 
-            
+            // 3. Cập nhật TaiKhoan
             psTaiKhoan = conn.prepareStatement(sqlTaiKhoan);
             psTaiKhoan.setString(1, nv.getTenTaiKhoan());
             psTaiKhoan.setString(2, nv.getMatKhau());
             psTaiKhoan.setString(3, nv.getMaQuyen());
             psTaiKhoan.setBoolean(4, nv.isTrangThai());
             psTaiKhoan.setInt(5, nv.getMaNV());
-
             int rowsAffectedTK = psTaiKhoan.executeUpdate();
 
-            
-            if (rowsAffectedNV > 0 || rowsAffectedTK > 0) { 
-                conn.commit(); 
+            // 4. Ghi lịch sử nếu chức vụ thay đổi
+            boolean chucVuChanged = (oldMaCV != null && !oldMaCV.equals(nv.getMaCV()));
+            if (chucVuChanged) {
+                psLichSu = conn.prepareStatement(sqlLichSu);
+                psLichSu.setInt(1, nv.getMaNV());
+                psLichSu.setString(2, oldMaCV);
+                psLichSu.setString(3, nv.getMaCV());
+                psLichSu.setDate(4, new java.sql.Date(System.currentTimeMillis()));
+                psLichSu.setString(5, lyDo != null && !lyDo.isEmpty() ? lyDo : "Cập nhật chức vụ");
+                psLichSu.executeUpdate();
+            }
+
+          
+            if (rowsAffectedNV > 0 || rowsAffectedTK > 0) {
+                conn.commit();
                 return true;
             } else {
                 conn.rollback();
-                return false; 
+                return false;
             }
 
         } catch (SQLException e) {
@@ -225,10 +250,12 @@ public class NhanVienDAO {
             }
             return false;
         } finally {
-            
+           
             try {
+                if (rsOld != null) rsOld.close();
                 if (psNhanVien != null) psNhanVien.close();
                 if (psTaiKhoan != null) psTaiKhoan.close();
+                if (psLichSu != null) psLichSu.close();
                 if (conn != null) {
                     conn.setAutoCommit(true);
                     conn.close();
