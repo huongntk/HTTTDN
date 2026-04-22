@@ -193,6 +193,7 @@ public class PhanQuyenDAO {
         pq.setNsDuyetNghi(rs.getBoolean("NS_DuyetNghi"));
         pq.setNsThayDoiChucVu(rs.getBoolean("NS_ThayDoiChucVu"));
         pq.setNsTinhLuong(rs.getBoolean("NS_TinhLuong"));
+        pq.setNsChamCong(rs.getBoolean("NS_ChamCong"));
         pq.setNsXemLuongCaNhan(rs.getBoolean("NS_XemLuongCaNhan"));
         pq.setNsInBangLuong(rs.getBoolean("NS_InBangLuong"));
 
@@ -222,7 +223,7 @@ public class PhanQuyenDAO {
         pq.setQLNhapHang(pq.isKhoNhapHang()); // hoặc kết hợp
         pq.setQLKhachHang(pq.isQlKhachHang()); 
         pq.setQLKhuyenMai(pq.isQlKhuyenMai());
-        pq.setNsChamCong(pq.isNsChamCong());
+        
         pq.setQLThongKe(pq.isBhThongKeDoanhThu() || pq.isBhThongKeLoiNhuan() || pq.isKhoBaoCaoTonKho() || pq.isAdminBaoCaoTongHop());
         pq.setQLPhanQuyen(pq.isPqQuanLyPhanQuyen());
 

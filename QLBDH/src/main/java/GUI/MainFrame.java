@@ -548,8 +548,8 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void btnChamCongActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChamCongActionPerformed
         pnContent.removeAll();
-        PnChamCong pn = new PnChamCong(phanQuyen);
-//        PnChamCong pn = new PnChamCong(phanQuyen, taiKhoan);
+//        PnChamCong pn = new PnChamCong(phanQuyen);
+        PnChamCong pn = new PnChamCong(phanQuyen, taiKhoan);
         pnContent.add(pn);
         pnContent.revalidate();
         pnContent.repaint();

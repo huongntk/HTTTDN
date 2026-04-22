@@ -5,6 +5,7 @@ import BUS.NhanVienBUS;
 import DTO.ChamCongDTO;
 import DTO.NhanVienDTO;
 import DTO.PhanQuyen;
+import DTO.TaiKhoan;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -21,14 +22,18 @@ import java.util.stream.Collectors;
 
 public class PnChamCong extends JPanel {
     private PhanQuyen phanQuyen;
+    private TaiKhoan taiKhoan;
+    private int maNVHienTai;
+    private boolean isQuanLy;
     private ChamCongBUS chamCongBUS;
     private NhanVienBUS nhanVienBUS;
     private DefaultTableModel model;
     private JComboBox<Integer> cboThang, cboNam;
+    private JLabel lblNhanVien;
     private JComboBox<NhanVienDTO> cboNhanVien;
     private JTable table;
     private JButton btnChamCong, btnSua, btnXoa, btnLamMoi;
-    
+    private JPanel pnlTop;
     // Ca làm và giờ mặc định
     private class CaLamInfo {
         String tenCa;
@@ -44,18 +49,26 @@ public class PnChamCong extends JPanel {
     
     private final Map<String, CaLamInfo> DANH_SACH_CA = new LinkedHashMap<>();
     
-    public PnChamCong(PhanQuyen pq) {
+    public PnChamCong(PhanQuyen pq, TaiKhoan tk) {
         this.phanQuyen = pq;
+        this.taiKhoan =tk;
+        this.maNVHienTai = tk.getMaNV();
         chamCongBUS = new ChamCongBUS();
         nhanVienBUS = new NhanVienBUS();
-        
+        this.isQuanLy = pq.isNsXemDanhSach() || pq.isNsThem() || pq.isNsXoa();
         // Khởi tạo danh sách ca làm
         DANH_SACH_CA.put("Ca sáng", new CaLamInfo("Ca sáng", "08:00:00", "12:00:00"));
         DANH_SACH_CA.put("Ca chiều", new CaLamInfo("Ca chiều", "13:00:00", "17:00:00"));
         DANH_SACH_CA.put("Cả ngày", new CaLamInfo("Cả ngày", "08:00:00", "17:00:00"));
         
         initComponents();
-        loadNhanVien();
+        if (isQuanLy) {
+            loadNhanVien();            // Load danh sách nhân viên vào combobox
+        } else {
+          
+            pnlTop.remove(cboNhanVien);
+            pnlTop.remove(lblNhanVien);
+        }
         loadData();
         addEvents();
         configureByPermission();
@@ -66,7 +79,7 @@ public class PnChamCong extends JPanel {
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         // Panel trên cùng
-        JPanel pnlTop = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 5));
+        pnlTop = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 5));
         pnlTop.add(new JLabel("Tháng:"));
         cboThang = new JComboBox<>();
         for (int i = 1; i <= 12; i++) cboThang.addItem(i);
@@ -79,8 +92,9 @@ public class PnChamCong extends JPanel {
         for (int i = year - 5; i <= year + 5; i++) cboNam.addItem(i);
         cboNam.setSelectedItem(year);
         pnlTop.add(cboNam);
-
-        pnlTop.add(new JLabel("Nhân viên:"));
+        
+        lblNhanVien = new JLabel("Nhân viên:");
+        pnlTop.add(lblNhanVien);
         cboNhanVien = new JComboBox<>();
         cboNhanVien.setRenderer(new DefaultListCellRenderer() {
             @Override
@@ -150,12 +164,20 @@ public class PnChamCong extends JPanel {
     }
 
     private void loadData() {
-        if (cboNhanVien.getSelectedItem() == null) return;
-        NhanVienDTO nv = (NhanVienDTO) cboNhanVien.getSelectedItem();
+        int maNV;
+        
+        if (isQuanLy) {
+            if (cboNhanVien.getSelectedItem() == null) return;
+            NhanVienDTO nv = (NhanVienDTO) cboNhanVien.getSelectedItem();
+            maNV = nv.getMaNV();
+        } else {
+            maNV = maNVHienTai;
+        }
+
         int thang = (int) cboThang.getSelectedItem();
         int nam = (int) cboNam.getSelectedItem();
 
-        ArrayList<ChamCongDTO> list = chamCongBUS.layChamCongTheoNhanVienThang(nv.getMaNV(), thang, nam);
+        ArrayList<ChamCongDTO> list = chamCongBUS.layChamCongTheoNhanVienThang(maNV, thang, nam);
         model.setRowCount(0);
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -257,18 +279,29 @@ public class PnChamCong extends JPanel {
         });
     }
     
+    private int getSelectedMaNV() {
+        if (isQuanLy) {
+            NhanVienDTO nv = (NhanVienDTO) cboNhanVien.getSelectedItem();
+            return nv != null ? nv.getMaNV() : -1;
+        } else {
+            return maNVHienTai;
+        }
+    }
+    
     // Chấm công cho ngày hôm nay
     private void chamCongHomNay() {
-        if (!phanQuyen.isNsThem()) {
-            JOptionPane.showMessageDialog(this, "Bạn không có quyền thêm chấm công!");
+         boolean coQuyen = isQuanLy ? phanQuyen.isNsThem() : phanQuyen.isNsChamCong();
+        if (!coQuyen) {
+            JOptionPane.showMessageDialog(this, "Bạn không có quyền chấm công!");
             return;
         }
-        
-        NhanVienDTO nv = (NhanVienDTO) cboNhanVien.getSelectedItem();
+
+        int maNV = getSelectedMaNV();
+        if (maNV == -1) return;
         Date homNay = new Date();
         
         // Kiểm tra xem hôm nay đã chấm công chưa
-        ArrayList<ChamCongDTO> list = chamCongBUS.layChamCongTheoNhanVienThang(nv.getMaNV(), 
+        ArrayList<ChamCongDTO> list = chamCongBUS.layChamCongTheoNhanVienThang(maNV, 
             Calendar.getInstance().get(Calendar.MONTH) + 1, 
             Calendar.getInstance().get(Calendar.YEAR));
         
@@ -280,16 +313,16 @@ public class PnChamCong extends JPanel {
                 "Xác nhận", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
                 // Cập nhật lại chấm công hôm nay
-                capNhatChamCongHomNay(nv, homNay);
+                capNhatChamCongHomNay(maNV, homNay);
             }
             return;
         }
         
         // Hiển thị dialog chọn ca làm cho hôm nay
-        hienThiDialogChamCongHomNay(nv, homNay);
+        hienThiDialogChamCongHomNay(maNV, homNay);
     }
     
-    private void hienThiDialogChamCongHomNay(NhanVienDTO nv, Date ngay) {
+    private void hienThiDialogChamCongHomNay(int maNV, Date ngay) {
         JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Chấm công hôm nay", true);
         dialog.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -373,7 +406,7 @@ public class PnChamCong extends JPanel {
             
             try {
                 ChamCongDTO cc = new ChamCongDTO();
-                cc.setMaNV(nv.getMaNV());
+                cc.setMaNV(maNV);
                 cc.setNgayLam(ngay);
                 cc.setCaLam(caLam);
                 cc.setGioVao(Time.valueOf(gioVaoStr));
@@ -397,9 +430,9 @@ public class PnChamCong extends JPanel {
         dialog.setVisible(true);
     }
     
-    private void capNhatChamCongHomNay(NhanVienDTO nv, Date ngay) {
+    private void capNhatChamCongHomNay(int maNV, Date ngay) {
         // Lấy bản ghi chấm công hôm nay để sửa
-        ArrayList<ChamCongDTO> list = chamCongBUS.layChamCongTheoNhanVienThang(nv.getMaNV(), 
+        ArrayList<ChamCongDTO> list = chamCongBUS.layChamCongTheoNhanVienThang(maNV, 
             Calendar.getInstance().get(Calendar.MONTH) + 1, 
             Calendar.getInstance().get(Calendar.YEAR));
         
@@ -611,8 +644,15 @@ public class PnChamCong extends JPanel {
         boolean hasSua = phanQuyen.isNsSua();
         boolean hasXoa = phanQuyen.isNsXoa();
         
-        btnChamCong.setVisible(hasThem);
-        btnSua.setVisible(hasSua);
-        btnXoa.setVisible(hasXoa);
+       if (isQuanLy) {
+            btnChamCong.setVisible(phanQuyen.isNsThem());
+            btnSua.setVisible(phanQuyen.isNsSua());
+            btnXoa.setVisible(phanQuyen.isNsXoa());
+        } else {
+            // Nhân viên thường: chỉ hiện nút Chấm công hôm nay, có thể cho sửa (nếu muốn)
+            btnChamCong.setVisible(phanQuyen.isNsChamCong());
+            btnSua.setVisible(phanQuyen.isNsChamCong());   // Cho phép sửa chấm công của mình
+            btnXoa.setVisible(false);                      // Không cho xóa
+        }
     }
 }

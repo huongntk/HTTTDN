@@ -94,8 +94,6 @@ public class FrmXemLuong extends JFrame {
                 currencyFormat.format(bl.getPhat()),
                 currencyFormat.format(bl.getTongLuong())
             });
-        } else {
-            JOptionPane.showMessageDialog(this, "Chưa có bảng lương cho tháng " + thang + "/" + nam);
         }
     }
 

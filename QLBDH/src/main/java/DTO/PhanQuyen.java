@@ -4,7 +4,7 @@ public class PhanQuyen {
 
     private String maQuyen;
     private String tenQuyen;
-    private boolean nsXemChamCong;
+    
 
     
     
@@ -19,6 +19,7 @@ public class PhanQuyen {
     private boolean nsTinhLuong;
     private boolean nsXemLuongCaNhan;
     private boolean nsInBangLuong;
+    private boolean nsChamCong;
     private boolean nsTaoDonNghi;
     private boolean nsXemDonCuaMinh;        // Xem đơn nghỉ của chính mình
     private boolean nsThongKeNhanSu;  
@@ -107,8 +108,8 @@ public boolean isBhThongKeLoiNhuan() { return bhThongKeLoiNhuan; }
     public boolean isNsXemDanhSach() { return nsXemDanhSach; }
     public void setNsXemDanhSach(boolean value) { this.nsXemDanhSach = value; }
 
-    public boolean isNsChamCong() { return nsXemDanhSach; }
-    public void setNsChamCong(boolean value) { this.nsXemDanhSach = value; }
+    public boolean isNsChamCong() { return nsChamCong; }
+    public void setNsChamCong(boolean value) { this.nsChamCong = value; }
     
     public boolean isNsThem() { return nsThem; }
     public void setNsThem(boolean value) { this.nsThem = value; }
@@ -208,6 +209,7 @@ public boolean isBhThongKeLoiNhuan() { return bhThongKeLoiNhuan; }
     this.nsXemLuongCaNhan = value;
     this.nsInBangLuong = value;
     this.nsTaoDonNghi = value;
+    this.nsChamCong = value;
     this.nsXemDonCuaMinh = value;
     this.nsThongKeNhanSu = value;
     // KHO
