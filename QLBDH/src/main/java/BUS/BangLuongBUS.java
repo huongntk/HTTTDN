@@ -20,6 +20,7 @@ package BUS;
 import DAO.BangLuongDAO;
 import DAO.NhanVienDAO;
 import DAO.LichSuChucVuDAO;
+import DAO.LuongCoBanTheoChucVuDAO;
 import DTO.BangLuongDTO;
 import DTO.NhanVienDTO;
 import DTO.LichSuChucVu;
@@ -32,12 +33,14 @@ public class BangLuongBUS {
     private NhanVienDAO nhanVienDAO;
     private ChamCongBUS chamCongBUS;
     private LichSuChucVuDAO lichSuDAO;
+    private LuongCoBanTheoChucVuDAO luongDAO;
 
     public BangLuongBUS() {
         bangLuongDAO = new BangLuongDAO();
         nhanVienDAO = new NhanVienDAO();
         chamCongBUS = new ChamCongBUS();
         lichSuDAO = new LichSuChucVuDAO();
+        luongDAO = new LuongCoBanTheoChucVuDAO();
     }
 
     /**
@@ -79,8 +82,8 @@ public class BangLuongBUS {
             String maCV = getChucVuAtDate(maNV, start, lichSu);
             if (maCV == null) maCV = nhanVienDAO.selectById(maNV).getMaCV();
             
-            double luongCoBan = nhanVienDAO.getLuongCoBanByChucVu(maCV);
-            double phuCap = nhanVienDAO.getPhuCapByChucVu(maCV);
+            double luongCoBan = luongDAO.getLuongCoBan(maCV);
+            double phuCap = luongDAO.getPhuCap(maCV);
             
             // Số ngày trong khoảng (từ start đến end, bao gồm cả hai)
             int soNgayTrongKhoang = daysBetween(start, end) + 1;
@@ -108,8 +111,8 @@ public class BangLuongBUS {
         bl.setMaNV(maNV);
         bl.setThang(thang);
         bl.setNam(nam);
-        bl.setLuongCoBan(luongHienTai);
-        bl.setPhuCap(phuCapHienTai);
+        bl.setLuongCoBan(tongLuong);
+        bl.setPhuCap(tongPhuCap);
         bl.setThuong(thuong);
         bl.setPhat(phat);
         bl.setTongLuong(tongLuongCuoi);

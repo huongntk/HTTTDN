@@ -4,9 +4,9 @@ import BUS.KhuyenMaiBUS;
 import DTO.KhuyenMai;
 import DTO.PhanQuyen;
 
-import java.awt.event.KeyAdapter; 
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter; 
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Date;
 import java.util.ArrayList;
@@ -15,31 +15,32 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.ButtonGroup;
 
 public class PnKhuyenMai extends javax.swing.JPanel {
+
     private PhanQuyen phanQuyen;
     private KhuyenMaiBUS khuyenMaiBUS;
     private DefaultTableModel modelKhuyenMai;
-    
+
     public PnKhuyenMai(PhanQuyen pq) {
         initComponents();
         this.phanQuyen = pq;
-        javax.swing.table.JTableHeader header = tblDSMaGiam.getTableHeader() ;
+        javax.swing.table.JTableHeader header = tblDSMaGiam.getTableHeader();
         ((javax.swing.table.DefaultTableCellRenderer) header.getDefaultRenderer())
-            .setHorizontalAlignment(javax.swing.JLabel.CENTER);
-            header.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 14));
-            
+                .setHorizontalAlignment(javax.swing.JLabel.CENTER);
+        header.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 14));
+
         ButtonGroup bgTinhTrang = new ButtonGroup();
         bgTinhTrang.add(rdoHoatDong);
         bgTinhTrang.add(rdoKhongHoatDong);
-        
+
         khuyenMaiBUS = new KhuyenMaiBUS();
         modelKhuyenMai = (DefaultTableModel) tblDSMaGiam.getModel();
-        
+
         loadDataKhuyenMai();
-        
+
         addEvents();
         configureByPermission();
     }
-    
+
     private void loadDataKhuyenMai() {
         modelKhuyenMai.setRowCount(0); // Xóa dữ liệu cũ
 
@@ -47,13 +48,13 @@ public class PnKhuyenMai extends javax.swing.JPanel {
 
         for (KhuyenMai km : danhSach) {
             String tinhTrang = km.isTinhTrang() ? "Hoạt động" : "Không hoạt động";
-            
+
             Object[] row = new Object[]{
                 km.getMaGG(),
                 km.getTenGG(),
-                km.getPhanTramGiam() + "%",    // Hiển thị % giảm
+                km.getPhanTramGiam() + "%", // Hiển thị % giảm
                 km.getDieuKien(),
-                km.getNgayBD(),                // Hiển thị trực tiếp java.util.Date
+                km.getNgayBD(), // Hiển thị trực tiếp java.util.Date
                 km.getNgayKT(),
                 tinhTrang
             };
@@ -61,17 +62,18 @@ public class PnKhuyenMai extends javax.swing.JPanel {
             modelKhuyenMai.addRow(row);
         }
     }
+
     private void configureByPermission() {
-    
-    boolean hasFullAccess = phanQuyen.isQLKhuyenMai();
-    btnThem.setVisible(hasFullAccess);
-    btnSua.setVisible(hasFullAccess);
-    btnXoa.setVisible(hasFullAccess);
-    btnLamMoi.setVisible(true); // ai cũng có thể làm mới
-}
-    
+
+        boolean hasFullAccess = phanQuyen.isQLKhuyenMai();
+        btnThem.setVisible(hasFullAccess);
+        btnSua.setVisible(hasFullAccess);
+        btnXoa.setVisible(hasFullAccess);
+        btnLamMoi.setVisible(true); // ai cũng có thể làm mới
+    }
+
     private void timKiemData(String tuKhoa) {
-        modelKhuyenMai.setRowCount(0); 
+        modelKhuyenMai.setRowCount(0);
         ArrayList<KhuyenMai> danhSach = khuyenMaiBUS.timKiemKhuyenMai(tuKhoa);
 
         for (KhuyenMai km : danhSach) {
@@ -80,9 +82,9 @@ public class PnKhuyenMai extends javax.swing.JPanel {
             Object[] row = new Object[]{
                 km.getMaGG(),
                 km.getTenGG(),
-                km.getPhanTramGiam() + "%",    // Hiển thị % giảm
+                km.getPhanTramGiam() + "%", // Hiển thị % giảm
                 km.getDieuKien(),
-                km.getNgayBD(),                // Hiển thị trực tiếp java.util.Date
+                km.getNgayBD(), // Hiển thị trực tiếp java.util.Date
                 km.getNgayKT(),
                 tinhTrang
             };
@@ -98,21 +100,21 @@ public class PnKhuyenMai extends javax.swing.JPanel {
 
         dcNgayBD.setDate(null); // Xóa ngày bắt đầu
         dcNgayKT.setDate(null); // Xóa ngày kết thúc
-        
+
         rdoHoatDong.setSelected(true);
 
         tblDSMaGiam.clearSelection();       // Xóa chọn trên JTable
     }
-    
+
     private void addEvents() {
-        
+
         tblDSMaGiam.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 int selectedRow = tblDSMaGiam.getSelectedRow();
                 if (selectedRow != -1) {
                     String maGG = modelKhuyenMai.getValueAt(selectedRow, 0).toString();
-                    
+
                     ArrayList<KhuyenMai> danhSach = khuyenMaiBUS.layDanhSachKhuyenMai();
                     KhuyenMai km = null;
                     for (KhuyenMai item : danhSach) {
@@ -121,7 +123,7 @@ public class PnKhuyenMai extends javax.swing.JPanel {
                             break;
                         }
                     }
-                    
+
                     if (km != null) {
                         txtMaGiam.setText(String.valueOf(km.getMaGG()));
                         txtTenGiam.setText(km.getTenGG());
@@ -140,16 +142,16 @@ public class PnKhuyenMai extends javax.swing.JPanel {
                 }
             }
         });
-        
+
         btnThem.addActionListener(e -> {
             String ten = txtTenGiam.getText().trim();
             int phanTram = Integer.parseInt(txtPhanTramGiam.getText().trim());
             int dieuKien = Integer.parseInt(txtDieuKienGiam.getText().trim());
-            
+
             Date ngayBD = dcNgayBD.getDate();
             Date ngayKT = dcNgayKT.getDate();
             boolean tinhTrang = rdoHoatDong.isSelected();
-            
+
             KhuyenMai km = new KhuyenMai(0, ten, phanTram, dieuKien, ngayBD, ngayKT, tinhTrang);
 
             String result = khuyenMaiBUS.themKhuyenMai(km);
@@ -166,17 +168,17 @@ public class PnKhuyenMai extends javax.swing.JPanel {
                 JOptionPane.showMessageDialog(this, "Vui lòng chọn khuyến mãi cần sửa", "Lỗi", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            
+
             String ten = txtTenGiam.getText().trim();
             int phanTram = Integer.parseInt(txtPhanTramGiam.getText().trim());
             int dieuKien = Integer.parseInt(txtDieuKienGiam.getText().trim());
             Date ngayBD = dcNgayBD.getDate();
             Date ngayKT = dcNgayKT.getDate();
             boolean tinhTrang = rdoHoatDong.isSelected();
-            
+
             int maGG = Integer.parseInt(txtMaGiam.getText());
             KhuyenMai km = new KhuyenMai(maGG, ten, phanTram, dieuKien, ngayBD, ngayKT, tinhTrang);
-            
+
             String result = khuyenMaiBUS.suaKhuyenMai(km);
             JOptionPane.showMessageDialog(this, result);
 
@@ -202,7 +204,7 @@ public class PnKhuyenMai extends javax.swing.JPanel {
                 int maGG = Integer.parseInt(txtMaGiam.getText());
                 String result = khuyenMaiBUS.xoaKhuyenMai(maGG);
                 JOptionPane.showMessageDialog(this, result);
-                
+
                 if (result.contains("thành công")) {
                     loadDataKhuyenMai();
                     lamMoiFormKhuyenMai();
@@ -212,15 +214,15 @@ public class PnKhuyenMai extends javax.swing.JPanel {
 
         btnLamMoi.addActionListener(e -> {
             loadDataKhuyenMai();
-            lamMoiFormKhuyenMai(); 
+            lamMoiFormKhuyenMai();
             txtTuKhoa.setText("");
         });
-        
+
         txtTuKhoa.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
                 String tuKhoa = txtTuKhoa.getText().trim();
-                timKiemData(tuKhoa); 
+                timKiemData(tuKhoa);
             }
         });
     }

@@ -15,7 +15,7 @@ public class ChucVuBUS {
         return chucVuDAO.selectAll();
     }
 
-    public ChucVu layChucVuTheoMa(int maCV) {
+    public ChucVu layChucVuTheoMa(String maCV) {
         return chucVuDAO.selectById(maCV);
     }
 
@@ -27,7 +27,7 @@ public class ChucVuBUS {
         return chucVuDAO.update(cv) > 0;
     }
 
-    public boolean xoaChucVu(int maCV) {
+    public boolean xoaChucVu(String maCV) {
         return chucVuDAO.delete(maCV) > 0;
     }
 

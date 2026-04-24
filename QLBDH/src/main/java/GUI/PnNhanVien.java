@@ -19,9 +19,15 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
@@ -93,8 +99,7 @@ public class PnNhanVien extends javax.swing.JPanel {
     
         boolean coQuyenXemDanhSach = phanQuyen.isNsXemDanhSach();
         
-        CardLayout cl = (CardLayout) pnlRight.getLayout();
-        
+               
         pnlBang.setVisible(coQuyenXemDanhSach);
         lblTieuDeBang.setVisible(coQuyenXemDanhSach);
         jScrollPane1.setVisible(coQuyenXemDanhSach);
@@ -103,10 +108,12 @@ public class PnNhanVien extends javax.swing.JPanel {
         
         if (coQuyenXemDanhSach) {
             // Màn hình Quản lý
+            CardLayout cl = (CardLayout) pnlRight.getLayout();
             cl.show(pnlRight, "DanhSachNhanVien");
             refreshThongTinCaNhan();
         } else {
             // Màn hình Nhân viên thường
+            CardLayout cl = (CardLayout) pnlRight.getLayout();
             cl.show(pnlRight, "DonNghiCaNhan");
             loadDanhSachDonNghiCaNhan(); // Load data đơn nghỉ của riêng NV đó
             
@@ -266,17 +273,133 @@ public class PnNhanVien extends javax.swing.JPanel {
         });
 
         btnThem.addActionListener(e -> {
-            NhanVienDTO nv = getNhanVienFromForm();
-            if (nv == null) return; 
+        // Lấy Frame cha để JDialog modal hoạt động đúng
+        java.awt.Window parentWindow = SwingUtilities.getWindowAncestor(this);
+        java.awt.Frame parentFrame = (parentWindow instanceof java.awt.Frame) ? (java.awt.Frame) parentWindow : null;
 
-            String result = nhanVienBUS.themNhanVien(nv);
-            JOptionPane.showMessageDialog(this, result);
-            
-            if (result.contains("thành công")) {
-                loadData();
-                lamMoiForm();
+        // Tạo JDialog modal
+        JDialog dialog = new JDialog(parentFrame, "Thêm nhân viên mới", true);
+        dialog.setSize(450, 400);
+        dialog.setLocationRelativeTo(this);
+        dialog.setLayout(new java.awt.BorderLayout());
+
+        // Panel chứa form nhập liệu
+        JPanel formPanel = new JPanel(new java.awt.GridLayout(8, 2, 10, 10));
+        formPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        // Các trường nhập liệu
+        JTextField txtDialogHo = new JTextField();
+        JTextField txtDialogTen = new JTextField();
+        JTextField txtDialogSDT = new JTextField();
+        JRadioButton rdoDialogNam = new JRadioButton("Nam", true);
+        JRadioButton rdoDialogNu = new JRadioButton("Nữ");
+        javax.swing.ButtonGroup bgGioiTinh = new javax.swing.ButtonGroup();
+        bgGioiTinh.add(rdoDialogNam);
+        bgGioiTinh.add(rdoDialogNu);
+        JComboBox<String> cboDialogChucVu = new JComboBox<>();
+        // Load danh sách chức vụ
+        ArrayList<String> chucVuList = nhanVienBUS.layDanhSachChucVu();
+        for (String cv : chucVuList) cboDialogChucVu.addItem(cv);
+        JTextField txtDialogTaiKhoan = new JTextField();
+        JPasswordField txtDialogMatKhau = new JPasswordField();
+        JRadioButton rdoDialogDangLam = new JRadioButton("Đang làm", true);
+        JRadioButton rdoDialogNghi = new JRadioButton("Nghỉ việc");
+        javax.swing.ButtonGroup bgTrangThai = new javax.swing.ButtonGroup();
+        bgTrangThai.add(rdoDialogDangLam);
+        bgTrangThai.add(rdoDialogNghi);
+
+        // Thêm label + field vào form
+        formPanel.add(new JLabel("Họ:"));
+        formPanel.add(txtDialogHo);
+        formPanel.add(new JLabel("Tên:"));
+        formPanel.add(txtDialogTen);
+        formPanel.add(new JLabel("Số điện thoại:"));
+        formPanel.add(txtDialogSDT);
+        formPanel.add(new JLabel("Giới tính:"));
+        JPanel pnlGioiTinh = new JPanel();
+        pnlGioiTinh.add(rdoDialogNam);
+        pnlGioiTinh.add(rdoDialogNu);
+        formPanel.add(pnlGioiTinh);
+        formPanel.add(new JLabel("Chức vụ:"));
+        formPanel.add(cboDialogChucVu);
+        formPanel.add(new JLabel("Tên tài khoản:"));
+        formPanel.add(txtDialogTaiKhoan);
+        formPanel.add(new JLabel("Mật khẩu:"));
+        formPanel.add(txtDialogMatKhau);
+        formPanel.add(new JLabel("Trạng thái:"));
+        JPanel pnlTrangThai = new JPanel();
+        pnlTrangThai.add(rdoDialogDangLam);
+        pnlTrangThai.add(rdoDialogNghi);
+        formPanel.add(pnlTrangThai);
+
+        dialog.add(formPanel, BorderLayout.CENTER);
+
+        // Panel nút Lưu / Hủy
+        JPanel btnPanel = new JPanel();
+        JButton btnLuu = new JButton("Lưu");
+        btnLuu.setFont(new java.awt.Font("Segoe UI", 0, 14));
+        btnLuu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/diskette.png")));
+        JButton btnHuy = new JButton("Hủy");
+        btnHuy.setFont(new java.awt.Font("Segoe UI", 0, 14));
+        btnHuy.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/close.png")));
+        btnPanel.add(btnLuu);
+        btnPanel.add(btnHuy);
+        dialog.add(btnPanel, BorderLayout.SOUTH);
+
+        // Xử lý nút Lưu
+        btnLuu.addActionListener(ev -> {
+            // Lấy dữ liệu và validate
+            String ho = txtDialogHo.getText().trim();
+            String ten = txtDialogTen.getText().trim();
+            String sdt = txtDialogSDT.getText().trim();
+
+            if (ho.isEmpty() || ten.isEmpty() || sdt.isEmpty()) {
+                JOptionPane.showMessageDialog(dialog, "Họ, tên, số điện thoại không được để trống!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (!sdt.matches("^0[0-9]{9,10}$")) {
+                JOptionPane.showMessageDialog(dialog, "Số điện thoại không hợp lệ! (10-11 số, bắt đầu 0)", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            String gioiTinh = rdoDialogNam.isSelected() ? "Nam" : "Nữ";
+            String tenChucVu = (String) cboDialogChucVu.getSelectedItem();
+            // Ánh xạ chức vụ -> maCV, maQuyen (giống logic cũ)
+            String maCV, maQuyen;
+            switch (tenChucVu) {
+                case "Giám đốc": maCV = "CV01"; maQuyen = "ADMIN"; break;
+                case "Quản lý nhân sự": maCV = "CV02"; maQuyen = "QL_NHANSU"; break;
+                case "Quản lý kho": maCV = "CV03"; maQuyen = "QL_KHO"; break;
+                case "Quản lý bán hàng": maCV = "CV04"; maQuyen = "QL_KINHDOANH"; break;
+                case "Nhân viên bán hàng": maCV = "CV05"; maQuyen = "NVBH"; break;
+                case "Nhân viên nhập hàng": maCV = "CV06"; maQuyen = "NVNH"; break;
+                default: maCV = "CV05"; maQuyen = "NVBH";
+            }
+
+            String tenTaiKhoan = txtDialogTaiKhoan.getText().trim();
+            String matKhau = new String(txtDialogMatKhau.getPassword()).trim();
+            if (tenTaiKhoan.isEmpty() || matKhau.isEmpty()) {
+                JOptionPane.showMessageDialog(dialog, "Tài khoản & mật khẩu không được để trống!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            boolean trangThai = rdoDialogDangLam.isSelected();
+
+            NhanVienDTO nvMoi = new NhanVienDTO(0, ho, ten, gioiTinh, sdt, maCV, maQuyen, trangThai, tenTaiKhoan, matKhau);
+            String ketQua = nhanVienBUS.themNhanVien(nvMoi); // Phải có BUS hỗ trợ thêm
+            JOptionPane.showMessageDialog(dialog, ketQua);
+
+            if (ketQua.contains("thành công")) {
+                dialog.dispose();      // Đóng dialog
+                loadData();            // Cập nhật bảng chính
+                lamMoiForm();          // Xóa form bên trái
             }
         });
+
+        btnHuy.addActionListener(ev -> dialog.dispose());
+
+        dialog.setVisible(true);
+    });
         
         btnNopDonNghi.addActionListener(e -> {
             String loaiNghi = (String) cboLoaiNghi.getSelectedItem();
@@ -437,7 +560,7 @@ public class PnNhanVien extends javax.swing.JPanel {
                 loadDanhSachDonNghiCaNhan();
             } else {
                 // Nếu có quyền xem danh sách, chỉ cần load lại danh sách và làm mới form
-                lamMoiForm();
+                refreshThongTinCaNhan();
             }        
         });
 

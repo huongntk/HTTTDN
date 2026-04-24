@@ -72,9 +72,7 @@ public class ChamCongDAO {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            closeResultSet(rs);
-        }
+        } 
         return list;
     }
 

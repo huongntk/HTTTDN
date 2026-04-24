@@ -60,6 +60,10 @@ public class FrmInBangLuong extends JFrame {
     }
 
     private void inBangLuong() {
+        if (table.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(this, "Không có dữ liệu để in.");
+            return;
+        }
         try {
             MessageFormat header = new MessageFormat("BẢNG LƯƠNG NHÂN VIÊN - THÁNG " + cbThang.getSelectedItem() + "/" + cbNam.getSelectedItem());
             MessageFormat footer = new MessageFormat("Trang {0}");

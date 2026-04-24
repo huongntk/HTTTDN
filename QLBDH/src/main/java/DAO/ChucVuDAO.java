@@ -23,7 +23,7 @@ public class ChucVuDAO {
         return list;
     }
     
-    public ChucVu selectById(int maCV) {
+    public ChucVu selectById(String maCV) {
         String sql = "SELECT * FROM ChucVu WHERE MaCV = ?";
         try (ResultSet rs = DataProvider.executeQuery(sql, maCV)) {
             if (rs.next()) {
@@ -65,7 +65,7 @@ public class ChucVuDAO {
         return DataProvider.executeUpdate(sql, cv.getTenCV(), cv.getMaCV());
     }
     
-    public int delete(int maCV) {
+    public int delete(String maCV) {
         String sql = "DELETE FROM ChucVu WHERE MaCV = ?";
         return DataProvider.executeUpdate(sql, maCV);
     }

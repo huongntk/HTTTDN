@@ -1,9 +1,9 @@
 package GUI;
 
 import BUS.KhuyenMaiBUS;
-import BUS.HoaDonBUS; 
+import BUS.HoaDonBUS;
 import BUS.KhachHangBUS;
-import DTO.CTHoaDon;  
+import DTO.CTHoaDon;
 import DTO.HoaDon;
 import DTO.KhachHangDTO;
 import DTO.KhuyenMai;
@@ -22,42 +22,43 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 public class PnHoaDonForm extends javax.swing.JPanel {
+
     private PhanQuyen phanQuyen;
     private HoaDonBUS hoaDonBUS = new HoaDonBUS();
     // Trong lớp PnBanHangForm hoặc lớp quản lý tab Hóa đơn
-    private DefaultTableModel modelHoaDon; 
+    private DefaultTableModel modelHoaDon;
     private DefaultTableModel modelCTHoaDon;
-    private final DecimalFormat currencyFormat = new DecimalFormat("#,### đ"); 
+    private final DecimalFormat currencyFormat = new DecimalFormat("#,### đ");
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-    private DefaultComboBoxModel<String> modelKhachHang; 
+    private DefaultComboBoxModel<String> modelKhachHang;
     private DefaultComboBoxModel<String> modelMaGiamGia;
     private KhachHangBUS khachHangBUS = new KhachHangBUS();
     private KhuyenMaiBUS khuyenmaiBUS = new KhuyenMaiBUS();
-    
+
     public PnHoaDonForm(PhanQuyen pq) {
         this.phanQuyen = pq;
         initComponents();
-        
+
         modelKhachHang = new DefaultComboBoxModel<>();
         cboMaKH.setModel(modelKhachHang);
-        
+
         modelMaGiamGia = new DefaultComboBoxModel<>();
         cboGiamGia.setModel(modelMaGiamGia);
 
         loadDataToCombobox();
-        javax.swing.table.JTableHeader header = tblChiTietHD.getTableHeader() ;
+        javax.swing.table.JTableHeader header = tblChiTietHD.getTableHeader();
         ((javax.swing.table.DefaultTableCellRenderer) header.getDefaultRenderer())
-            .setHorizontalAlignment(javax.swing.JLabel.CENTER);
-            header.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 14));
-        
-        header = tblHoaDon.getTableHeader();        
+                .setHorizontalAlignment(javax.swing.JLabel.CENTER);
+        header.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 14));
+
+        header = tblHoaDon.getTableHeader();
         ((javax.swing.table.DefaultTableCellRenderer) header.getDefaultRenderer())
-            .setHorizontalAlignment(javax.swing.JLabel.CENTER);
-            header.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 14));
+                .setHorizontalAlignment(javax.swing.JLabel.CENTER);
+        header.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 14));
 
-        modelHoaDon = (DefaultTableModel) tblHoaDon.getModel(); 
+        modelHoaDon = (DefaultTableModel) tblHoaDon.getModel();
 
-        modelCTHoaDon = (DefaultTableModel) tblChiTietHD.getModel(); 
+        modelCTHoaDon = (DefaultTableModel) tblChiTietHD.getModel();
 
         tblHoaDon.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -67,7 +68,7 @@ public class PnHoaDonForm extends javax.swing.JPanel {
                 }
             }
         });
-              
+
         loadDanhSachHoaDon();
         configureByPermission();
     }
@@ -76,9 +77,9 @@ public class PnHoaDonForm extends javax.swing.JPanel {
 
         modelKhachHang.removeAllElements();
 
-        modelKhachHang.addElement("0 - Khách vãng lai"); 
+        modelKhachHang.addElement("0 - Khách vãng lai");
 
-        ArrayList<KhachHangDTO> listKH = khachHangBUS.layDanhSachKhachHang(); 
+        ArrayList<KhachHangDTO> listKH = khachHangBUS.layDanhSachKhachHang();
         for (KhachHangDTO kh : listKH) {
             modelKhachHang.addElement(kh.getMaKH() + " - " + kh.getTen());
         }
@@ -87,13 +88,14 @@ public class PnHoaDonForm extends javax.swing.JPanel {
 
         modelMaGiamGia.addElement("0 - Không áp dụng");
 
-        KhuyenMaiBUS kmBUS = new KhuyenMaiBUS(); 
+        KhuyenMaiBUS kmBUS = new KhuyenMaiBUS();
         ArrayList<KhuyenMai> listGG = kmBUS.layDanhSachKhuyenMai();
-        
+
         for (KhuyenMai gg : listGG) {
             modelMaGiamGia.addElement(gg.getMaGG() + " - " + gg.getTenGG());
         }
     }
+
     private void configureByPermission() {
         if (phanQuyen == null) {
             // Không có quyền, ẩn hết các nút
@@ -107,25 +109,26 @@ public class PnHoaDonForm extends javax.swing.JPanel {
         btnCapNhat.setEnabled(coQuyenBan);
         btnXuatHD.setEnabled(coQuyenBan);
         // Các nút tìm kiếm, làm mới giữ nguyên
-        
+
     }
 
-   public void hienThiHoaDonMoi(int maHD) {
-       
-       loadDanhSachHoaDon();
-       
-       for (int i = 0; i < modelHoaDon.getRowCount(); i++) {
-           int currentMaHD = (int) modelHoaDon.getValueAt(i, 0); 
-           if (currentMaHD == maHD) {
+    public void hienThiHoaDonMoi(int maHD) {
 
-               tblHoaDon.setRowSelectionInterval(i, i);
+        loadDanhSachHoaDon();
 
-               tblHoaDon.scrollRectToVisible(tblHoaDon.getCellRect(i, 0, true));
+        for (int i = 0; i < modelHoaDon.getRowCount(); i++) {
+            int currentMaHD = (int) modelHoaDon.getValueAt(i, 0);
+            if (currentMaHD == maHD) {
 
-               break;
-           }
-       }
-   }
+                tblHoaDon.setRowSelectionInterval(i, i);
+
+                tblHoaDon.scrollRectToVisible(tblHoaDon.getCellRect(i, 0, true));
+
+                break;
+            }
+        }
+    }
+
     // Hàm hỗ trợ định dạng tiền tệ
     private String formatCurrency(double amount) {
         // Cần đảm bảo DecimalFormat đã được import
@@ -137,7 +140,7 @@ public class PnHoaDonForm extends javax.swing.JPanel {
         modelHoaDon.setRowCount(0);
 
         // Giả sử HoaDonBUS có phương thức getAllHoaDon()
-        ArrayList<DTO.HoaDon> listHD = hoaDonBUS.getAllHoaDon(); 
+        ArrayList<DTO.HoaDon> listHD = hoaDonBUS.getAllHoaDon();
 
         // Đổ dữ liệu vào bảng Hóa đơn (tblHoaDon)
         for (DTO.HoaDon hd : listHD) {
@@ -145,15 +148,14 @@ public class PnHoaDonForm extends javax.swing.JPanel {
                 hd.getMaHD(),
                 hd.getMaKH(),
                 // Cần đảm bảo có cột Ngày lập (Giả sử bạn đã thêm)
-                hd.getNgayLap(), 
+                hd.getNgayLap(),
                 // Cần hàm formatCurrency để hiển thị Tổng tiền
-                formatCurrency(hd.getTongTien()), 
-//                hd.getTrangThai() // Nếu có cột trạng thái
+                formatCurrency(hd.getTongTien()), //                hd.getTrangThai() // Nếu có cột trạng thái
             };
             modelHoaDon.addRow(row);
         }
     }
-    
+
     private void tblHoaDonSelectionChanged() {
         int selectedRow = tblHoaDon.getSelectedRow();
 
@@ -176,9 +178,10 @@ public class PnHoaDonForm extends javax.swing.JPanel {
             modelCTHoaDon.setRowCount(0); // Không chọn dòng nào thì xóa bảng chi tiết
         }
     }
+
     public void loadFormHoaDon(int maHD) {
         // 1. Lấy thông tin Hóa đơn (MaHD, MaKH, MaNV, MaGG, TongTien)
-        HoaDon hd = hoaDonBUS.getHoaDonByMaHD(maHD); 
+        HoaDon hd = hoaDonBUS.getHoaDonByMaHD(maHD);
 
         if (hd != null) {
             // 2. Lấy tên tương ứng
@@ -186,18 +189,18 @@ public class PnHoaDonForm extends javax.swing.JPanel {
             String tenNV = hoaDonBUS.getTenNhanVien(hd.getMaNV());
             String tenGG = hoaDonBUS.getTenMaGiamGia(hd.getMaGG()); // Giả định DTO.HoaDon có getMaGG()
             String khItemToSelect = hd.getMaKH() + " - " + tenKH;
-            String nvTextToDisplay = hd.getMaNV()+ " - " + tenNV;
-            String ggItemToSelect = hd.getMaGG()+ " - " + tenGG;
-            
+            String nvTextToDisplay = hd.getMaNV() + " - " + tenNV;
+            String ggItemToSelect = hd.getMaGG() + " - " + tenGG;
+
             // 3. Hiển thị lên giao diện
             // Hiển thị MaHD:
-            txtMaHD.setText(String.valueOf(hd.getMaHD())); 
+            txtMaHD.setText(String.valueOf(hd.getMaHD()));
 
             // Hiển thị MaKH kèm Tên
             modelKhachHang.setSelectedItem(khItemToSelect);
 
             // Hiển thị MaNV kèm Tên
-            txtMaNV.setText(hd.getTenNV()); 
+            txtMaNV.setText(hd.getTenNV());
 
             modelMaGiamGia.setSelectedItem(ggItemToSelect);
 
@@ -209,21 +212,20 @@ public class PnHoaDonForm extends javax.swing.JPanel {
 
             // 4. Load chi tiết hóa đơn vào tblChiTietHD
             // loadCTHoaDon(maHD); // Gọi hàm load chi tiết (tôi giả định hàm này đã tồn tại)
-
         } else {
             // Xử lý không tìm thấy hóa đơn
-            clearHoaDonFields(); 
+            clearHoaDonFields();
         }
     }
-    
+
     public void clearHoaDonFields() {
         // 1. Xóa các trường JTextField/JLabel chứa thông tin Hóa đơn
         txtMaHD.setText("");
         txtMaNV.setText(""); // Mã Nhân viên
 
         // Nếu bạn có trường hiển thị Ngày lập và Tổng tiền là JLabel
-        txtNgayLap.setText("..."); 
-        txtTongTien.setText("0 đ"); 
+        txtNgayLap.setText("...");
+        txtTongTien.setText("0 đ");
         txtTrangThai.setText("");
         txtGhiChu.setText("");
 
@@ -247,11 +249,12 @@ public class PnHoaDonForm extends javax.swing.JPanel {
             tblHoaDon.clearSelection();
         }
     }
+
     private void loadChiTietHoaDon(int maHD) {
         modelCTHoaDon.setRowCount(0);
 
         // Giả sử HoaDonBUS có phương thức getCTHoaDonByMaHD(int maHD)
-        ArrayList<CTHoaDon> listCTHD = hoaDonBUS.getCTHoaDonByMaHD(maHD); 
+        ArrayList<CTHoaDon> listCTHD = hoaDonBUS.getCTHoaDonByMaHD(maHD);
 
         // Đổ dữ liệu vào bảng Chi tiết hóa đơn (tblChiTietHoaDon)
         for (CTHoaDon cthd : listCTHD) {
@@ -269,6 +272,7 @@ public class PnHoaDonForm extends javax.swing.JPanel {
             modelCTHoaDon.addRow(row);
         }
     }
+
     private int getSelectedIdFromCombobox(javax.swing.JComboBox<String> cbo) {
         String selectedItem = (String) cbo.getSelectedItem();
 
@@ -283,6 +287,7 @@ public class PnHoaDonForm extends javax.swing.JPanel {
         }
         return 0; // Trả về 0 cho Mã KH (Khách vãng lai) hoặc Mã GG (Không áp dụng) nếu chuỗi không hợp lệ
     }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -740,7 +745,7 @@ public class PnHoaDonForm extends javax.swing.JPanel {
 
     private void btnCapNhatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCapNhatActionPerformed
         int selectedRow = tblHoaDon.getSelectedRow();
-    
+
         // KIỂM TRA ĐÃ CHỌN DÒNG CHƯA
         if (selectedRow == -1) {
             // Thông báo nếu chưa chọn dòng nào trên bảng
@@ -748,9 +753,9 @@ public class PnHoaDonForm extends javax.swing.JPanel {
             return;
         }
 
-    int maHD = (int) tblHoaDon.getValueAt(selectedRow, 0);
+        int maHD = (int) tblHoaDon.getValueAt(selectedRow, 0);
 
-        HoaDon hd = hoaDonBUS.getHoaDonByMaHD(maHD); 
+        HoaDon hd = hoaDonBUS.getHoaDonByMaHD(maHD);
 
         if (hd != null && "Đã Thanh Toán".equals(hd.getTrangThai())) {
             JOptionPane.showMessageDialog(this, "Hóa đơn đã được xuất và thanh toán, không thể cập nhật.", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
@@ -762,13 +767,13 @@ public class PnHoaDonForm extends javax.swing.JPanel {
         int newMaGG = getSelectedIdFromCombobox(cboGiamGia);
         String ghiChu = txtGhiChu.getText();
         double newTongTien = hoaDonBUS.tinhLaiTongTien(maHD, newMaGG);
-        boolean success = hoaDonBUS.updateKhachHangVaGiamGia(maHD, newMaKH, newMaGG, ghiChu, newTongTien); 
+        boolean success = hoaDonBUS.updateKhachHangVaGiamGia(maHD, newMaKH, newMaGG, ghiChu, newTongTien);
 
         if (success) {
             JOptionPane.showMessageDialog(this, "Cập nhật hóa đơn thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
 
-            loadFormHoaDon(maHD); 
-            hienThiHoaDonMoi(maHD); 
+            loadFormHoaDon(maHD);
+            hienThiHoaDonMoi(maHD);
         } else {
             JOptionPane.showMessageDialog(this, "Cập nhật hóa đơn thất bại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
@@ -787,14 +792,14 @@ public class PnHoaDonForm extends javax.swing.JPanel {
         }
 
         // Lấy Mã Hóa Đơn từ dòng được chọn
-        int maHD =0;
+        int maHD = 0;
         try {
             maHD = Integer.parseInt(tblHoaDon.getValueAt(selectedRow, 0).toString());
-        } catch (NumberFormatException ex){
+        } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn hóa đơn cần cập nhật.", "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
         // Lấy đối tượng HoaDon từ BUS
-        HoaDon hd = hoaDonBUS.getHoaDonByMaHD(maHD); 
+        HoaDon hd = hoaDonBUS.getHoaDonByMaHD(maHD);
 
         // Lấy danh sách CTHoaDon từ BUS
         ArrayList<CTHoaDon> listCT = hoaDonBUS.getCTHoaDonByMaHD(maHD);
@@ -808,8 +813,8 @@ public class PnHoaDonForm extends javax.swing.JPanel {
             dialog.setVisible(true);
 
             // Sau khi dialog đóng, refresh lại bảng nếu cần
-             loadDanhSachHoaDon(); 
-             clearHoaDonFields();
+            loadDanhSachHoaDon();
+            clearHoaDonFields();
         } else {
             JOptionPane.showMessageDialog(this, "Không tìm thấy dữ liệu chi tiết cho Hóa đơn này.", "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
@@ -827,7 +832,7 @@ public class PnHoaDonForm extends javax.swing.JPanel {
     private void btnTimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTimActionPerformed
         String giaTuStr = txtGiaTu.getText().trim();
         String giaDenStr = txtGiaDen.getText().trim();
-        
+
         Date ngayTu = dcNgayTu.getDate();
         Date ngayDen = dcNgayDen.getDate();
 
@@ -842,23 +847,27 @@ public class PnHoaDonForm extends javax.swing.JPanel {
                 giaTu = Double.parseDouble(giaTuStr);
                 giaDen = Double.parseDouble(giaDenStr);
                 if (giaTu > giaDen) {
-                    double tmp = giaTu; giaTu = giaDen; giaDen = tmp;
+                    double tmp = giaTu;
+                    giaTu = giaDen;
+                    giaDen = tmp;
                 }
             }
-            
+
             // Hoán đổi ngày nếu nhập ngược
             if (ngayTu != null && ngayDen != null && ngayTu.after(ngayDen)) {
-                Date tmp = ngayTu; ngayTu = ngayDen; ngayDen = tmp;
+                Date tmp = ngayTu;
+                ngayTu = ngayDen;
+                ngayDen = tmp;
             }
 
             // Duyệt tất cả hóa đơn
             for (HoaDon hd : hoaDonBUS.getAllHoaDon()) {
                 double tongTien = hd.getTongTien();
                 Date ngayLap = hd.getNgayLap();
-                
+
                 boolean matchGia = (giaTu != null && giaDen != null) ? (tongTien >= giaTu && tongTien <= giaDen) : true;
                 boolean matchNgay = (ngayTu != null && ngayDen != null) ? (!ngayLap.before(ngayTu) && !ngayLap.after(ngayDen)) : true;
-                
+
                 if (matchGia && matchNgay) {
                     result.add(hd);
                 }
@@ -866,7 +875,7 @@ public class PnHoaDonForm extends javax.swing.JPanel {
 
             // Xóa bảng cũ
             modelHoaDon.setRowCount(0);
-            
+
             // Kiểm tra kết quả
             if (result.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Không tìm thấy hóa đơn phù hợp!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);

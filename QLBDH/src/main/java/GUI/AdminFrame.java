@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.util.*;
 
 public class AdminFrame extends JFrame {
+
     private TaiKhoan taiKhoan;
     private PhanQuyen phanQuyen; // Có thể không cần dùng chi tiết, admin có toàn quyền
 
@@ -30,7 +31,7 @@ public class AdminFrame extends JFrame {
 
         // ===== Menu bên trái =====
         pnlMenu = new JPanel();
-        pnlMenu.setBackground(new Color(216,191,216));
+        pnlMenu.setBackground(new Color(244, 164, 96));
         pnlMenu.setPreferredSize(new Dimension(220, 0));
         pnlMenu.setLayout(new BoxLayout(pnlMenu, BoxLayout.Y_AXIS));
 
@@ -43,7 +44,7 @@ public class AdminFrame extends JFrame {
         pnlMenu.add(lblWelcome);
 
         // Các nút chức năng
-         JButton btnNhanSu = createMenuButton("Quản lý nhân sự", "/icon/multiple-users.png");
+        JButton btnNhanSu = createMenuButton("Quản lý nhân sự", "/icon/multiple-users.png");
         JButton btnKho = createMenuButton("Quản lý kho", "/icon/boxes.png");
         JButton btnBanHang = createMenuButton("Quản lý bán hàng", "/icon/pay.png");
         JButton btnTaiKhoan = createMenuButton("Quản lý tài khoản", "/icon/user.png");
@@ -96,15 +97,39 @@ public class AdminFrame extends JFrame {
         menuButtons.add(btnThongKe);
 
         // Bắt sự kiện chuyển Panel và gọi hàm làm nổi bật nút
-        btnNhanSu.addActionListener(e -> { cardLayout.show(pnlContent, "nhanSu"); setActiveMenuButton(btnNhanSu); });
-        btnKho.addActionListener(e -> { cardLayout.show(pnlContent, "kho"); setActiveMenuButton(btnKho); });
-        btnBanHang.addActionListener(e -> { cardLayout.show(pnlContent, "banHang"); setActiveMenuButton(btnBanHang); });
-        btnTaiKhoan.addActionListener(e -> { cardLayout.show(pnlContent, "taiKhoan"); setActiveMenuButton(btnTaiKhoan); });
-        btnKhachHang.addActionListener(e -> { cardLayout.show(pnlContent, "khachHang"); setActiveMenuButton(btnKhachHang); });
-        btnGiamGia.addActionListener(e -> { cardLayout.show(pnlContent, "giamGia"); setActiveMenuButton(btnGiamGia); });
-        btnPhanQuyen.addActionListener(e -> { cardLayout.show(pnlContent, "phanQuyen"); setActiveMenuButton(btnPhanQuyen); });
-        btnThongKe.addActionListener(e -> { cardLayout.show(pnlContent, "thongKe"); setActiveMenuButton(btnThongKe); });
-        
+        btnNhanSu.addActionListener(e -> {
+            cardLayout.show(pnlContent, "nhanSu");
+            setActiveMenuButton(btnNhanSu);
+        });
+        btnKho.addActionListener(e -> {
+            cardLayout.show(pnlContent, "kho");
+            setActiveMenuButton(btnKho);
+        });
+        btnBanHang.addActionListener(e -> {
+            cardLayout.show(pnlContent, "banHang");
+            setActiveMenuButton(btnBanHang);
+        });
+        btnTaiKhoan.addActionListener(e -> {
+            cardLayout.show(pnlContent, "taiKhoan");
+            setActiveMenuButton(btnTaiKhoan);
+        });
+        btnKhachHang.addActionListener(e -> {
+            cardLayout.show(pnlContent, "khachHang");
+            setActiveMenuButton(btnKhachHang);
+        });
+        btnGiamGia.addActionListener(e -> {
+            cardLayout.show(pnlContent, "giamGia");
+            setActiveMenuButton(btnGiamGia);
+        });
+        btnPhanQuyen.addActionListener(e -> {
+            cardLayout.show(pnlContent, "phanQuyen");
+            setActiveMenuButton(btnPhanQuyen);
+        });
+        btnThongKe.addActionListener(e -> {
+            cardLayout.show(pnlContent, "thongKe");
+            setActiveMenuButton(btnThongKe);
+        });
+
         btnDoiMatKhau.addActionListener(e -> doiMatKhau());
         btnDangXuat.addActionListener(e -> dangXuat());
 
@@ -116,7 +141,7 @@ public class AdminFrame extends JFrame {
         JButton btn = new JButton(text);
         btn.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         btn.setForeground(Color.DARK_GRAY);
-        btn.setBackground(new Color(216,191,216));
+        btn.setBackground(new Color(244, 164, 96));
         btn.setFocusPainted(false);
         btn.setBorderPainted(false);
         btn.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -137,15 +162,17 @@ public class AdminFrame extends JFrame {
     private ImageIcon loadScaledIcon(String path, int w, int h) {
         try {
             java.net.URL url = getClass().getResource(path);
-            if (url == null) return null;
+            if (url == null) {
+                return null;
+            }
             Image img = new ImageIcon(url).getImage().getScaledInstance(w, h, Image.SCALE_SMOOTH);
             return new ImageIcon(img);
         } catch (Exception e) {
             return null;
         }
     }
-    
-     private void doiMatKhau() {
+
+    private void doiMatKhau() {
         if (this.taiKhoan == null) {
             JOptionPane.showMessageDialog(this, "Không có thông tin tài khoản hiện tại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
@@ -168,19 +195,20 @@ public class AdminFrame extends JFrame {
             new FrmDangNhap().setVisible(true);
         }
     }
+
     private void setActiveMenuButton(JButton activeButton) {
         for (JButton btn : menuButtons) {
             if (btn == activeButton) {
                 // Đổi màu nền (ví dụ: xanh dương nhạt) và đóng khung viền trắng dày 2px
-                btn.setBackground(new Color(123,104,238)); 
+                btn.setBackground(new Color(205, 55, 0));
                 btn.setBorder(BorderFactory.createCompoundBorder(
                         BorderFactory.createLineBorder(Color.WHITE, 2),
                         BorderFactory.createEmptyBorder(8, 8, 8, 8)
                 ));
             } else {
                 // Trả về màu nền xám tối và bỏ khung viền
-                btn.setBackground(new Color(216,191,216)); 
-                btn.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); 
+                btn.setBackground(new Color(244, 164, 96));
+                btn.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
             }
         }
     }

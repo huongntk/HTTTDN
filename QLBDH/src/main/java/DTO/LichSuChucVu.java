@@ -30,7 +30,7 @@ public class LichSuChucVu {
         return maCVCu;
     }
 
-    public void setMaCVCu(String maCVu) {
+    public void setMaCVCu(String maCVCu) {
         this.maCVCu = maCVCu;
     }
 

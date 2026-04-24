@@ -3,11 +3,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package GUI;
+
 import BUS.PhanQuyenBUS;
 import BUS.TaiKhoanBUS;
 import DTO.TaiKhoan;
 import DTO.PhanQuyen;
 import javax.swing.JOptionPane;
+
 public class FrmDangNhap extends javax.swing.JFrame {
 
     public FrmDangNhap() {
@@ -15,7 +17,6 @@ public class FrmDangNhap extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         setupEnterKeyNavigation();
     }
-
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -155,14 +156,13 @@ public class FrmDangNhap extends javax.swing.JFrame {
         TaiKhoanBUS tkBUS = new TaiKhoanBUS();
         PhanQuyenBUS pqBUS = new PhanQuyenBUS();
         TaiKhoan tk = tkBUS.dangNhap(user, pass);
-        
+
         if (tk == null) {
             // 2. Nếu trả về NULL, hiển thị thông báo lỗi
             // Logic kiểm tra rỗng nằm trong tkBUS.dangNhap()
 
             // Tuy nhiên, tkBUS.dangNhap() chỉ in lỗi ra console. 
             // Ta cần phải đọc lỗi đó từ BUS, hoặc thực hiện lại kiểm tra đơn giản tại đây:
-
             if (user.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Vui lòng nhập tên đăng nhập!", "Lỗi Đăng nhập", JOptionPane.ERROR_MESSAGE);
             } else if (pass.isEmpty()) {
@@ -180,10 +180,10 @@ public class FrmDangNhap extends javax.swing.JFrame {
 
             // 2. Nếu không tìm thấy quyền → tạo object mặc định (không cấp quyền gì)
             if (pq == null) {
-                JOptionPane.showMessageDialog(this, 
-                    "Không tìm thấy nhóm quyền '" + tk.getMaQuyen() + "' trong hệ thống.\n" +
-                    "Tài khoản sẽ được mở với quyền mặc định (có thể bị hạn chế).", 
-                    "Cảnh báo phân quyền", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(this,
+                        "Không tìm thấy nhóm quyền '" + tk.getMaQuyen() + "' trong hệ thống.\n"
+                        + "Tài khoản sẽ được mở với quyền mặc định (có thể bị hạn chế).",
+                        "Cảnh báo phân quyền", JOptionPane.WARNING_MESSAGE);
 
                 pq = new PhanQuyen();
                 pq.setTenQuyen(tk.getMaQuyen()); // giữ tên để debug
@@ -193,14 +193,12 @@ public class FrmDangNhap extends javax.swing.JFrame {
             boolean isAdmin = false;
 
             // Cách 1: Kiểm tra theo tên quyền (cách truyền thống, phổ biến)
-            if ("ADMIN".equalsIgnoreCase(tk.getMaQuyen()) || 
-                "QUAN_TRI".equalsIgnoreCase(tk.getMaQuyen()) || 
-                "ADMINISTRATOR".equalsIgnoreCase(tk.getMaQuyen())) {
+            if ("ADMIN".equalsIgnoreCase(tk.getMaQuyen())
+                    || "QUAN_TRI".equalsIgnoreCase(tk.getMaQuyen())
+                    || "ADMINISTRATOR".equalsIgnoreCase(tk.getMaQuyen())) {
                 isAdmin = true;
-            }
-
-            // Cách 2: Kiểm tra theo quyền đặc trưng của admin (ưu tiên dùng cách này nếu có)
-            else if (pq.isPqQuanLyPhanQuyen() ) {
+            } // Cách 2: Kiểm tra theo quyền đặc trưng của admin (ưu tiên dùng cách này nếu có)
+            else if (pq.isPqQuanLyPhanQuyen()) {
                 isAdmin = true;
             }
 
@@ -228,14 +226,14 @@ public class FrmDangNhap extends javax.swing.JFrame {
             this.dispose(); // Đóng form đăng nhập
         }
     }//GEN-LAST:event_btnLoginActionPerformed
-    
+
     private void txtPassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPassActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtPassActionPerformed
 
     /**
-     * @param args the command line arguments
-//     */
+     * @param args the command line arguments //
+     */
 //    public static void main(String args[]) {
 //        /* Set the Nimbus look and feel */
 //        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">

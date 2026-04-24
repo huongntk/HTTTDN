@@ -2,6 +2,7 @@ package GUI;
 
 import BUS.BangLuongBUS;
 import BUS.LichSuChucVuBUS;
+import BUS.LuongCoBanTheoChucVuBUS;
 import BUS.NhanVienBUS;
 import DAO.LuongCoBanTheoChucVuDAO;
 import DTO.BangLuongDTO;
@@ -25,6 +26,7 @@ public class PnLuong extends JPanel {
     private NhanVienBUS nhanVienBUS;
     private BangLuongBUS bangLuongBUS;
     private LichSuChucVuBUS lichSuCVBUS;
+    private LuongCoBanTheoChucVuBUS luongCVBUS;
     private DefaultTableModel modelNhanVien;
     private DefaultTableModel modelLuong;
     private DefaultTableModel modelLichSuCV;
@@ -57,6 +59,7 @@ public class PnLuong extends JPanel {
         nhanVienBUS = new NhanVienBUS();
         bangLuongBUS = new BangLuongBUS();
         lichSuCVBUS = new LichSuChucVuBUS();
+        luongCVBUS = new LuongCoBanTheoChucVuBUS();
         initComponents();
         loadData();
         addEvents();
@@ -427,7 +430,7 @@ public class PnLuong extends JPanel {
             lblTongLuong.setText("0");
         });
         btnCauHinhLuong.addActionListener(e -> moDialogCauHinhLuong());
-        btnLuuThuongPhat.addActionListener(e -> luuThuongPhat());
+        btnLuuThuongPhat.addActionListener(e -> luuThuongPhatXuongDB());
         txtTimKiem.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 timKiem(txtTimKiem.getText().trim());
@@ -453,61 +456,35 @@ public class PnLuong extends JPanel {
             }
         });
     }
-    
-    private void luuThuongPhat() {
+    private void luuThuongPhatXuongDB() {
         int selectedRow = tblNhanVien.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn nhân viên cần sửa thưởng/phạt", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+        if (selectedRow == -1) return;
+        int maNV = (int) modelNhanVien.getValueAt(selectedRow, 0);
+        int thang = (int) cboThang.getSelectedItem();
+        int nam = (int) cboNam.getSelectedItem();
+
+        BangLuongDTO bl = bangLuongBUS.getByMaNVAndMonth(maNV, thang, nam);
+        if (bl == null) {
+            JOptionPane.showMessageDialog(this, "Chưa có bảng lương tháng này. Vui lòng tính lương trước.");
             return;
         }
-
-        // Lấy giá trị hiện tại
-        double thuongHienTai = 0;
-        double phatHienTai = 0;
         try {
-            thuongHienTai = Double.parseDouble(txtThuong.getText().trim());
-            phatHienTai = Double.parseDouble(txtPhat.getText().trim());
-        } catch (NumberFormatException ignored) {}
-
-        // Tạo dialog nhập liệu
-        JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Sửa thưởng/phạt", true);
-        dialog.setLayout(new GridLayout(3, 2, 10, 10));
-        dialog.setSize(300, 150);
-        dialog.setLocationRelativeTo(this);
-
-        JTextField txtThuongMoi = new JTextField(String.format("%.0f", thuongHienTai));
-        JTextField txtPhatMoi = new JTextField(String.format("%.0f", phatHienTai));
-
-        dialog.add(new JLabel("Thưởng (+):"));
-        dialog.add(txtThuongMoi);
-        dialog.add(new JLabel("Phạt (-):"));
-        dialog.add(txtPhatMoi);
-
-        JButton btnOk = new JButton("OK");
-        JButton btnCancel = new JButton("Hủy");
-        dialog.add(btnOk);
-        dialog.add(btnCancel);
-
-        btnOk.addActionListener(ev -> {
-            try {
-                double thuong = Double.parseDouble(txtThuongMoi.getText().trim());
-                double phat = Double.parseDouble(txtPhatMoi.getText().trim());
-                if (thuong < 0 || phat < 0) {
-                    JOptionPane.showMessageDialog(dialog, "Giá trị thưởng và phạt không được âm!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-                txtThuong.setText(String.format("%.0f", thuong));
-                txtPhat.setText(String.format("%.0f", phat));
-                tinhTongLuongTamThoi(); 
-                dialog.dispose();
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(dialog, "Vui lòng nhập số hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            }
-        });
-        btnCancel.addActionListener(ev -> dialog.dispose());
-
-        dialog.setVisible(true);
+            double thuong = Double.parseDouble(txtThuong.getText().trim());
+            double phat = Double.parseDouble(txtPhat.getText().trim());
+            bl.setThuong(thuong);
+            bl.setPhat(phat);
+            // Tính lại tổng lương dựa trên lương cơ bản và phụ cấp đã lưu (nên dùng đúng giá trị đã lưu)
+            double tong = bl.getLuongCoBan() + bl.getPhuCap() + thuong - phat;
+            if (tong < 0) tong = 0;
+            bl.setTongLuong(tong);
+            bangLuongBUS.luuBangLuong(bl);
+            lblTongLuong.setText(String.format("%,.0f", tong));
+            JOptionPane.showMessageDialog(this, "Đã lưu thưởng/phạt thành công.");
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Số không hợp lệ.");
+        }
     }
+    
 
     private void configureByPermission() {
         btnTinhLuong.setVisible(phanQuyen.isNsTinhLuong());
@@ -521,8 +498,8 @@ public class PnLuong extends JPanel {
                 self.add(nv);
                 currentNhanVienList = self;
                 modelNhanVien.setRowCount(0);
-                double luongCB = nhanVienBUS.getLuongCoBanByChucVu(nv.getMaCV());
-                double phuCap = nhanVienBUS.getPhuCapByChucVu(nv.getMaCV());
+                double luongCB = luongCVBUS.getLuongCoBan(nv.getMaCV());
+                double phuCap = luongCVBUS.getPhuCap(nv.getMaCV());
                 modelNhanVien.addRow(new Object[]{nv.getMaNV(), nv.getHo() + " " + nv.getTen(), nv.getMaCV(), luongCB, phuCap});
                 tblNhanVien.setEnabled(false);
                 txtThuong.setEditable(false);

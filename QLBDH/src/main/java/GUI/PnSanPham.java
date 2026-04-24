@@ -26,6 +26,7 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.*;
 
 public class PnSanPham extends javax.swing.JPanel {
+
     private ArrayList<SanPhamDTO> list;
     SanPhamBUS bus = new SanPhamBUS();
     CTSanPhamBUS ctbus = new CTSanPhamBUS();
@@ -496,8 +497,8 @@ public class PnSanPham extends javax.swing.JPanel {
             return;
         }
         int confirm = JOptionPane.showConfirmDialog(null,
-            "B\u1ea1n c\u00f3 ch\u1eafc ch\u1eafn mu\u1ed1n x\u00f3a s\u1ea3n ph\u1ea9m n\u00e0y kh\u00f4ng?",
-            "X\u00e1c nh\u1eadn x\u00f3a", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+                "B\u1ea1n c\u00f3 ch\u1eafc ch\u1eafn mu\u1ed1n x\u00f3a s\u1ea3n ph\u1ea9m n\u00e0y kh\u00f4ng?",
+                "X\u00e1c nh\u1eadn x\u00f3a", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         if (confirm == JOptionPane.YES_OPTION) {
             int selectedID = Integer.parseInt(jTable1.getValueAt(row, 0).toString());
             bus.deleteSanPham(selectedID);
@@ -519,7 +520,9 @@ public class PnSanPham extends javax.swing.JPanel {
         DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
             @Override
             public Class<?> getColumnClass(int columnIndex) {
-                if (columnIndex == 8) return ImageIcon.class;
+                if (columnIndex == 8) {
+                    return ImageIcon.class;
+                }
                 return Object.class;
             }
         };
@@ -649,7 +652,9 @@ public class PnSanPham extends javax.swing.JPanel {
         DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
             @Override
             public Class<?> getColumnClass(int columnIndex) {
-                if (columnIndex == 8) return ImageIcon.class;
+                if (columnIndex == 8) {
+                    return ImageIcon.class;
+                }
                 return Object.class;
             }
         };
@@ -692,38 +697,65 @@ public class PnSanPham extends javax.swing.JPanel {
     }
 
     private void clearDetailForm() {
-        jTextField2.setText(""); jTextField3.setText(""); jTextField4.setText("");
-        jTextField5.setText(""); jTextField6.setText(""); jTextField7.setText("");
-        jTextField8.setText(""); jTextField9.setText(""); jTextField10.setText("");
-        jTextField11.setText(""); jTextField12.setText(""); jTextField13.setText("");
-        jTextField14.setText(""); jTextField15.setText("");
+        jTextField2.setText("");
+        jTextField3.setText("");
+        jTextField4.setText("");
+        jTextField5.setText("");
+        jTextField6.setText("");
+        jTextField7.setText("");
+        jTextField8.setText("");
+        jTextField9.setText("");
+        jTextField10.setText("");
+        jTextField11.setText("");
+        jTextField12.setText("");
+        jTextField13.setText("");
+        jTextField14.setText("");
+        jTextField15.setText("");
     }
 
     private void setDetailForm(String value) {
-        jTextField2.setText(value); jTextField3.setText(value); jTextField4.setText(value);
-        jTextField5.setText(value); jTextField6.setText(value); jTextField7.setText(value);
-        jTextField8.setText(value); jTextField9.setText(value); jTextField10.setText(value);
-        jTextField11.setText(value); jTextField12.setText(value); jTextField13.setText(value);
-        jTextField14.setText(value); jTextField15.setText(value);
+        jTextField2.setText(value);
+        jTextField3.setText(value);
+        jTextField4.setText(value);
+        jTextField5.setText(value);
+        jTextField6.setText(value);
+        jTextField7.setText(value);
+        jTextField8.setText(value);
+        jTextField9.setText(value);
+        jTextField10.setText(value);
+        jTextField11.setText(value);
+        jTextField12.setText(value);
+        jTextField13.setText(value);
+        jTextField14.setText(value);
+        jTextField15.setText(value);
     }
 
     private void setEditable(boolean editable) {
-        jTextField2.setEditable(editable); jTextField3.setEditable(editable);
-        jTextField4.setEditable(editable); jTextField5.setEditable(editable);
-        jTextField6.setEditable(editable); jTextField7.setEditable(editable);
-        jTextField8.setEditable(editable); jTextField9.setEditable(editable);
-        jTextField10.setEditable(editable); jTextField11.setEditable(editable);
-        jTextField12.setEditable(editable); jTextField13.setEditable(editable);
-        jTextField14.setEditable(editable); jTextField15.setEditable(editable);
+        jTextField2.setEditable(editable);
+        jTextField3.setEditable(editable);
+        jTextField4.setEditable(editable);
+        jTextField5.setEditable(editable);
+        jTextField6.setEditable(editable);
+        jTextField7.setEditable(editable);
+        jTextField8.setEditable(editable);
+        jTextField9.setEditable(editable);
+        jTextField10.setEditable(editable);
+        jTextField11.setEditable(editable);
+        jTextField12.setEditable(editable);
+        jTextField13.setEditable(editable);
+        jTextField14.setEditable(editable);
+        jTextField15.setEditable(editable);
     }
 
     private void loadData() {
         loaiMap.clear();
-        for (Loai l : new LoaiDAO().getAll())
+        for (Loai l : new LoaiDAO().getAll()) {
             loaiMap.put(l.getMaLoai(), l.getTenLoai());
+        }
         nccMap.clear();
-        for (DTO.NhaCungCapDTO n : new NhaCungCapDAO().getAll())
+        for (DTO.NhaCungCapDTO n : new NhaCungCapDAO().getAll()) {
             nccMap.put(n.getMaNCC(), n.getTenNCC());
+        }
         loadDataToTable();
         loadDataToDetailForm();
         setEditable(false);
@@ -740,9 +772,14 @@ public class PnSanPham extends javax.swing.JPanel {
 
         ArrayList<Loai> dsLoai = new LoaiDAO().getAll();
         JComboBox<Loai> cbLoai = new JComboBox<>();
-        for (Loai l : dsLoai) cbLoai.addItem(l);
+        for (Loai l : dsLoai) {
+            cbLoai.addItem(l);
+        }
         for (int i = 0; i < dsLoai.size(); i++) {
-            if (dsLoai.get(i).getMaLoai() == p.getMaLoai()) { cbLoai.setSelectedIndex(i); break; }
+            if (dsLoai.get(i).getMaLoai() == p.getMaLoai()) {
+                cbLoai.setSelectedIndex(i);
+                break;
+            }
         }
 
         JTextField txtGioiTinh = new JTextField(p.getGioiTinh());
@@ -753,25 +790,41 @@ public class PnSanPham extends javax.swing.JPanel {
 
         ArrayList<DTO.NhaCungCapDTO> dsNCC = new NhaCungCapDAO().getAll();
         JComboBox<DTO.NhaCungCapDTO> cbNCC = new JComboBox<>();
-        for (DTO.NhaCungCapDTO n : dsNCC) cbNCC.addItem(n);
+        for (DTO.NhaCungCapDTO n : dsNCC) {
+            cbNCC.addItem(n);
+        }
         for (int i = 0; i < dsNCC.size(); i++) {
-            if (dsNCC.get(i).getMaNCC() == p.getMaNCC()) { cbNCC.setSelectedIndex(i); break; }
+            if (dsNCC.get(i).getMaNCC() == p.getMaNCC()) {
+                cbNCC.setSelectedIndex(i);
+                break;
+            }
         }
 
-        dialog.add(new JLabel("T\u00ean s\u1ea3n ph\u1ea9m:")); dialog.add(txtTenSP);
-        dialog.add(new JLabel("Th\u01b0\u01a1ng hi\u1ec7u:")); dialog.add(txtThuongHieu);
-        dialog.add(new JLabel("Xu\u1ea5t x\u1ee9:")); dialog.add(txtXuatXu);
-        dialog.add(new JLabel("Lo\u1ea1i:")); dialog.add(cbLoai);
-        dialog.add(new JLabel("Gi\u1edbi t\u00ednh:")); dialog.add(txtGioiTinh);
-        dialog.add(new JLabel("Gi\u00e1 b\u00e1n:")); dialog.add(txtGiaBan);
-        dialog.add(new JLabel("S\u1ed1 l\u01b0\u1ee3ng:")); dialog.add(txtSoLuong);
-        dialog.add(new JLabel("H\u00ecnh \u1ea3nh:")); dialog.add(txtHinhAnh);
-        dialog.add(new JLabel("M\u00f4 t\u1ea3:")); dialog.add(txtMoTa);
-        dialog.add(new JLabel("Nh\u00e0 cung c\u1ea5p:")); dialog.add(cbNCC);
+        dialog.add(new JLabel("T\u00ean s\u1ea3n ph\u1ea9m:"));
+        dialog.add(txtTenSP);
+        dialog.add(new JLabel("Th\u01b0\u01a1ng hi\u1ec7u:"));
+        dialog.add(txtThuongHieu);
+        dialog.add(new JLabel("Xu\u1ea5t x\u1ee9:"));
+        dialog.add(txtXuatXu);
+        dialog.add(new JLabel("Lo\u1ea1i:"));
+        dialog.add(cbLoai);
+        dialog.add(new JLabel("Gi\u1edbi t\u00ednh:"));
+        dialog.add(txtGioiTinh);
+        dialog.add(new JLabel("Gi\u00e1 b\u00e1n:"));
+        dialog.add(txtGiaBan);
+        dialog.add(new JLabel("S\u1ed1 l\u01b0\u1ee3ng:"));
+        dialog.add(txtSoLuong);
+        dialog.add(new JLabel("H\u00ecnh \u1ea3nh:"));
+        dialog.add(txtHinhAnh);
+        dialog.add(new JLabel("M\u00f4 t\u1ea3:"));
+        dialog.add(txtMoTa);
+        dialog.add(new JLabel("Nh\u00e0 cung c\u1ea5p:"));
+        dialog.add(cbNCC);
 
         JButton btnSave = new JButton("L\u01b0u");
         JButton btnCancel = new JButton("H\u1ee7y");
-        dialog.add(btnSave); dialog.add(btnCancel);
+        dialog.add(btnSave);
+        dialog.add(btnCancel);
 
         btnCancel.addActionListener(e -> dialog.dispose());
         btnSave.addActionListener(e -> {
@@ -814,7 +867,9 @@ public class PnSanPham extends javax.swing.JPanel {
 
         ArrayList<Loai> dsLoai = new LoaiDAO().getAll();
         JComboBox<Loai> cbLoai = new JComboBox<>();
-        for (Loai l : dsLoai) cbLoai.addItem(l);
+        for (Loai l : dsLoai) {
+            cbLoai.addItem(l);
+        }
 
         JTextField txtGioiTinh = new JTextField();
         JTextField txtGiaBan = new JTextField();
@@ -824,22 +879,35 @@ public class PnSanPham extends javax.swing.JPanel {
 
         ArrayList<DTO.NhaCungCapDTO> dsNCC = new NhaCungCapDAO().getAll();
         JComboBox<DTO.NhaCungCapDTO> cbNCC = new JComboBox<>();
-        for (DTO.NhaCungCapDTO n : dsNCC) cbNCC.addItem(n);
+        for (DTO.NhaCungCapDTO n : dsNCC) {
+            cbNCC.addItem(n);
+        }
 
-        dialog.add(new JLabel("T\u00ean s\u1ea3n ph\u1ea9m:")); dialog.add(txtTenSP);
-        dialog.add(new JLabel("Th\u01b0\u01a1ng hi\u1ec7u:")); dialog.add(txtThuongHieu);
-        dialog.add(new JLabel("Xu\u1ea5t x\u1ee9:")); dialog.add(txtXuatXu);
-        dialog.add(new JLabel("Lo\u1ea1i:")); dialog.add(cbLoai);
-        dialog.add(new JLabel("Gi\u1edbi t\u00ednh:")); dialog.add(txtGioiTinh);
-        dialog.add(new JLabel("Gi\u00e1 b\u00e1n:")); dialog.add(txtGiaBan);
-        dialog.add(new JLabel("S\u1ed1 l\u01b0\u1ee3ng:")); dialog.add(txtSoLuong);
-        dialog.add(new JLabel("H\u00ecnh \u1ea3nh:")); dialog.add(txtHinhAnh);
-        dialog.add(new JLabel("M\u00f4 t\u1ea3:")); dialog.add(txtMoTa);
-        dialog.add(new JLabel("Nh\u00e0 cung c\u1ea5p:")); dialog.add(cbNCC);
+        dialog.add(new JLabel("T\u00ean s\u1ea3n ph\u1ea9m:"));
+        dialog.add(txtTenSP);
+        dialog.add(new JLabel("Th\u01b0\u01a1ng hi\u1ec7u:"));
+        dialog.add(txtThuongHieu);
+        dialog.add(new JLabel("Xu\u1ea5t x\u1ee9:"));
+        dialog.add(txtXuatXu);
+        dialog.add(new JLabel("Lo\u1ea1i:"));
+        dialog.add(cbLoai);
+        dialog.add(new JLabel("Gi\u1edbi t\u00ednh:"));
+        dialog.add(txtGioiTinh);
+        dialog.add(new JLabel("Gi\u00e1 b\u00e1n:"));
+        dialog.add(txtGiaBan);
+        dialog.add(new JLabel("S\u1ed1 l\u01b0\u1ee3ng:"));
+        dialog.add(txtSoLuong);
+        dialog.add(new JLabel("H\u00ecnh \u1ea3nh:"));
+        dialog.add(txtHinhAnh);
+        dialog.add(new JLabel("M\u00f4 t\u1ea3:"));
+        dialog.add(txtMoTa);
+        dialog.add(new JLabel("Nh\u00e0 cung c\u1ea5p:"));
+        dialog.add(cbNCC);
 
         JButton btnAdd = new JButton("Th\u00eam m\u1edbi");
         JButton btnCancel = new JButton("H\u1ee7y");
-        dialog.add(btnAdd); dialog.add(btnCancel);
+        dialog.add(btnAdd);
+        dialog.add(btnCancel);
 
         btnCancel.addActionListener(e -> dialog.dispose());
         btnAdd.addActionListener(e -> {
