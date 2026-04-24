@@ -35,6 +35,7 @@ public class PnHoaDonForm extends javax.swing.JPanel {
     private KhuyenMaiBUS khuyenmaiBUS = new KhuyenMaiBUS();
     
     public PnHoaDonForm(PhanQuyen pq) {
+        this.phanQuyen = pq;
         initComponents();
         
         modelKhachHang = new DefaultComboBoxModel<>();
