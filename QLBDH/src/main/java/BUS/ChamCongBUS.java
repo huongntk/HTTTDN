@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class ChamCongBUS {
+
     private ChamCongDAO chamCongDAO;
 
     public ChamCongBUS() {
@@ -13,18 +14,32 @@ public class ChamCongBUS {
     }
 
     public boolean themChamCong(ChamCongDTO cc) {
-        // Có thể kiểm tra trùng ngày ở đây
-        if (chamCongDAO.exists(cc.getMaNV(), cc.getNgayLam())) {
-            return false; // Đã tồn tại, không thêm mới
+        if (cc == null || cc.getNgayLam() == null) {
+            return false;
         }
+
+        // Chặn trùng ở tầng BUS trước khi insert
+        // Database cũng đã có UNIQUE (MaNV, NgayLam) để chặn lần cuối
+        if (chamCongDAO.exists(cc.getMaNV(), cc.getNgayLam())) {
+            return false;
+        }
+
         return chamCongDAO.insert(cc);
     }
 
     public boolean suaChamCong(ChamCongDTO cc) {
+        if (cc == null || cc.getNgayLam() == null) {
+            return false;
+        }
+
         return chamCongDAO.update(cc);
     }
 
     public boolean xoaChamCong(int maChamCong) {
+        if (maChamCong <= 0) {
+            return false;
+        }
+
         return chamCongDAO.delete(maChamCong);
     }
 
@@ -36,36 +51,47 @@ public class ChamCongBUS {
         return chamCongDAO.selectAllByMonth(thang, nam);
     }
 
-    // Tính số ngày công trong tháng (chỉ tính trạng thái 'Đi làm' hoặc 'Đi muộn'/'Về sớm' vẫn được coi là có công)
+    // Tính số ngày công đơn giản
+    // Lưu ý: hàm này đang tính Đi muộn/Về sớm = 1 ngày công
+    // Nếu muốn đúng với tính lương chi tiết thì nên xử lý 0.5 công ở BangLuongBUS
     public int tinhSoNgayCong(int maNV, int thang, int nam) {
         ArrayList<ChamCongDTO> list = layChamCongTheoNhanVienThang(maNV, thang, nam);
         int count = 0;
+
         for (ChamCongDTO cc : list) {
             String tt = cc.getTrangThai();
-            if (tt.equals("Đi làm") || tt.equals("Đi muộn") || tt.equals("Về sớm")) {
+
+            if ("Đi làm".equals(tt) || "Đi muộn".equals(tt) || "Về sớm".equals(tt)) {
                 count++;
             }
         }
+
         return count;
     }
 
-    // Tính số ngày nghỉ có phép
     public int tinhSoNgayNghiCoPhep(int maNV, int thang, int nam) {
         ArrayList<ChamCongDTO> list = layChamCongTheoNhanVienThang(maNV, thang, nam);
         int count = 0;
+
         for (ChamCongDTO cc : list) {
-            if (cc.getTrangThai().equals("Nghỉ có phép")) count++;
+            if ("Nghỉ có phép".equals(cc.getTrangThai())) {
+                count++;
+            }
         }
+
         return count;
     }
 
-    // Tính số ngày nghỉ không phép
     public int tinhSoNgayNghiKhongPhep(int maNV, int thang, int nam) {
         ArrayList<ChamCongDTO> list = layChamCongTheoNhanVienThang(maNV, thang, nam);
         int count = 0;
+
         for (ChamCongDTO cc : list) {
-            if (cc.getTrangThai().equals("Nghỉ không phép")) count++;
+            if ("Nghỉ không phép".equals(cc.getTrangThai())) {
+                count++;
+            }
         }
+
         return count;
     }
 }

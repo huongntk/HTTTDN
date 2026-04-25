@@ -448,7 +448,12 @@ public class PnChamCong extends JPanel {
                     loadData();
                     dialog.dispose();
                 } else {
-                    JOptionPane.showMessageDialog(dialog, "Chấm công thất bại!");
+                    JOptionPane.showMessageDialog(
+                            dialog,
+                            "Chấm công thất bại!\nNhân viên này có thể đã có dữ liệu chấm công trong ngày này.",
+                            "Không thể chấm công",
+                            JOptionPane.WARNING_MESSAGE
+                    );
                 }
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(dialog, "Lỗi: " + ex.getMessage());
@@ -604,7 +609,12 @@ public class PnChamCong extends JPanel {
                     loadData();
                     dialog.dispose();
                 } else {
-                    JOptionPane.showMessageDialog(dialog, "Cập nhật thất bại");
+                    JOptionPane.showMessageDialog(
+                            dialog,
+                            "Cập nhật thất bại!\nDữ liệu có thể bị trùng chấm công theo nhân viên và ngày làm.",
+                            "Không thể cập nhật",
+                            JOptionPane.WARNING_MESSAGE
+                    );
                 }
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(dialog, "Lỗi nhập giờ: " + ex.getMessage());
