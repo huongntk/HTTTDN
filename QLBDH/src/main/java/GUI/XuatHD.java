@@ -187,8 +187,8 @@ public class XuatHD extends javax.swing.JDialog {
         lblNgayLap = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         lblNhanVien = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
         lblKhachHang = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblChiTietPhieu = new javax.swing.JTable();
         lblGiamGia = new javax.swing.JLabel();
@@ -200,9 +200,13 @@ public class XuatHD extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
+        pnlPhieuThanhToan.setPreferredSize(new java.awt.Dimension(684, 428));
+
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel1.setText("PHIẾU THANH TOÁN");
 
+        jPanel1.setMaximumSize(new java.awt.Dimension(460, 20));
+        jPanel1.setPreferredSize(new java.awt.Dimension(460, 20));
         jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.LINE_AXIS));
 
         jLabel2.setText("Số CT:");
@@ -219,13 +223,13 @@ public class XuatHD extends javax.swing.JDialog {
         jLabel3.setText("NV:");
         jPanel1.add(jLabel3);
 
-        lblNhanVien.setMaximumSize(new java.awt.Dimension(90, 20));
-        lblNhanVien.setPreferredSize(new java.awt.Dimension(90, 20));
+        lblNhanVien.setMaximumSize(new java.awt.Dimension(140, 20));
+        lblNhanVien.setPreferredSize(new java.awt.Dimension(120, 20));
         jPanel1.add(lblNhanVien);
+        jPanel1.add(lblKhachHang);
 
         jLabel4.setText("KH:");
         jPanel1.add(jLabel4);
-        jPanel1.add(lblKhachHang);
 
         tblChiTietPhieu.setEnabled(false);
         jScrollPane1.setViewportView(tblChiTietPhieu);
@@ -248,7 +252,7 @@ public class XuatHD extends javax.swing.JDialog {
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(pnlPhieuThanhToanLayout.createSequentialGroup()
                         .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 298, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 399, Short.MAX_VALUE)
                         .addGroup(pnlPhieuThanhToanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblTongTien, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlPhieuThanhToanLayout.createSequentialGroup()
@@ -257,25 +261,24 @@ public class XuatHD extends javax.swing.JDialog {
             .addGroup(pnlPhieuThanhToanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(pnlPhieuThanhToanLayout.createSequentialGroup()
                     .addContainerGap()
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 519, Short.MAX_VALUE)
-                    .addContainerGap()))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 638, Short.MAX_VALUE)))
             .addGroup(pnlPhieuThanhToanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(pnlPhieuThanhToanLayout.createSequentialGroup()
                     .addContainerGap()
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 531, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 632, Short.MAX_VALUE)
                     .addContainerGap()))
             .addGroup(pnlPhieuThanhToanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(pnlPhieuThanhToanLayout.createSequentialGroup()
                     .addGap(16, 16, 16)
                     .addComponent(jLabel6)
-                    .addContainerGap(418, Short.MAX_VALUE)))
+                    .addContainerGap(519, Short.MAX_VALUE)))
         );
         pnlPhieuThanhToanLayout.setVerticalGroup(
             pnlPhieuThanhToanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlPhieuThanhToanLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 333, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 297, Short.MAX_VALUE)
                 .addGroup(pnlPhieuThanhToanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlPhieuThanhToanLayout.createSequentialGroup()
                         .addComponent(jLabel5)
@@ -289,7 +292,7 @@ public class XuatHD extends javax.swing.JDialog {
                 .addGroup(pnlPhieuThanhToanLayout.createSequentialGroup()
                     .addGap(32, 32, 32)
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(376, Short.MAX_VALUE)))
+                    .addContainerGap(340, Short.MAX_VALUE)))
             .addGroup(pnlPhieuThanhToanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(pnlPhieuThanhToanLayout.createSequentialGroup()
                     .addGap(64, 64, 64)
@@ -303,6 +306,8 @@ public class XuatHD extends javax.swing.JDialog {
         );
 
         getContentPane().add(pnlPhieuThanhToan, java.awt.BorderLayout.CENTER);
+
+        jPanel2.setPreferredSize(new java.awt.Dimension(684, 73));
 
         btnXuatHD.setBackground(new java.awt.Color(204, 255, 255));
         btnXuatHD.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -321,7 +326,7 @@ public class XuatHD extends javax.swing.JDialog {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(205, 205, 205)
                 .addComponent(btnXuatHD)
-                .addContainerGap(245, Short.MAX_VALUE))
+                .addContainerGap(346, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
