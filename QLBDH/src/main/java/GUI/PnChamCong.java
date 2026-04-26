@@ -366,7 +366,8 @@ public class PnChamCong extends JPanel {
         JTextField txtGioRa = new JTextField("17:00:00");
         JComboBox<String> cboTrangThai = new JComboBox<>(new String[]{"Đi làm", "Đi muộn", "Về sớm"});
         JTextField txtGhiChu = new JTextField();
-
+        txtGhiChu.setFont(new Font("Arial", Font.PLAIN, 16));    
+        txtGhiChu.setPreferredSize(new Dimension(200, 35));  
         // Sự kiện khi chọn ca làm
         cboCaLam.addActionListener(e -> {
             String caLam = (String) cboCaLam.getSelectedItem();

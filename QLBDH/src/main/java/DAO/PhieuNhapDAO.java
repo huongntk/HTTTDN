@@ -121,37 +121,49 @@ public class PhieuNhapDAO {
         int rows = DataProvider.executeUpdate(sql, tongTien, maPN);
         return rows > 0;
     }
-        // Tìm kiếm (theo MaPN giả lập, hoặc theo MaNCC)
-    public List<PhieuNhapDTO> search(String key) {
+    
+    public List<PhieuNhapDTO> search(String key, java.util.Date start, java.util.Date end) {
         List<PhieuNhapDTO> list = new ArrayList<>();
-        // key có thể là mã ảo 100000+MaPN hoặc MaPN thật hoặc MaNCC
-        // Ta cố gắng parse số:
-        Integer parsedInt = null;
-        try { parsedInt = Integer.parseInt(key); } catch (Exception ignore) {}
-        String sql;
-        if (parsedInt != null) {
-           sql = "SELECT pn.MaPN, pn.MaNCC, ncc.TenNCC, pn.NgayLap, pn.TongTien " +
-                "FROM PhieuNhap pn " +
-                "LEFT JOIN NhaCungCap ncc ON pn.MaNCC = ncc.MaNCC " +
-                "WHERE pn.MaPN = ? OR pn.MaNCC = ? " +
-                "ORDER BY pn.MaPN DESC";
-            try (ResultSet rs = DataProvider.executeQuery(sql, parsedInt, parsedInt)) {
-                while (rs.next()) {
-                    PhieuNhapDTO pn = new PhieuNhapDTO(
-                            rs.getInt("MaPN"),
-                            rs.getObject("MaNCC")==null?null:rs.getInt("MaNCC"),
-                            rs.getDate("NgayLap"),
-                            rs.getDouble("TongTien")
-                    );
-                    pn.setTenNCC(rs.getString("TenNCC"));
-                    list.add(pn);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
+        // Câu lệnh SQL lọc theo từ khóa và khoảng ngày
+        StringBuilder sql = new StringBuilder(
+            "SELECT pn.MaPN, pn.MaNCC, ncc.TenNCC, pn.NgayLap, pn.TongTien " +
+            "FROM PhieuNhap pn " +
+            "LEFT JOIN NhaCungCap ncc ON pn.MaNCC = ncc.MaNCC " +
+            "WHERE (CAST(pn.MaPN AS VARCHAR) LIKE ? OR ncc.TenNCC LIKE ?) "
+        );
+
+        if (start != null) sql.append(" AND pn.NgayLap >= ? ");
+        if (end != null) sql.append(" AND pn.NgayLap <= ? ");
+        sql.append(" ORDER BY pn.MaPN DESC");
+
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+
+            String pattern = "%" + key + "%";
+            ps.setString(1, pattern);
+            ps.setString(2, pattern);
+
+            int paramIndex = 3;
+            if (start != null) {
+                ps.setDate(paramIndex++, new java.sql.Date(start.getTime()));
             }
-        } else {
-            // nếu key không phải số -> tạm thời trả tất cả
-            return getAll();
+            if (end != null) {
+                ps.setDate(paramIndex++, new java.sql.Date(end.getTime()));
+            }
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                PhieuNhapDTO pn = new PhieuNhapDTO(
+                        rs.getInt("MaPN"),
+                        rs.getObject("MaNCC") == null ? null : rs.getInt("MaNCC"),
+                        rs.getDate("NgayLap"),
+                        rs.getDouble("TongTien")
+                );
+                pn.setTenNCC(rs.getString("TenNCC"));
+                list.add(pn);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return list;
     }

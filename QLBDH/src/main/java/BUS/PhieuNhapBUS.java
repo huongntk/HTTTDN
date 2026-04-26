@@ -3,6 +3,8 @@ package BUS;
 import DAO.PhieuNhapDAO;
 import DAO.CTPhieuNhapDAO;
 import DTO.PhieuNhapDTO;
+import java.util.ArrayList;
+import java.util.Date;
 
 import java.util.List;
 
@@ -38,8 +40,8 @@ public class PhieuNhapBUS {
     }
 
     /* ===== TÌM KIẾM ===== */
-    public List<PhieuNhapDTO> search(String key) { 
-        return dao.search(key); 
+    public List<PhieuNhapDTO> search(String key, Date start, Date end) { 
+        return dao.search(key, start, end); 
     }
 
     /* ===== HIỂN THỊ MÃ "ảo" LÊN UI ===== */
