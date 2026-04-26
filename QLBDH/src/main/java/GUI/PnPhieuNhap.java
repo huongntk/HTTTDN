@@ -829,10 +829,7 @@ private void tinhThanhTien(JTextField txtSL, JTextField txtGia, JTextField txtTh
     private void search() {
         try {
             String key = txtSearch.getText().trim();
-            if (key.isEmpty()) {
-                loadData();
-                return;
-            }
+            
             java.util.Date tuNgay = dcsTuNgay.getDate();
             java.util.Date denNgay = dcsDenNgay.getDate();
 
