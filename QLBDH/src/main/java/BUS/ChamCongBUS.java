@@ -94,4 +94,7 @@ public class ChamCongBUS {
 
         return count;
     }
+    public boolean daChamCong(int maNV, Date ngayLam) {
+        return chamCongDAO.exists(maNV, ngayLam);
+    }
 }

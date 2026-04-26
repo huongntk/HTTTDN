@@ -181,13 +181,32 @@ public class BangLuongBUS {
     }
     
     public String luuBangLuong(BangLuongDTO bl) {
-        if (bangLuongDAO.kiemTraTonTai(bl.getMaNV(), bl.getThang(), bl.getNam())) {
+        BangLuongDTO old = bangLuongDAO.getByMaNVAndMonth(
+            bl.getMaNV(),
+            bl.getThang(),
+            bl.getNam()
+        );
+
+        if (old != null) {
+            // Nếu bảng lương đã duyệt thì không cho tính lại
+            if (old.getTrangThai() == 1) {
+                return "Bảng lương tháng này đã được duyệt, không thể tính lại!";
+            }
+
+            // Gán MaBL cũ để update đúng dòng cũ
+            bl.setMaBL(old.getMaBL());
+
+            // Nếu ghi chú mới rỗng thì giữ ghi chú cũ
+            if (bl.getGhiChu() == null || bl.getGhiChu().trim().isEmpty()) {
+                bl.setGhiChu(old.getGhiChu());
+            }
+
             boolean ok = bangLuongDAO.update(bl);
             return ok ? "Cập nhật bảng lương thành công!" : "Cập nhật thất bại!";
-        } else {
-            boolean ok = bangLuongDAO.insert(bl);
-            return ok ? "Thêm bảng lương thành công!" : "Thêm thất bại!";
         }
+
+        boolean ok = bangLuongDAO.insert(bl);
+        return ok ? "Thêm bảng lương thành công!" : "Thêm thất bại!";
     }
     
     public BangLuongDTO getByMaNVAndMonth(int maNV, int thang, int nam) {
