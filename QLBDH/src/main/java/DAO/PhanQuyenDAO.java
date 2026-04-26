@@ -193,7 +193,7 @@ public class PhanQuyenDAO {
         pq.setNsDuyetNghi(rs.getBoolean("NS_DuyetNghi"));
         pq.setNsThayDoiChucVu(rs.getBoolean("NS_ThayDoiChucVu"));
         pq.setNsTinhLuong(rs.getBoolean("NS_TinhLuong"));
-        pq.setNsChamCong(rs.getBoolean("NS_ChamCong"));
+        pq.setNsChamCong(rs.getBoolean("ChamCong"));
         pq.setNsXemLuongCaNhan(rs.getBoolean("NS_XemLuongCaNhan"));
         pq.setNsInBangLuong(rs.getBoolean("NS_InBangLuong"));
 
