@@ -19,7 +19,6 @@ import java.awt.event.*;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,14 +33,14 @@ public class PnPhieuNhap extends JPanel {
     private DefaultTableModel model;
     private JTable table;
     private JTextField txtSearch;
-    private JButton btnThem, btnSua, btnXoa, btnChiTiet, btnLamMoi, btnSearch;
+    private JButton btnThem, btnSua, btnXoa, btnChiTiet, btnLamMoi,btnSearch;
     // cache MaNCC -> TenNCC để hiển thị
     private Map<Integer, String> nccMap = new HashMap<>();
     private CTPhieuNhapBUS ctBus = new CTPhieuNhapBUS();
+    private JDateChooser dcsTuNgay, dcsDenNgay; 
 
     // formatter định dạng tiền
     private final DecimalFormat moneyFormat = new DecimalFormat("#,###");
-    private JDateChooser dcsTuNgay, dcsDenNgay;
 
     public PnPhieuNhap(PhanQuyen pq) {     
         this.phanQuyen = pq;
@@ -60,8 +59,11 @@ public class PnPhieuNhap extends JPanel {
         pnlSearch.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createEtchedBorder(), "TÌM KIẾM PHIẾU NHẬP",
                 TitledBorder.LEFT, TitledBorder.TOP, new Font("Segoe UI", Font.BOLD, 14)));
+
         JLabel lblSearch = new JLabel("Từ khóa:");
-        txtSearch = new JTextField(25);
+        txtSearch = new JTextField(15);
+
+        // Thêm chọn ngày
         JLabel lblTuNgay = new JLabel("Từ ngày:");
         dcsTuNgay = new JDateChooser();
         dcsTuNgay.setDateFormatString("dd/MM/yyyy");
@@ -72,7 +74,8 @@ public class PnPhieuNhap extends JPanel {
         dcsDenNgay.setDateFormatString("dd/MM/yyyy");
         dcsDenNgay.setPreferredSize(new Dimension(120, 26));
 
-        JButton btnSearch = createClassicButton("Tìm kiếm", "/icon/search.png");
+        btnSearch = createClassicButton("Tìm kiếm", "/icon/search.png");
+
         pnlSearch.add(lblSearch);
         pnlSearch.add(txtSearch);
         pnlSearch.add(lblTuNgay);
@@ -126,9 +129,9 @@ public class PnPhieuNhap extends JPanel {
         btnSua.addActionListener(e -> showEditDialog());
         btnXoa.addActionListener(e -> deleteSelected());
         btnLamMoi.addActionListener(e -> loadData());
-        txtSearch.addActionListener(e -> search());
+        btnSearch.addActionListener(e -> search());
         btnChiTiet.addActionListener(e -> openDetail());
-        
+
         table.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) openDetail();
@@ -857,7 +860,6 @@ private void tinhThanhTien(JTextField txtSL, JTextField txtGia, JTextField txtTh
             JOptionPane.showMessageDialog(this, "Lỗi tìm kiếm: " + ex.getMessage());
         }
     }
-
     private void openDetail() {
         int r = table.getSelectedRow();
         if (r < 0) {
