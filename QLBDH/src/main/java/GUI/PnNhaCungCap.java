@@ -50,7 +50,7 @@ public class PnNhaCungCap extends JPanel {
         JLabel lblTen = new JLabel("Tên NCC:*");
         JLabel lblDiaChi = new JLabel("Địa chỉ:");
         JLabel lblSDT = new JLabel("Số điện thoại:*");
-        JLabel lblTrangThai = new JLabel("Trạng thái:");
+//        JLabel lblTrangThai = new JLabel("Trạng thái:");
         
         lblMa.setFont(lblFont); 
         lblTen.setFont(lblFont);
@@ -58,7 +58,7 @@ public class PnNhaCungCap extends JPanel {
         lblDiaChi.setFont(lblFont); 
         lblSDT.setFont(lblFont);
         lblSDT.setForeground(Color.RED);
-        lblTrangThai.setFont(lblFont);
+//        lblTrangThai.setFont(lblFont);
         
         txtMa = new JTextField(); 
         txtMa.setEditable(false);
@@ -85,8 +85,8 @@ public class PnNhaCungCap extends JPanel {
         g.gridx = 0; g.gridy = row; leftPanel.add(lblSDT, g);
         g.gridx = 1; leftPanel.add(txtSDT, g);
         row++;
-        g.gridx = 0; g.gridy = row; leftPanel.add(lblTrangThai, g);
-        g.gridx = 1; leftPanel.add(chkHoatDong, g);
+//        g.gridx = 0; g.gridy = row; leftPanel.add(lblTrangThai, g);
+//        g.gridx = 1; leftPanel.add(chkHoatDong, g);
         
         // Panel chứa các nút
         row++;
@@ -111,7 +111,7 @@ public class PnNhaCungCap extends JPanel {
                 TitledBorder.LEFT, TitledBorder.TOP,
                 new Font("Segoe UI", Font.BOLD, 14)));
         
-        String[] cols = {"Mã NCC", "Tên NCC", "Địa chỉ", "Số điện thoại", "Trạng thái"};
+        String[] cols = {"Mã NCC", "Tên NCC", "Địa chỉ", "Số điện thoại"};
         model = new DefaultTableModel(cols, 0);
         table = new JTable(model);
         table.setRowHeight(26);
@@ -319,7 +319,7 @@ public class PnNhaCungCap extends JPanel {
         }
         
         // Kiểm tra định dạng số điện thoại (10-11 số, bắt đầu bằng 0)
-        if (!Pattern.matches("^0[0-9]}$", sdt)) {
+        if (!Pattern.matches("^0\\d{9}$", sdt)) {
             JOptionPane.showMessageDialog(this, 
                 "Số điện thoại không hợp lệ!\n"
                 + "Yêu cầu: Bắt đầu bằng số 0, gồm 10 chữ số.\n",                

@@ -12,7 +12,7 @@ public class NhaCungCapDAO {
     // Lấy toàn bộ danh sách nhà cung cấp
     public ArrayList<NhaCungCapDTO> getAll() {
         ArrayList<NhaCungCapDTO> list = new ArrayList<>();
-        String sql = "SELECT * FROM NhaCungCap";
+        String sql = "SELECT * FROM NhaCungCap WHERE TrangThai=1";
 
         try (ResultSet rs = DataProvider.executeQuery(sql)) {
             while (rs != null && rs.next()) {
