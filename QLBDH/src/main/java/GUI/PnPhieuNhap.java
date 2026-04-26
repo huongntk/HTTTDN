@@ -128,10 +128,15 @@ public class PnPhieuNhap extends JPanel {
         btnThem.addActionListener(e -> showAddDialog());
         btnSua.addActionListener(e -> showEditDialog());
         btnXoa.addActionListener(e -> deleteSelected());
-        btnLamMoi.addActionListener(e -> loadData());
+        btnLamMoi.addActionListener(e -> {
+            txtSearch.setText("");
+            if(dcsTuNgay != null) dcsTuNgay.setDate(null);
+            if(dcsDenNgay != null) dcsDenNgay.setDate(null);
+            loadData();
+        });
         btnSearch.addActionListener(e -> search());
         btnChiTiet.addActionListener(e -> openDetail());
-
+        txtSearch.addActionListener(e -> search());
         table.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) openDetail();
@@ -165,31 +170,31 @@ public class PnPhieuNhap extends JPanel {
 
     // ====== LOAD DỮ LIỆU ======
     private void loadData() {
-        model.setRowCount(0);
+        try{
+            model.setRowCount(0);
 
-        List<PhieuNhapDTO> list = bus.getAll();
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            List<PhieuNhapDTO> list = bus.getAll();
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 
-        for (PhieuNhapDTO pn : list) {
-            String displayMaPN = bus.toDisplayCode(pn.getMaPN());
+            for (PhieuNhapDTO pn : list) {
+                String displayMaPN = bus.toDisplayCode(pn.getMaPN());
 
-            // lấy tên NCC từ cache
-            String tenNCC = "";
-            if (pn.getMaNCC() != null) {
-                tenNCC = nccMap.getOrDefault(pn.getMaNCC(), String.valueOf(pn.getMaNCC()));
+                String tenNCC = pn.getMaNCC() != null ? nccMap.getOrDefault(pn.getMaNCC(), "") : "";
+
+                // định dạng tiền
+                String formattedMoney = moneyFormat.format(pn.getTongTien()) + " VNĐ";
+
+                model.addRow(new Object[]{
+                        displayMaPN,                    // Mã PN hiển thị (100000 + MaPN)
+                        pn.getMaPN(),                   // MaPN_DB (ẩn)
+                        tenNCC,                         // tên NCC thay cho mã NCC
+                        pn.getNgayLap() == null ? "" : df.format(pn.getNgayLap()),
+                        formattedMoney
+
+                });
             }
-
-            // định dạng tiền
-            String formattedMoney = moneyFormat.format(pn.getTongTien()) + " VNĐ";
-            String trangThaiText = (pn.getTrangThai() == 1) ? "Đã Xuất" : "Nháp";
-            model.addRow(new Object[]{
-                    displayMaPN,                    // Mã PN hiển thị (100000 + MaPN)
-                    pn.getMaPN(),                   // MaPN_DB (ẩn)
-                    tenNCC,                         // tên NCC thay cho mã NCC
-                    pn.getNgayLap() == null ? "" : df.format(pn.getNgayLap()),
-                    formattedMoney,// Tổng tiền add dấu phẩy + đơn vị
-                    trangThaiText
-            });
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
     private void configureByPermission() {
@@ -829,7 +834,7 @@ private void tinhThanhTien(JTextField txtSL, JTextField txtGia, JTextField txtTh
     private void search() {
         try {
             String key = txtSearch.getText().trim();
-            
+           
             java.util.Date tuNgay = dcsTuNgay.getDate();
             java.util.Date denNgay = dcsDenNgay.getDate();
 
