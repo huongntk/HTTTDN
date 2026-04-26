@@ -3,6 +3,8 @@ package BUS;
 import DAO.PhieuNhapDAO;
 import DAO.CTPhieuNhapDAO;
 import DTO.PhieuNhapDTO;
+import java.util.ArrayList;
+import java.util.Date;
 
 import java.util.List;
 
@@ -38,8 +40,8 @@ public class PhieuNhapBUS {
     }
 
     /* ===== TÌM KIẾM ===== */
-    public List<PhieuNhapDTO> search(String key) { 
-        return dao.search(key); 
+    public List<PhieuNhapDTO> search(String key, Date start, Date end) { 
+        return dao.search(key, start, end); 
     }
 
     /* ===== HIỂN THỊ MÃ "ảo" LÊN UI ===== */
@@ -77,8 +79,14 @@ public class PhieuNhapBUS {
     }
     
     public boolean updateTrangThai(int maPN, int trangThai) {
-        
-        return dao.updateTrangThai(maPN, trangThai);
+        System.out.println("Updating trangThai for maPN=" + maPN + " to " + trangThai);
+        boolean result = dao.updateTrangThai(maPN, trangThai);
+        System.out.println("Update result: " + result);
+
+        // Kiểm tra lại sau khi update
+        PhieuNhapDTO check = getById(maPN);
+        System.out.println("After update, trangThai in DB: " + (check != null ? check.getTrangThai() : "null"));
+        return result;
     }
     
     public boolean updateMaNCC(int maPN, int maNCC){

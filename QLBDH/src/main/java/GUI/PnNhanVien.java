@@ -1063,15 +1063,21 @@ public class PnNhanVien extends javax.swing.JPanel {
 
         // Form nhập đơn phía dưới
         javax.swing.JPanel pnlFormDon = new javax.swing.JPanel(new GridLayout(5, 2, 10, 10));
-        pnlFormDon.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Nhập đơn nghỉ mới", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 1, 12)));
+        pnlFormDon.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+            javax.swing.BorderFactory.createTitledBorder(null, "Nhập đơn nghỉ mới", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 1, 12)),
+            javax.swing.BorderFactory.createEmptyBorder(0, 0, 50, 0) 
+        ));
         cboLoaiNghi = new javax.swing.JComboBox<>();
         txtTuNgayNghi = new com.toedter.calendar.JDateChooser();
         txtTuNgayNghi.setDateFormatString("dd/MM/yyyy");
         txtTuNgayNghi.setFont(new java.awt.Font("Segoe UI", 0, 14));
+        txtTuNgayNghi.getJCalendar().setPreferredSize(new java.awt.Dimension(280, 160)); 
 
         txtDenNgayNghi = new com.toedter.calendar.JDateChooser();
         txtDenNgayNghi.setDateFormatString("dd/MM/yyyy");
         txtDenNgayNghi.setFont(new java.awt.Font("Segoe UI", 0, 14));
+        txtDenNgayNghi.getJCalendar().setPreferredSize(new java.awt.Dimension(280, 160));
+        
         txtLyDoNghi = new javax.swing.JTextField();
         btnNopDonNghi = new javax.swing.JButton("Nộp đơn nghỉ");
         btnNopDonNghi.setFont(new java.awt.Font("Segoe UI", 1, 14));

@@ -329,7 +329,7 @@ public class PnChamCong extends JPanel {
 
         if (daCham) {
             int confirm = JOptionPane.showConfirmDialog(this,
-                    "Hôm nay đã có dữ liệu chấm công. Bạn có muốn cập nhật lại không?",
+                    "Hôm nay đã có dữ liệu chấm công.",
                     "Xác nhận", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
                 // Cập nhật lại chấm công hôm nay
@@ -366,7 +366,8 @@ public class PnChamCong extends JPanel {
         JTextField txtGioRa = new JTextField("17:00:00");
         JComboBox<String> cboTrangThai = new JComboBox<>(new String[]{"Đi làm", "Đi muộn", "Về sớm"});
         JTextField txtGhiChu = new JTextField();
-
+        txtGhiChu.setFont(new Font("Arial", Font.PLAIN, 16));    
+        txtGhiChu.setPreferredSize(new Dimension(200, 35));  
         // Sự kiện khi chọn ca làm
         cboCaLam.addActionListener(e -> {
             String caLam = (String) cboCaLam.getSelectedItem();
@@ -622,6 +623,16 @@ public class PnChamCong extends JPanel {
         });
 
         btnCancel.addActionListener(e -> dialog.dispose());
+        if (!isQuanLy) {
+            cboCaLam.setEditable(false);
+            txtGioVao.setEnabled(false);
+            txtGioRa.setEnabled(false);
+            cboTrangThai.setEnabled(false);
+            txtGhiChu.setEnabled(false);
+
+            // Có thể đặt sẵn trạng thái mặc định là "Đi làm"
+            cboTrangThai.setSelectedItem("Đi làm");
+        }
         dialog.setVisible(true);
     }
 
