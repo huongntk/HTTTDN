@@ -30,10 +30,11 @@ public class PnPhieuNhap extends JPanel {
     private PhieuNhapBUS pnBus = new PhieuNhapBUS();
     private SanPhamBUS spBus = new SanPhamBUS(); 
     private PhanQuyen phanQuyen;
+    private String tenNguoiDung;
     private DefaultTableModel model;
     private JTable table;
     private JTextField txtSearch;
-    private JButton btnThem, btnSua, btnXoa, btnChiTiet, btnLamMoi,btnSearch;
+    private JButton btnThem, btnXoa, btnChiTiet, btnLamMoi,btnSearch;
     // cache MaNCC -> TenNCC để hiển thị
     private Map<Integer, String> nccMap = new HashMap<>();
     private CTPhieuNhapBUS ctBus = new CTPhieuNhapBUS();
@@ -111,12 +112,12 @@ public class PnPhieuNhap extends JPanel {
         // ====== CÁC NÚT HÀNH ĐỘNG ======
         JPanel pnlButtons = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 8));
         btnThem = createClassicButton("Thêm", "/icon/them.png");
-        btnSua = createClassicButton("Sửa", "/icon/sua.png");
+//        btnSua = createClassicButton("Sửa", "/icon/sua.png");
         btnXoa = createClassicButton("Xóa", "/icon/xoa.png");
         btnChiTiet = createClassicButton("Chi tiết", "/icon/detail.png");
         btnLamMoi = createClassicButton("Làm mới", "/icon/undo.png");
         pnlButtons.add(btnThem);
-        pnlButtons.add(btnSua);
+//        pnlButtons.add(btnSua);
         pnlButtons.add(btnXoa);
         pnlButtons.add(btnChiTiet);
         pnlButtons.add(btnLamMoi);
@@ -126,7 +127,7 @@ public class PnPhieuNhap extends JPanel {
 
         // ====== SỰ KIỆN ======
         btnThem.addActionListener(e -> showAddDialog());
-        btnSua.addActionListener(e -> showEditDialog());
+//        btnSua.addActionListener(e -> showEditDialog());
         btnXoa.addActionListener(e -> deleteSelected());
         btnLamMoi.addActionListener(e -> {
             txtSearch.setText("");
@@ -170,40 +171,41 @@ public class PnPhieuNhap extends JPanel {
 
     // ====== LOAD DỮ LIỆU ======
     private void loadData() {
-        try{
-            model.setRowCount(0);
+        model.setRowCount(0);
 
-            List<PhieuNhapDTO> list = bus.getAll();
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        List<PhieuNhapDTO> list = bus.getAll();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 
-            for (PhieuNhapDTO pn : list) {
-                String displayMaPN = bus.toDisplayCode(pn.getMaPN());
+        for (PhieuNhapDTO pn : list) {
+            String displayMaPN = bus.toDisplayCode(pn.getMaPN());
 
-                String tenNCC = pn.getMaNCC() != null ? nccMap.getOrDefault(pn.getMaNCC(), "") : "";
-
-                // định dạng tiền
-                String formattedMoney = moneyFormat.format(pn.getTongTien()) + " VNĐ";
-
-                model.addRow(new Object[]{
-                        displayMaPN,                    // Mã PN hiển thị (100000 + MaPN)
-                        pn.getMaPN(),                   // MaPN_DB (ẩn)
-                        tenNCC,                         // tên NCC thay cho mã NCC
-                        pn.getNgayLap() == null ? "" : df.format(pn.getNgayLap()),
-                        formattedMoney
-
-                });
+            // lấy tên NCC từ cache
+            String tenNCC = "";
+            if (pn.getMaNCC() != null) {
+                tenNCC = nccMap.getOrDefault(pn.getMaNCC(), String.valueOf(pn.getMaNCC()));
             }
-        }catch (Exception e){
-            e.printStackTrace();
+
+            // định dạng tiền
+            String formattedMoney = moneyFormat.format(pn.getTongTien()) + " VNĐ";
+            String trangThaiText = (pn.getTrangThai() == 1) ? "Đã Xuất" : "Nháp";
+            model.addRow(new Object[]{
+                    displayMaPN,                    // Mã PN hiển thị (100000 + MaPN)
+                    pn.getMaPN(),                   // MaPN_DB (ẩn)
+                    tenNCC,                         // tên NCC thay cho mã NCC
+                    pn.getNgayLap() == null ? "" : df.format(pn.getNgayLap()),
+                    formattedMoney,// Tổng tiền add dấu phẩy + đơn vị
+                    trangThaiText
+            });
         }
     }
+    
     private void configureByPermission() {
         // Giả sử các quyền liên quan: khoNhapHang, khoQuanLyNCC, khoXemSanPham?
         boolean coQuyenNhapHang = phanQuyen.isKhoNhapHang();
 
         // Các nút: btnThem, btnSua, btnXoa, btnChiTiet, btnLamMoi
         btnThem.setVisible(coQuyenNhapHang); // Thêm phiếu nhập
-        btnSua.setVisible(coQuyenNhapHang);  // Sửa phiếu nhập (chỉ khi chưa xuất)
+//        btnSua.setVisible(coQuyenNhapHang);  // Sửa phiếu nhập (chỉ khi chưa xuất)
         btnXoa.setVisible(coQuyenNhapHang);  // Xóa phiếu nhập (chỉ khi chưa xuất)
         btnChiTiet.setVisible(coQuyenNhapHang);   // Xem chi tiết
         btnLamMoi.setVisible(true);          // Làm mới ai cũng dùng được
@@ -807,7 +809,7 @@ private void tinhThanhTien(JTextField txtSL, JTextField txtGia, JTextField txtTh
     }
 
     private void deleteSelected() {
-        int r = table.getSelectedRow();
+         int r = table.getSelectedRow();
         if (r < 0) { 
             JOptionPane.showMessageDialog(this, "Vui lòng chọn 1 phiếu để xóa."); 
             return; 
@@ -862,23 +864,21 @@ private void tinhThanhTien(JTextField txtSL, JTextField txtGia, JTextField txtTh
             JOptionPane.showMessageDialog(this, "Lỗi tìm kiếm: " + ex.getMessage());
         }
     }
-    private void openDetail() {
+    private void openDetail() {       
         int r = table.getSelectedRow();
         if (r < 0) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn 1 phiếu để xem chi tiết.");
             return;
         }
         int maPN = (int) model.getValueAt(r, 1);
-        
+
         PhieuNhapDTO current = bus.getById(maPN);
         int trangThai = (current != null) ? current.getTrangThai() : 0;
-        // mở chi tiết dạng modal
-//        PnCTPhieuNhap detailDlg = new PnCTPhieuNhap(this, maPN);
-        PnCTPhieuNhap detailDlg = new PnCTPhieuNhap((Frame) SwingUtilities.getWindowAncestor(this), maPN, trangThai, phanQuyen);
 
+        // Dùng biến tenNguoiDung đã được khởi tạo từ constructor
+        PnCTPhieuNhap detailDlg = new PnCTPhieuNhap((Frame) SwingUtilities.getWindowAncestor(this), maPN, trangThai, phanQuyen, this.tenNguoiDung);
         detailDlg.setVisible(true);
 
-        // khi đóng chi tiết -> reload lại
         buildNccCache();
         loadData();
     }

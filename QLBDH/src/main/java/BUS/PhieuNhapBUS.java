@@ -79,8 +79,14 @@ public class PhieuNhapBUS {
     }
     
     public boolean updateTrangThai(int maPN, int trangThai) {
-        
-        return dao.updateTrangThai(maPN, trangThai);
+        System.out.println("Updating trangThai for maPN=" + maPN + " to " + trangThai);
+        boolean result = dao.updateTrangThai(maPN, trangThai);
+        System.out.println("Update result: " + result);
+
+        // Kiểm tra lại sau khi update
+        PhieuNhapDTO check = getById(maPN);
+        System.out.println("After update, trangThai in DB: " + (check != null ? check.getTrangThai() : "null"));
+        return result;
     }
     
     public boolean updateMaNCC(int maPN, int maNCC){
