@@ -864,21 +864,34 @@ private void tinhThanhTien(JTextField txtSL, JTextField txtGia, JTextField txtTh
             JOptionPane.showMessageDialog(this, "Lỗi tìm kiếm: " + ex.getMessage());
         }
     }
-    private void openDetail() {       
-        int r = table.getSelectedRow();
-        if (r < 0) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn 1 phiếu để xem chi tiết.");
+    private void openDetail() {
+        int row = table.getSelectedRow();
+        if (row == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn phiếu nhập để xem chi tiết!");
             return;
         }
-        int maPN = (int) model.getValueAt(r, 1);
 
-        PhieuNhapDTO current = bus.getById(maPN);
-        int trangThai = (current != null) ? current.getTrangThai() : 0;
+        // 1. Lấy mã phiếu nhập và trạng thái từ dòng được chọn
+        int maPN = (int) model.getValueAt(row, 1); 
+        // Giả sử bạn cần lấy trạng thái từ danh sách gốc hoặc cột ẩn
+        int trangThai = 1; 
 
-        // Dùng biến tenNguoiDung đã được khởi tạo từ constructor
-        PnCTPhieuNhap detailDlg = new PnCTPhieuNhap((Frame) SwingUtilities.getWindowAncestor(this), maPN, trangThai, phanQuyen, this.tenNguoiDung);
+        // 2. Lấy tên nhân viên đang đăng nhập 
+        MainFrame mainFrame = (MainFrame) SwingUtilities.getWindowAncestor(this);
+        String tenNV = mainFrame.getTaiKhoan().getTenNV(); 
+
+        // 3. Khởi tạo Dialog với tham số tên nhân viên ở cuối
+        PnCTPhieuNhap detailDlg = new PnCTPhieuNhap(
+            (Frame) SwingUtilities.getWindowAncestor(this), 
+            maPN, 
+            trangThai, 
+            phanQuyen, 
+            tenNV // Tham số mới truyền vào
+        );
+
         detailDlg.setVisible(true);
 
+        // Sau khi đóng dialog, load lại dữ liệu nếu cần
         buildNccCache();
         loadData();
     }

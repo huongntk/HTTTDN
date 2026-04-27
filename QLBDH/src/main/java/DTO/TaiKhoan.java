@@ -10,6 +10,7 @@ package DTO;
  */
 public class TaiKhoan {
     private int maNV;
+    private String tenNV;
     private String taiKhoan;
     private String matKhau;
     private String maQuyen;
@@ -24,6 +25,14 @@ public class TaiKhoan {
         this.matKhau = matKhau;
         this.maQuyen = maQuyen;
         this.trangThai = trangThai;
+    }
+
+    public String getTenNV() {
+        return tenNV;
+    }
+
+    public void setTenNV(String tenNV) {
+        this.tenNV = tenNV;
     }
 
     public int getMaNV() {

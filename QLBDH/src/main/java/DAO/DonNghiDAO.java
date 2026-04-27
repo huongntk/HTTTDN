@@ -33,7 +33,38 @@ public class DonNghiDAO {
         }
         return list;
     }
-    
+    // Lấy đơn nghỉ theo mã đơn
+    public DonNghiDTO selectById(int maDon) {
+        String sql = "SELECT dn.*, nv.Ho, nv.Ten FROM DonTu dn "
+                + "JOIN NhanVien nv ON dn.MaNV = nv.MaNV "
+                + "WHERE dn.MaDon = ?";
+
+        try (ResultSet rs = DataProvider.executeQuery(sql, maDon)) {
+            if (rs != null && rs.next()) {
+                DonNghiDTO dn = new DonNghiDTO();
+                dn.setMaDon(rs.getInt("MaDon"));
+                dn.setMaNV(rs.getInt("MaNV"));
+                dn.setHoTen(rs.getString("Ho") + " " + rs.getString("Ten"));
+                dn.setLoaiDon(rs.getString("LoaiDon"));
+                dn.setNgayBatDau(rs.getDate("NgayBatDau"));
+                dn.setNgayKetThuc(rs.getDate("NgayKetThuc"));
+                dn.setLyDo(rs.getString("LyDo"));
+                dn.setTrangThai(rs.getString("TrangThai"));
+
+                try {
+                    dn.setNgayGui(rs.getDate("NgayGui"));
+                } catch (Exception e) {
+                    // Nếu CSDL không có cột NgayGui thì bỏ qua
+                }
+
+                return dn;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
     // Lấy tất cả đơn (không lọc trạng thái)
     public ArrayList<DonNghiDTO> selectAll() {
         ArrayList<DonNghiDTO> list = new ArrayList<>();

@@ -9,19 +9,23 @@ public class TaiKhoanDAO {
 
     public TaiKhoan login(String user, String pass) {
         TaiKhoan tk = null;
-        String sql = "SELECT * FROM TaiKhoan WHERE TaiKhoan=? AND MatKhau=? AND TrangThai=1";
+        String sql = "SELECT tk.*,(nv.Ho + ' ' + nv.Ten) as TenNV " +
+                 "FROM TaiKhoan tk " +
+                 "INNER JOIN NhanVien nv ON tk.MaNV = nv.MaNV " +
+                 "WHERE tk.TaiKhoan = ? AND tk.MatKhau = ? AND tk.TrangThai = 1";
         System.out.println("Login with: [" + user + "] / [" + pass + "]");
         try (ResultSet rs = DataProvider.executeQuery(sql,user, pass)) {
 
 
             if (rs.next()) {
-                tk = new TaiKhoan(
-                    rs.getInt("MaNV"),
-                    rs.getString("TaiKhoan"),
-                    rs.getString("MatKhau"),
-                    rs.getString("MaQuyen"),
-                    rs.getInt("TrangThai")
-                );
+                tk = new TaiKhoan();
+                    tk.setMaNV(rs.getInt("MaNV"));
+                    tk.setTenNV(rs.getString("TenNV"));
+                    tk.setTaiKhoan(rs.getString("TaiKhoan"));
+                    tk.setMatKhau(rs.getString("MatKhau"));
+                    tk.setMaQuyen(rs.getString("MaQuyen"));
+                    tk.setTrangThai(rs.getInt("TrangThai"));
+                return tk;
             }
 
         } catch (Exception e) {

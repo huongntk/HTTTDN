@@ -8,7 +8,6 @@ import DTO.PhanQuyen;
 import DTO.TaiKhoan;
 import java.awt.*;
 import java.util.ArrayList;
-import javax.swing.JOptionPane;
 import javax.swing.*;
 import GUI.PnChamCong;
 
@@ -19,11 +18,13 @@ public class MainFrame extends javax.swing.JFrame {
     // Biến lưu nút hiện đang được chọn
     private JButton selectedButton = null;
     private ArrayList<JButton> menuButtons = new ArrayList<>();
-    
+    private JButton btnLichLamViec;
+    private JButton btnCaLam;
 
     public MainFrame( TaiKhoan tk, PhanQuyen pq) {
         setTitle("Quản lý Bán Đồng Hồ Cơ");
         initComponents();
+        initLichLamViecButton();
         menuButtons.add(btnBanHang);
         menuButtons.add(btnSanPham);
         menuButtons.add(btnNhanVien);
@@ -33,6 +34,7 @@ public class MainFrame extends javax.swing.JFrame {
         menuButtons.add(btnPhanQuyen);
         menuButtons.add(btnKhuyenMai);
         menuButtons.add(btnQuanLyLuong);
+        menuButtons.add(btnLichLamViec);
         menuButtons.add(btnChamCong);
         menuButtons.add(btnDuyetNghi);
         
@@ -41,12 +43,78 @@ public class MainFrame extends javax.swing.JFrame {
         this.taiKhoan = tk;
         this.phanQuyen = pq;
         txtaccount.setText(tk.getTaiKhoan());
-
         loadMenuByRole();
         
         // KÍCH HOẠT CHỨC NĂNG ĐẦU TIÊN
         openFirstAccessiblePanel();
 
+    }
+    
+    private void initLichLamViecButton() {
+            btnLichLamViec = new javax.swing.JButton();
+
+            btnLichLamViec.setBackground(new java.awt.Color(0, 204, 204));
+            btnLichLamViec.setFont(new java.awt.Font("Segoe UI", 1, 14));
+
+            // Dùng tạm icon clock vì project đã có icon này.
+            // Nếu sau này có icon calendar.png thì đổi lại đường dẫn icon.
+            btnLichLamViec.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/calendar.png")));
+
+            btnLichLamViec.setText("Lịch làm việc");
+            btnLichLamViec.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+            btnLichLamViec.setBorderPainted(false);
+            btnLichLamViec.setContentAreaFilled(false);
+            btnLichLamViec.setHideActionText(true);
+            btnLichLamViec.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
+            btnLichLamViec.setMaximumSize(new java.awt.Dimension(200, 45));
+            btnLichLamViec.setPreferredSize(new java.awt.Dimension(200, 30));
+            btnLichLamViec.setSelected(true);
+
+            btnLichLamViec.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    btnLichLamViecActionPerformed(evt);
+                }
+            });
+            btnCaLam = new JButton();
+            btnCaLam.setBackground(new java.awt.Color(0, 204, 204));
+            btnCaLam.setFont(new java.awt.Font("Segoe UI", 1, 14));
+            btnCaLam.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/working.png")));
+            btnCaLam.setText("Ca l\u00e0m");
+            btnCaLam.setBorderPainted(false);
+            btnCaLam.setContentAreaFilled(false);
+            btnCaLam.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
+            btnCaLam.setMaximumSize(new java.awt.Dimension(200, 45));
+            btnCaLam.setPreferredSize(new java.awt.Dimension(200, 30));
+            btnCaLam.addActionListener(e -> {
+                pnContent.removeAll();
+                PnCaLam pn = new PnCaLam(taiKhoan);
+                pnContent.add(pn);
+                pnContent.revalidate();
+                pnContent.repaint();
+                setButtonActive(btnCaLam);
+            });
+            menuButtons.add(btnCaLam);
+            pnMenu.add(btnCaLam);
+            ;
+
+            // Chèn nút Lịch làm việc trước nút Chấm công
+            pnMenu.remove(btnChamCong);
+            pnMenu.add(btnLichLamViec);
+            pnMenu.add(btnChamCong);
+
+            pnMenu.revalidate();
+            pnMenu.repaint();
+        }
+    private void btnLichLamViecActionPerformed(java.awt.event.ActionEvent evt) {
+        pnContent.removeAll();
+
+        PnLichLamViec pn = new PnLichLamViec();
+
+        pnContent.add(pn);
+        pnContent.revalidate();
+        pnContent.repaint();
+
+        setButtonActive(btnLichLamViec);
     }
     
     public void loadMenuByRole() {
@@ -79,7 +147,8 @@ public class MainFrame extends javax.swing.JFrame {
         btnThongKe.setVisible(phanQuyen.isAdminBaoCaoTongHop() || phanQuyen.isBhThongKeDoanhThu() || phanQuyen.isBhThongKeLoiNhuan() || phanQuyen.isKhoBaoCaoTonKho());
         // Quản lý lương: hiển thị nếu có bất kỳ quyền nào về lương
         btnQuanLyLuong.setVisible(phanQuyen.isNsXemLuongCaNhan() && phanQuyen.isNsTinhLuong() && phanQuyen.isNsInBangLuong());
-        
+        btnCaLam.setVisible(phanQuyen.isNsXemLuongCaNhan());
+        btnLichLamViec.setVisible(phanQuyen.isNsXemLuongCaNhan() && phanQuyen.isNsTinhLuong() && phanQuyen.isNsInBangLuong());
         boolean isAdmin = taiKhoan.getMaQuyen().equals("ADMIN");
         btnDuyetNghi.setVisible(phanQuyen.isNsDuyetNghi() && !isAdmin);
         btnChamCong.setVisible(phanQuyen.isNsChamCong());
@@ -87,6 +156,9 @@ public class MainFrame extends javax.swing.JFrame {
         // 7. Refresh lại giao diện thanh menu sau khi ẩn/hiện các nút
         pnMenu.revalidate();
         pnMenu.repaint();
+    }
+    public TaiKhoan getTaiKhoan() {
+        return this.taiKhoan;
     }
 
     @SuppressWarnings("unchecked")
