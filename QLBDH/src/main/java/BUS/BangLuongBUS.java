@@ -200,11 +200,9 @@ public class BangLuongBUS {
             if (bl.getGhiChu() == null || bl.getGhiChu().trim().isEmpty()) {
                 bl.setGhiChu(old.getGhiChu());
             }
-
             boolean ok = bangLuongDAO.update(bl);
             return ok ? "Cập nhật bảng lương thành công!" : "Cập nhật thất bại!";
         }
-
         boolean ok = bangLuongDAO.insert(bl);
         return ok ? "Thêm bảng lương thành công!" : "Thêm thất bại!";
     }

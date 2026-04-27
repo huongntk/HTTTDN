@@ -342,7 +342,7 @@ public class PnHoaDonForm extends javax.swing.JPanel {
         jPanel4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         lblMaNV.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        lblMaNV.setText("Mã nhân viên");
+        lblMaNV.setText("Nhân viên");
 
         lblNgayLap.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         lblNgayLap.setText("Ngày lập");
@@ -361,7 +361,7 @@ public class PnHoaDonForm extends javax.swing.JPanel {
         });
 
         lblMaKH.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        lblMaKH.setText("Mã khách hàng");
+        lblMaKH.setText("Khách hàng");
 
         txtMaNV.setEditable(false);
         txtMaNV.addActionListener(new java.awt.event.ActionListener() {
@@ -603,7 +603,7 @@ public class PnHoaDonForm extends javax.swing.JPanel {
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(scrTimKiemHD, javax.swing.GroupLayout.PREFERRED_SIZE, 474, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
