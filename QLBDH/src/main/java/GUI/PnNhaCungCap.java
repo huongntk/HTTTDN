@@ -1,4 +1,3 @@
-
 package GUI;
 
 import BUS.NhaCungCapBUS;
@@ -8,6 +7,7 @@ import DTO.PhanQuyen;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.*;
 import java.net.URL;
@@ -20,9 +20,12 @@ public class PnNhaCungCap extends JPanel {
     private JCheckBox chkHoatDong;
     private JTable table;
     private DefaultTableModel model;
+    private TableRowSorter<DefaultTableModel> sorter;
     private NhaCungCapBUS bus = new NhaCungCapBUS();
     private JButton btnThem, btnSua, btnXoa, btnLamMoi;
-    private JButton btnCapNhat; // Thêm nút Cập nhật riêng
+    private JButton btnCapNhat;
+    private JTextField txtTimKiem;
+    private JComboBox<String> cbTimKiem;
     
     public PnNhaCungCap(PhanQuyen pq) {
         this.phanQuyen = pq;
@@ -50,7 +53,6 @@ public class PnNhaCungCap extends JPanel {
         JLabel lblTen = new JLabel("Tên NCC:*");
         JLabel lblDiaChi = new JLabel("Địa chỉ:");
         JLabel lblSDT = new JLabel("Số điện thoại:*");
-//        JLabel lblTrangThai = new JLabel("Trạng thái:");
         
         lblMa.setFont(lblFont); 
         lblTen.setFont(lblFont);
@@ -58,19 +60,18 @@ public class PnNhaCungCap extends JPanel {
         lblDiaChi.setFont(lblFont); 
         lblSDT.setFont(lblFont);
         lblSDT.setForeground(Color.RED);
-//        lblTrangThai.setFont(lblFont);
         
         txtMa = new JTextField(); 
         txtMa.setEditable(false);
         txtMa.setBackground(new Color(240, 240, 240));
         
-        txtTen = new JTextField();
-        txtDiaChi = new JTextField();
-        txtSDT = new JTextField();
+        txtTen = new JTextField(20);
+        txtDiaChi = new JTextField(20);
+        txtSDT = new JTextField(20);
         chkHoatDong = new JCheckBox("Hoạt động");
         chkHoatDong.setBackground(Color.WHITE);
         chkHoatDong.setFont(lblFont);
-        chkHoatDong.setSelected(true); // Mặc định là hoạt động
+        chkHoatDong.setSelected(true);
         
         int row = 0;
         g.gridx = 0; g.gridy = row; leftPanel.add(lblMa, g);
@@ -85,13 +86,12 @@ public class PnNhaCungCap extends JPanel {
         g.gridx = 0; g.gridy = row; leftPanel.add(lblSDT, g);
         g.gridx = 1; leftPanel.add(txtSDT, g);
         row++;
-//        g.gridx = 0; g.gridy = row; leftPanel.add(lblTrangThai, g);
-//        g.gridx = 1; leftPanel.add(chkHoatDong, g);
         
-        // Panel chứa các nút
+        
         row++;
         g.gridx = 0; g.gridy = row; g.gridwidth = 2;
-        JPanel pnlButtons = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
+        g.insets = new Insets(8, 14, 8, 14); 
+        JPanel pnlButtons = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10)); 
         pnlButtons.setOpaque(false);
         
         btnThem = createClassicButton("Thêm mới", "/icon/them.png");
@@ -111,6 +111,33 @@ public class PnNhaCungCap extends JPanel {
                 TitledBorder.LEFT, TitledBorder.TOP,
                 new Font("Segoe UI", Font.BOLD, 14)));
         
+        // ===== PANEL TÌM KIẾM =====
+        JPanel pnlTimKiem = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 8));
+        pnlTimKiem.setBackground(Color.WHITE);
+        
+        JLabel lblTimKiem = new JLabel("Tìm kiếm:");
+        lblTimKiem.setFont(lblFont);
+        
+        cbTimKiem = new JComboBox<>(new String[]{"Tên NCC", "Số điện thoại", "Địa chỉ"});
+        cbTimKiem.setFont(lblFont);
+        cbTimKiem.setPreferredSize(new Dimension(120, 30));
+        
+        txtTimKiem = new JTextField(20);
+        txtTimKiem.setFont(lblFont);
+        txtTimKiem.setPreferredSize(new Dimension(200, 30));
+        
+        JButton btnTimKiem = createClassicButton("Tìm", "/icon/tim.png");
+        btnTimKiem.setPreferredSize(new Dimension(80, 32));
+        
+        JButton btnHuyTim = createClassicButton("Hiển thị tất cả", "/icon/refresh.png");
+        btnHuyTim.setPreferredSize(new Dimension(130, 32));
+        
+        pnlTimKiem.add(lblTimKiem);
+        pnlTimKiem.add(cbTimKiem);
+        pnlTimKiem.add(txtTimKiem);
+        pnlTimKiem.add(btnTimKiem);
+        pnlTimKiem.add(btnHuyTim);
+        
         String[] cols = {"Mã NCC", "Tên NCC", "Địa chỉ", "Số điện thoại"};
         model = new DefaultTableModel(cols, 0);
         table = new JTable(model);
@@ -119,6 +146,11 @@ public class PnNhaCungCap extends JPanel {
         table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 13));
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         
+        // Setup sorter cho tìm kiếm
+        sorter = new TableRowSorter<>(model);
+        table.setRowSorter(sorter);
+        
+        rightPanel.add(pnlTimKiem, BorderLayout.NORTH);
         rightPanel.add(new JScrollPane(table), BorderLayout.CENTER);
         
         // ===== Bottom Buttons =====
@@ -128,33 +160,49 @@ public class PnNhaCungCap extends JPanel {
         rightPanel.add(pnlBottom, BorderLayout.SOUTH);
         
         JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, rightPanel);
-        split.setDividerLocation(400);
+        split.setDividerLocation(420); // Tăng lên 420 để hiển thị tốt hơn
+        split.setResizeWeight(0.35);
         add(split, BorderLayout.CENTER);
         
         // ====== SỰ KIỆN ======
         loadData();
+        
+        // Tìm kiếm theo điều kiện
+        btnTimKiem.addActionListener(e -> timKiem());
+        
+        // Hủy tìm kiếm, hiển thị lại toàn bộ
+        btnHuyTim.addActionListener(e -> {
+            txtTimKiem.setText("");
+            sorter.setRowFilter(null);
+            loadData();
+        });
+        
+        // Tìm kiếm khi nhấn Enter
+        txtTimKiem.addActionListener(e -> timKiem());
         
         // Click chọn dòng → hiển thị lên form để sửa/xóa
         table.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 int r = table.getSelectedRow();
                 if (r != -1) {
-                    txtMa.setText(model.getValueAt(r, 0).toString());
-                    txtTen.setText(model.getValueAt(r, 1).toString());
-                    txtDiaChi.setText(model.getValueAt(r, 2).toString());
-                    txtSDT.setText(model.getValueAt(r, 3).toString());
-                    chkHoatDong.setSelected(model.getValueAt(r, 4).toString().equals("Hoạt động"));
+                    // Lấy chỉ số thực tế trong model (vì có thể đang filtered)
+                    int modelRow = table.convertRowIndexToModel(r);
+                    txtMa.setText(model.getValueAt(modelRow, 0).toString());
+                    txtTen.setText(model.getValueAt(modelRow, 1).toString());
+                    txtDiaChi.setText(model.getValueAt(modelRow, 2).toString());
+                    txtSDT.setText(model.getValueAt(modelRow, 3).toString());
+                    chkHoatDong.setSelected(model.getValueAt(modelRow, 4).toString().equals("Hoạt động"));
                 }
             }
         });
         
-        // Thêm mới (không cần chọn dòng)
+        // Thêm mới
         btnThem.addActionListener(e -> themMoi());
         
-        // Cập nhật (phải chọn dòng)
+        // Cập nhật
         btnCapNhat.addActionListener(e -> capNhat());
         
-        // Xóa (phải chọn dòng)
+        // Xóa
         btnXoa.addActionListener(e -> xoa());
         
         // Làm mới form
@@ -165,7 +213,7 @@ public class PnNhaCungCap extends JPanel {
         
         configureByPermission();
         
-        // Thêm ràng buộc cho SDT (chỉ cho phép nhập số)
+        // Ràng buộc cho SDT (chỉ cho phép nhập số)
         txtSDT.addKeyListener(new KeyAdapter() {
             public void keyTyped(KeyEvent e) {
                 char c = e.getKeyChar();
@@ -178,9 +226,41 @@ public class PnNhaCungCap extends JPanel {
         });
     }
     
+    // ===== PHƯƠNG THỨC TÌM KIẾM =====
+    private void timKiem() {
+        String tuKhoa = txtTimKiem.getText().trim();
+        if (tuKhoa.isEmpty()) {
+            sorter.setRowFilter(null);
+            return;
+        }
+        
+        int luaChon = cbTimKiem.getSelectedIndex();
+        final int cotTim;
+        switch (luaChon) {
+            case 0: cotTim = 1; break; // Tên NCC
+            case 1: cotTim = 3; break; // Số điện thoại
+            case 2: cotTim = 2; break; // Địa chỉ
+            default: cotTim = 1;
+        }
+        
+        sorter.setRowFilter(new RowFilter<DefaultTableModel, Integer>() {
+            @Override
+            public boolean include(Entry<? extends DefaultTableModel, ? extends Integer> entry) {
+                String value = entry.getStringValue(cotTim);
+                if (value == null) return false;
+                return value.toLowerCase().contains(tuKhoa.toLowerCase());
+            }
+        });
+        
+        if (sorter.getViewRowCount() == 0) {
+            JOptionPane.showMessageDialog(this, 
+                "Không tìm thấy nhà cung cấp nào với từ khóa '" + tuKhoa + "'!", 
+                "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+    
     // ===== PHƯƠNG THỨC THÊM MỚI =====
     private void themMoi() {
-        // Kiểm tra dữ liệu nhập
         if (!validateInput()) return;
         
         String ten = txtTen.getText().trim();
@@ -188,7 +268,6 @@ public class PnNhaCungCap extends JPanel {
         String sdt = txtSDT.getText().trim();
         boolean trangThai = chkHoatDong.isSelected();
         
-        // Kiểm tra trùng tên (nếu cần)
         if (bus.isTenExists(ten)) {
             JOptionPane.showMessageDialog(this, 
                 "Tên nhà cung cấp '" + ten + "' đã tồn tại trong hệ thống!", 
@@ -197,7 +276,6 @@ public class PnNhaCungCap extends JPanel {
             return;
         }
         
-        // Kiểm tra trùng số điện thoại
         if (bus.isSDTExists(sdt)) {
             JOptionPane.showMessageDialog(this, 
                 "Số điện thoại '" + sdt + "' đã được đăng ký bởi nhà cung cấp khác!", 
@@ -231,7 +309,6 @@ public class PnNhaCungCap extends JPanel {
         String sdt = txtSDT.getText().trim();
         boolean trangThai = chkHoatDong.isSelected();
         
-        // Kiểm tra trùng tên (trừ chính nó)
         if (bus.isTenExists(ten, ma)) {
             JOptionPane.showMessageDialog(this, 
                 "Tên nhà cung cấp '" + ten + "' đã tồn tại trong hệ thống!", 
@@ -240,7 +317,6 @@ public class PnNhaCungCap extends JPanel {
             return;
         }
         
-        // Kiểm tra trùng số điện thoại (trừ chính nó)
         if (bus.isSDTExists(sdt, ma)) {
             JOptionPane.showMessageDialog(this, 
                 "Số điện thoại '" + sdt + "' đã được đăng ký bởi nhà cung cấp khác!", 
@@ -273,8 +349,9 @@ public class PnNhaCungCap extends JPanel {
             return;
         }
         
-        int ma = Integer.parseInt(model.getValueAt(r, 0).toString());
-        String ten = model.getValueAt(r, 1).toString();
+        int modelRow = table.convertRowIndexToModel(r);
+        int ma = Integer.parseInt(model.getValueAt(modelRow, 0).toString());
+        String ten = model.getValueAt(modelRow, 1).toString();
         
         int confirm = JOptionPane.showConfirmDialog(this,
             "Bạn có chắc muốn xóa nhà cung cấp '" + ten + "'?\nLưu ý: Sẽ không thể khôi phục!", 
@@ -295,7 +372,6 @@ public class PnNhaCungCap extends JPanel {
     
     // ===== KIỂM TRA DỮ LIỆU NHẬP =====
     private boolean validateInput() {
-        // Kiểm tra tên không được trống
         String ten = txtTen.getText().trim();
         if (ten.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Tên nhà cung cấp không được để trống!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
@@ -303,14 +379,12 @@ public class PnNhaCungCap extends JPanel {
             return false;
         }
         
-        // Kiểm tra độ dài tên (2-100 ký tự)
         if (ten.length() < 2 || ten.length() > 100) {
             JOptionPane.showMessageDialog(this, "Tên nhà cung cấp phải có độ dài từ 2 đến 100 ký tự!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
             txtTen.requestFocus();
             return false;
         }
         
-        // Kiểm tra số điện thoại
         String sdt = txtSDT.getText().trim();
         if (sdt.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Số điện thoại không được để trống!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
@@ -318,17 +392,16 @@ public class PnNhaCungCap extends JPanel {
             return false;
         }
         
-        // Kiểm tra định dạng số điện thoại (10-11 số, bắt đầu bằng 0)
-        if (!Pattern.matches("^0\\d{9}$", sdt)) {
+        if (!Pattern.matches("^0\\d{9}$", sdt) && !Pattern.matches("^0\\d{10}$", sdt)) {
             JOptionPane.showMessageDialog(this, 
                 "Số điện thoại không hợp lệ!\n"
-                + "Yêu cầu: Bắt đầu bằng số 0, gồm 10 chữ số.\n",                
+                + "Yêu cầu: Bắt đầu bằng số 0, gồm 10 hoặc 11 chữ số.\n"
+                + "Ví dụ: 0912345678 hoặc 09123456789",                
                 "Cảnh báo", JOptionPane.WARNING_MESSAGE);
             txtSDT.requestFocus();
             return false;
         }
         
-        // Kiểm tra địa chỉ (nếu có thì không được quá dài)
         String diaChi = txtDiaChi.getText().trim();
         if (diaChi.length() > 200) {
             JOptionPane.showMessageDialog(this, "Địa chỉ không được vượt quá 200 ký tự!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
@@ -357,6 +430,10 @@ public class PnNhaCungCap extends JPanel {
                     n.getSoDienThoai(),
                     n.isTrangThai() ? "Hoạt động" : "Ngừng hoạt động"
             });
+        }
+        // Reset sorter sau khi load
+        if (sorter != null) {
+            sorter.setRowFilter(null);
         }
     }
     
