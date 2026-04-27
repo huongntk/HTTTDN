@@ -7,19 +7,50 @@ import java.util.Date;
 
 public class ChamCongDAO {
 
+    public ArrayList<Object[]> getChamCongChiTiet(int maNV, int thang, int nam) {
+        ArrayList<Object[]> list = new ArrayList<>();
+        String sql = "SELECT cc.NgayLam, cl.SoCong "
+                + "FROM ChamCong cc "
+                + "JOIN CaLam cl ON cc.CaLam = cl.TenCa "
+                + "WHERE cc.MaNV = ? AND MONTH(cc.NgayLam) = ? AND YEAR(cc.NgayLam) = ?";
+        try (ResultSet rs = DataProvider.executeQuery(sql, maNV, thang, nam)) {
+            while (rs.next()) {
+                list.add(new Object[]{rs.getDate("NgayLam"), rs.getDouble("SoCong")});
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    public double getTotalCongByDateRange(int maNV, Date fromDate, Date toDate) {
+        String sql = "SELECT SUM(cl.SoCong) AS TongCong " +
+                     "FROM ChamCong cc " +
+                     "JOIN CaLam cl ON cc.CaLam = cl.TenCa " +
+                     "WHERE cc.MaNV = ? AND cc.NgayLam BETWEEN ? AND ?";
+        try (ResultSet rs = DataProvider.executeQuery(sql, maNV, new java.sql.Date(fromDate.getTime()), new java.sql.Date(toDate.getTime()))) {
+            if (rs.next()) {
+                return rs.getDouble("TongCong");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0.0;
+    }
+
     // Thêm mới bản ghi chấm công
     public boolean insert(ChamCongDTO cc) {
         String sql = "INSERT INTO ChamCong (MaNV, NgayLam, CaLam, GioVao, GioRa, TrangThai, GhiChu) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try {
             int rows = DataProvider.executeUpdate(sql,
-                cc.getMaNV(),
-                new java.sql.Date(cc.getNgayLam().getTime()),
-                cc.getCaLam(),
-                cc.getGioVao(),
-                cc.getGioRa(),
-                cc.getTrangThai(),
-                cc.getGhiChu()
+                    cc.getMaNV(),
+                    new java.sql.Date(cc.getNgayLam().getTime()),
+                    cc.getCaLam(),
+                    cc.getGioVao(),
+                    cc.getGioRa(),
+                    cc.getTrangThai(),
+                    cc.getGhiChu()
             );
             return rows > 0;
 
@@ -40,14 +71,14 @@ public class ChamCongDAO {
 
         try {
             int rows = DataProvider.executeUpdate(sql,
-                cc.getMaNV(),
-                new java.sql.Date(cc.getNgayLam().getTime()),
-                cc.getCaLam(),
-                cc.getGioVao(),
-                cc.getGioRa(),
-                cc.getTrangThai(),
-                cc.getGhiChu(),
-                cc.getMaChamCong()
+                    cc.getMaNV(),
+                    new java.sql.Date(cc.getNgayLam().getTime()),
+                    cc.getCaLam(),
+                    cc.getGioVao(),
+                    cc.getGioRa(),
+                    cc.getTrangThai(),
+                    cc.getGhiChu(),
+                    cc.getMaChamCong()
             );
             return rows > 0;
 
