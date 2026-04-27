@@ -234,7 +234,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         btnSanPham.setBackground(new java.awt.Color(0, 204, 204));
         btnSanPham.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        btnSanPham.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/smartphone.png"))); // NOI18N
+        btnSanPham.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/watch.png"))); // NOI18N
         btnSanPham.setText("Quản lý sản phẩm");
         btnSanPham.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         btnSanPham.setBorderPainted(false);

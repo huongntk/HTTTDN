@@ -47,10 +47,11 @@ public class AdminFrame extends JFrame {
         JButton btnNhanSu = createMenuButton("Quản lý nhân sự", "/icon/multiple-users.png");
         JButton btnKho = createMenuButton("Quản lý kho", "/icon/boxes.png");
         JButton btnBanHang = createMenuButton("Quản lý bán hàng", "/icon/pay.png");
-        JButton btnTaiKhoan = createMenuButton("Quản lý tài khoản", "/icon/user.png");
+        JButton btnTaiKhoan = createMenuButton("Quản lý tài khoản", "/icon/account.png");
+        JButton btnSanPham = createMenuButton("Quản lý sản phẩm", "/icon/watch.png");
         JButton btnKhachHang = createMenuButton("Quản lý khách hàng", "/icon/user.png");
         JButton btnGiamGia = createMenuButton("Quản lý khuyến mãi", "/icon/tag.png");
-        JButton btnPhanQuyen = createMenuButton("Phân quyền", "/icon/account.png");
+        JButton btnPhanQuyen = createMenuButton("Phân quyền", "/icon/settings.png");
         JButton btnThongKe = createMenuButton("Báo cáo tổng hợp", "/icon/bar-char.png");
         JButton btnDoiMatKhau = createMenuButton("Đổi mật khẩu", "/icon/undo.png");
         JButton btnDangXuat = createMenuButton("Đăng xuất", "/icon/logout.png");
@@ -59,6 +60,7 @@ public class AdminFrame extends JFrame {
         pnlMenu.add(btnKho);
         pnlMenu.add(btnBanHang);
         pnlMenu.add(btnTaiKhoan);
+        pnlMenu.add(btnSanPham);
         pnlMenu.add(btnKhachHang);
         pnlMenu.add(btnGiamGia);
         pnlMenu.add(btnPhanQuyen);
@@ -91,6 +93,7 @@ public class AdminFrame extends JFrame {
         menuButtons.add(btnKho);
         menuButtons.add(btnBanHang);
         menuButtons.add(btnTaiKhoan);
+        menuButtons.add(btnSanPham);
         menuButtons.add(btnKhachHang);
         menuButtons.add(btnGiamGia);
         menuButtons.add(btnPhanQuyen);
@@ -112,6 +115,10 @@ public class AdminFrame extends JFrame {
         btnTaiKhoan.addActionListener(e -> {
             cardLayout.show(pnlContent, "taiKhoan");
             setActiveMenuButton(btnTaiKhoan);
+        });
+        btnSanPham.addActionListener(e -> {
+            cardLayout.show(pnlContent, "sanPham");
+            setActiveMenuButton(btnSanPham);
         });
         btnKhachHang.addActionListener(e -> {
             cardLayout.show(pnlContent, "khachHang");

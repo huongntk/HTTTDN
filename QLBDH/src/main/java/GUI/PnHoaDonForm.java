@@ -342,7 +342,7 @@ public class PnHoaDonForm extends javax.swing.JPanel {
         jPanel4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         lblMaNV.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        lblMaNV.setText("Nhân viên");
+        lblMaNV.setText("Mã nhân viên");
 
         lblNgayLap.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         lblNgayLap.setText("Ngày lập");
@@ -361,7 +361,7 @@ public class PnHoaDonForm extends javax.swing.JPanel {
         });
 
         lblMaKH.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        lblMaKH.setText("Khách hàng");
+        lblMaKH.setText("Mã khách hàng");
 
         txtMaNV.setEditable(false);
         txtMaNV.addActionListener(new java.awt.event.ActionListener() {
@@ -682,6 +682,7 @@ public class PnHoaDonForm extends javax.swing.JPanel {
         scrChiTietHD.setViewportView(tblChiTietHD);
 
         btnXuatHD.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnXuatHD.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/export.png"))); // NOI18N
         btnXuatHD.setText("Xuất Hóa đơn");
         btnXuatHD.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         btnXuatHD.addActionListener(new java.awt.event.ActionListener() {

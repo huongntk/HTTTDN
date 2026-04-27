@@ -14,6 +14,7 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.BorderLayout;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.math.BigDecimal;
@@ -33,7 +34,7 @@ public class PnSanPham extends javax.swing.JPanel {
     private java.util.Map<Integer, String> loaiMap = new java.util.HashMap<>();
     private java.util.Map<Integer, String> nccMap = new java.util.HashMap<>();
     private PhanQuyen phanQuyen;
-    
+    private boolean isSortAscending = true; 
 
     public PnSanPham(PhanQuyen pq) {
         initComponents();
@@ -190,10 +191,6 @@ public class PnSanPham extends javax.swing.JPanel {
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(29, 29, 29)
-                .addComponent(btnXuatExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(32, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -201,8 +198,12 @@ public class PnSanPham extends javax.swing.JPanel {
                     .addComponent(btnThem, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnXoa, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnLamMoi, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnSortAZ, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(27, 27, 27))
+                    .addComponent(btnSortAZ, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(25, 25, 25))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(33, 33, 33)
+                .addComponent(btnXuatExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(16, Short.MAX_VALUE))
         );
 
         add(jPanel1, java.awt.BorderLayout.PAGE_START);
@@ -464,13 +465,13 @@ public class PnSanPham extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(jLabel1)
-                .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGap(18, 30, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(1, 1, 1))
-                    .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cboLoc, javax.swing.GroupLayout.Alignment.LEADING))
+                    .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(cboLoc))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(92, 92, 92))
@@ -630,23 +631,32 @@ public class PnSanPham extends javax.swing.JPanel {
 
     private void btnSortAZActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSortAZActionPerformed
         // 1. Kiểm tra danh sách có dữ liệu hay không
-    if (list == null || list.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Danh sách sản phẩm đang trống, không thể sắp xếp!");
-        return;
-    }
+        if (list == null || list.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Danh sách sản phẩm đang trống, không thể sắp xếp!");
+            return;
+        }
 
-    // 2. Thực hiện sắp xếp danh sách theo tên sản phẩm (A-Z)
-    // Sử dụng Comparator và compareToIgnoreCase để không phân biệt hoa thường
-    list.sort((sp1, sp2) -> sp1.getTenSP().compareToIgnoreCase(sp2.getTenSP()));
-    // Sắp xếp theo giá giảm dần
-//    list.sort((sp1, sp2) -> sp2.getGiaBan().compareTo(sp1.getGiaBan()));
+        // 2. Thực hiện sắp xếp dựa trên trạng thái của biến isSortAscending
+        if (isSortAscending) {
+            // Sắp xếp A -> Z
+            list.sort((sp1, sp2) -> sp1.getTenSP().compareToIgnoreCase(sp2.getTenSP()));
+            // JOptionPane.showMessageDialog(this, "Đã sắp xếp theo tên: A -> Z");
+        } else {
+            // Sắp xếp Z -> A
+            list.sort((sp1, sp2) -> sp2.getTenSP().compareToIgnoreCase(sp1.getTenSP()));
+            // JOptionPane.showMessageDialog(this, "Đã sắp xếp theo tên: Z -> A");
+        }
 
-    refreshTableFromList() ;
+        // 3. Đảo ngược trạng thái cờ cho lần nhấn sau
+        isSortAscending = !isSortAscending;
+
+        // 4. Cập nhật lại giao diện bảng
+        refreshTableFromList();
     }//GEN-LAST:event_btnSortAZActionPerformed
 
     private void cboLocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboLocActionPerformed
         String selectedLoai = (String) cboLoc.getSelectedItem();
-    
+
         if (selectedLoai == null || selectedLoai.equals("Tất cả các loại")) {
             loadDataToTable(); // Nếu chọn "Tất cả", gọi hàm load mặc định
         } else {
@@ -723,13 +733,16 @@ public class PnSanPham extends javax.swing.JPanel {
             nccMap.getOrDefault(p.getMaNCC(), "NCC " + p.getMaNCC())
         };
     }
+
     private void refreshTableFromList() {
-        String[] columnNames = {"ID", "Tên sản phẩm", "Thương hiệu", "Xuất xứ", "Loại", 
-                                 "Giới tính", "Giá bán", "Số lượng", "Hình ảnh", "Mô tả", "Nhà cung cấp"};
+        String[] columnNames = {"ID", "Tên sản phẩm", "Thương hiệu", "Xuất xứ", "Loại",
+            "Giới tính", "Giá bán", "Số lượng", "Hình ảnh", "Mô tả", "Nhà cung cấp"};
         DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
             @Override
             public Class<?> getColumnClass(int columnIndex) {
-                if (columnIndex == 8) return ImageIcon.class;
+                if (columnIndex == 8) {
+                    return ImageIcon.class;
+                }
                 return Object.class;
             }
         };
@@ -738,10 +751,10 @@ public class PnSanPham extends javax.swing.JPanel {
         }
         tblSanPham.setModel(model);
     }
-    
+
     private void filterSanPhamByLoai(String tenLoai) {
-    // Cập nhật lại list từ BUS để đảm bảo dữ liệu mới nhất
-        list = bus.getSanPham(); 
+        // Cập nhật lại list từ BUS để đảm bảo dữ liệu mới nhất
+        list = bus.getSanPham();
 
         DefaultTableModel model = (DefaultTableModel) tblSanPham.getModel();
         model.setRowCount(0); // Xóa bảng cũ
@@ -750,15 +763,7 @@ public class PnSanPham extends javax.swing.JPanel {
             // Kiểm tra nếu tên loại của sản phẩm trùng với loại đang lọc
             if (p.getTenLoai().equalsIgnoreCase(tenLoai)) {
                 // Thêm dòng vào table (Copy lại các cột giống trong hàm loadDataToTable của bạn)
-                model.addRow(new Object[]{
-                    p.getID(), 
-                    p.getTenSP(), 
-                    p.getTenLoai(), 
-                    p.getThuongHieu(), 
-                    p.getGiaBanFormatted(), // Hoặc p.getGiaBan() tùy code cũ
-                    p.getSoLuong(),
-                    p.getTenNCC()
-                });
+                model.addRow(buildRow(p));
             }
         }
     }
@@ -878,7 +883,6 @@ public class PnSanPham extends javax.swing.JPanel {
         setEditable(false);
     }
 
-
     private void loadDataToCboLoc() {
         LoaiDAO loaiDao = new LoaiDAO();
         ArrayList<Loai> dsLoai = loaiDao.getAll(); // Giả sử LoaiDAO đã có hàm getALL()
@@ -893,7 +897,7 @@ public class PnSanPham extends javax.swing.JPanel {
 
     private void openEditDialog(SanPhamDTO p) {
         JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "S\u1eeda s\u1ea3n ph\u1ea9m", true);
-        dialog.setSize(400, 500);
+        dialog.setSize(500, 500);
         dialog.setLayout(new GridLayout(11, 2, 5, 5));
 
         JTextField txtTenSP = new JTextField(p.getTenSP());
@@ -944,18 +948,58 @@ public class PnSanPham extends javax.swing.JPanel {
         dialog.add(txtGiaBan);
         dialog.add(new JLabel("S\u1ed1 l\u01b0\u1ee3ng:"));
         dialog.add(txtSoLuong);
-        dialog.add(new JLabel("H\u00ecnh \u1ea3nh:"));
-        dialog.add(txtHinhAnh);
+        dialog.add(new JLabel("Hình ảnh:"));
+
+        txtHinhAnh.setEditable(false);
+
+        JPanel panelAnh = new JPanel(new BorderLayout());
+        panelAnh.add(txtHinhAnh, BorderLayout.CENTER);
+
+        JButton btnChonAnh = new JButton("Chọn ảnh");
+        panelAnh.add(btnChonAnh, BorderLayout.EAST);
+
+        dialog.add(panelAnh);
         dialog.add(new JLabel("M\u00f4 t\u1ea3:"));
         dialog.add(txtMoTa);
         dialog.add(new JLabel("Nh\u00e0 cung c\u1ea5p:"));
         dialog.add(cbNCC);
 
         JButton btnSave = new JButton("L\u01b0u");
+        btnSave.setIcon(new ImageIcon("src/main/resources/icon/xacnhan.png"));
         JButton btnCancel = new JButton("H\u1ee7y");
+        btnCancel.setIcon(new ImageIcon("src/main/resources/icon/close.png"));
+        
         dialog.add(btnSave);
         dialog.add(btnCancel);
+        
+        btnChonAnh.addActionListener(e -> {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setDialogTitle("Chọn hình ảnh");
 
+            fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter(
+                    "Image files", "jpg", "png", "jpeg"));
+
+            int result = fileChooser.showOpenDialog(dialog);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                File selectedFile = fileChooser.getSelectedFile();
+                String fileName = selectedFile.getName();
+
+                File dest = new File("src/main/resources/images/" + fileName);
+                try {
+                    java.nio.file.Files.copy(
+                            selectedFile.toPath(),
+                            dest.toPath(),
+                            java.nio.file.StandardCopyOption.REPLACE_EXISTING
+                    );
+
+                    txtHinhAnh.setText("/images/" + fileName);
+
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(dialog, "Lỗi copy ảnh: " + ex.getMessage());
+                }
+            }
+        });
+        
         btnCancel.addActionListener(e -> dialog.dispose());
         btnSave.addActionListener(e -> {
             try {
@@ -988,7 +1032,7 @@ public class PnSanPham extends javax.swing.JPanel {
 
     private void openAddDialog() {
         JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Th\u00eam s\u1ea3n ph\u1ea9m m\u1edbi", true);
-        dialog.setSize(400, 500);
+        dialog.setSize(500, 500);
         dialog.setLayout(new GridLayout(11, 2, 5, 5));
 
         JTextField txtTenSP = new JTextField();
@@ -1004,9 +1048,11 @@ public class PnSanPham extends javax.swing.JPanel {
         JTextField txtGioiTinh = new JTextField();
         JTextField txtGiaBan = new JTextField();
         JTextField txtSoLuong = new JTextField();
-        JTextField txtHinhAnh = new JTextField("/images/");
+        JTextField txtHinhAnh = new JTextField();        
+        txtHinhAnh.setEditable(false);
+        
         JTextField txtMoTa = new JTextField();
-
+        
         ArrayList<DTO.NhaCungCapDTO> dsNCC = new NhaCungCapDAO().getAll();
         JComboBox<DTO.NhaCungCapDTO> cbNCC = new JComboBox<>();
         for (DTO.NhaCungCapDTO n : dsNCC) {
@@ -1027,18 +1073,62 @@ public class PnSanPham extends javax.swing.JPanel {
         dialog.add(txtGiaBan);
         dialog.add(new JLabel("S\u1ed1 l\u01b0\u1ee3ng:"));
         dialog.add(txtSoLuong);
-        dialog.add(new JLabel("H\u00ecnh \u1ea3nh:"));
-        dialog.add(txtHinhAnh);
+        dialog.add(new JLabel("Hình ảnh:"));
+
+        JPanel panelAnh = new JPanel(new BorderLayout());
+        panelAnh.add(txtHinhAnh, BorderLayout.CENTER);
+
+        JButton btnChonAnh = new JButton("Chọn ảnh");
+        panelAnh.add(btnChonAnh, BorderLayout.EAST);
+
+        dialog.add(panelAnh);
+        
         dialog.add(new JLabel("M\u00f4 t\u1ea3:"));
         dialog.add(txtMoTa);
         dialog.add(new JLabel("Nh\u00e0 cung c\u1ea5p:"));
         dialog.add(cbNCC);
 
-        JButton btnAdd = new JButton("Th\u00eam m\u1edbi");
+        JButton btnAdd = new JButton("Lưu");
+        btnAdd.setIcon(new ImageIcon("src/main/resources/icon/xacnhan.png"));
         JButton btnCancel = new JButton("H\u1ee7y");
+        btnCancel.setIcon(new ImageIcon("src/main/resources/icon/close.png"));
+        
         dialog.add(btnAdd);
         dialog.add(btnCancel);
 
+        btnChonAnh.addActionListener(e -> {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setDialogTitle("Chọn hình ảnh");
+
+            // Chỉ cho chọn file ảnh
+            fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter(
+                    "Image files", "jpg", "png", "jpeg"));
+
+            int result = fileChooser.showOpenDialog(dialog);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                File selectedFile = fileChooser.getSelectedFile();
+
+                // Lấy tên file
+                String fileName = selectedFile.getName();
+
+                // Copy file vào thư mục resources/images
+                File dest = new File("src/main/resources/images/" + fileName);
+                try {
+                    java.nio.file.Files.copy(
+                            selectedFile.toPath(),
+                            dest.toPath(),
+                            java.nio.file.StandardCopyOption.REPLACE_EXISTING
+                    );
+
+                    // Lưu path dạng resource
+                    txtHinhAnh.setText("/images/" + fileName);
+
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(dialog, "Lỗi copy ảnh: " + ex.getMessage());
+                }
+            }
+        });
+        
         btnCancel.addActionListener(e -> dialog.dispose());
         btnAdd.addActionListener(e -> {
             try {
@@ -1076,7 +1166,7 @@ public class PnSanPham extends javax.swing.JPanel {
                 JOptionPane.showMessageDialog(dialog, "L\u1ed7i h\u1ec7 th\u1ed1ng: " + ex.getMessage());
             }
         });
-
+        
         dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
     }

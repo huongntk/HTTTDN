@@ -276,4 +276,5 @@ public class BangLuongDAO {
 
         return new double[]{luongCoBan, phuCap};
     }
+    
 }

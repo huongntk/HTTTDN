@@ -103,16 +103,37 @@ public class FrmXemLuong extends JFrame {
     }
     
     private void hienThiCachTinh() {
-        String msg = "Cách tính lương:\n" +
-                     "- Lương cơ bản: theo chức vụ\n" +
-                     "- Phụ cấp: theo chức vụ\n" +
-                     "- Ngày công chuẩn: 26 ngày\n" +
-                     "- Lương ngày = Lương cơ bản / 26\n" +
-                     "- Số công = (ngày đi làm + ngày nghỉ có phép)\n" +
-                     "- Nghỉ không phép: không tính công\n" +
-                     "- Thưởng/phạt: nhập tay khi tính lương\n" +
-                     "=> Tổng lương = (số công * lương ngày) + phụ cấp + thưởng - phạt";
-        JOptionPane.showMessageDialog(this, msg);
+        String msg = "CÁCH TÍNH LƯƠNG (áp dụng từ tháng có hỗ trợ thay đổi chức vụ):\n\n"
+                + "1. Lương cơ bản & Phụ cấp:\n"
+                + "   - Lấy từ bảng Lương Cơ Bản Theo Chức Vụ (LuongCoBanTheoChucVu).\n"
+                + "   - Mỗi chức vụ có một mức lương cơ bản và phụ cấp riêng.\n\n"
+                + "2. Công chuẩn:\n"
+                + "   - Tổng số công theo lịch làm việc (SUM SoCong của ca) trong tháng.\n"
+                + "   - Nếu nhân viên thay đổi chức vụ trong tháng, công chuẩn được tính riêng\n"
+                + "     cho từng khoảng thời gian giữ chức vụ đó.\n\n"
+                + "3. Công thực tế:\n"
+                + "   - Tổng số công từ bảng Chấm Công (ChamCong) join với CaLam.\n"
+                + "   - Chỉ những ngày có lịch làm việc và đã chấm công mới được tính.\n\n"
+                + "4. Công thức tính lương:\n"
+                + "   - Đối với mỗi khoảng chức vụ:\n"
+                + "     Lương = (Lương cơ bản / Công chuẩn của khoảng) × Công thực tế\n"
+                + "     Phụ cấp = (Phụ cấp chức vụ / Công chuẩn của khoảng) × Công thực tế\n"
+                + "   - Sau khi tính hết các khoảng, cộng thêm Thưởng và trừ Phạt (nhập tay).\n\n"
+                + "5. Thưởng / Phạt:\n"
+                + "   - Được nhập thủ công khi tính lương hoặc sửa sau.\n"
+                + "   - Ảnh hưởng trực tiếp vào Tổng lương thực lĩnh.\n\n"
+                + "=> Tổng lương = (Tổng lương các khoảng) + Thưởng - Phạt\n\n"
+                + "Ghi chú: Nếu không có lịch làm việc, công chuẩn = 0, nhân viên sẽ không được\n"
+                + "tính lương cho những ngày đó dù có chấm công (cần xếp lịch trước).";
+
+        JTextArea textArea = new JTextArea(msg);
+        textArea.setEditable(false);
+        textArea.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        textArea.setBackground(UIManager.getColor("Panel.background"));
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        scrollPane.setPreferredSize(new Dimension(550, 400));
+
+        JOptionPane.showMessageDialog(this, scrollPane, "Cách tính lương", JOptionPane.INFORMATION_MESSAGE);
     }
     private void inLuongNam() {
         int nam = Integer.parseInt(JOptionPane.showInputDialog(this, "Nhập năm:", cbNam.getSelectedItem()));
