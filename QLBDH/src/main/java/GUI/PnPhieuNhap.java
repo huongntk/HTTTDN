@@ -874,7 +874,9 @@ private void tinhThanhTien(JTextField txtSL, JTextField txtGia, JTextField txtTh
         // 1. Lấy mã phiếu nhập và trạng thái từ dòng được chọn
         int maPN = (int) model.getValueAt(row, 1); 
         // Giả sử bạn cần lấy trạng thái từ danh sách gốc hoặc cột ẩn
-        int trangThai = 1; 
+//        int trangThai = 1; 
+        PhieuNhapDTO current = bus.getById(maPN);
+        int trangThai = (current != null) ? current.getTrangThai() : 0;
 
         // 2. Lấy tên nhân viên đang đăng nhập 
         MainFrame mainFrame = (MainFrame) SwingUtilities.getWindowAncestor(this);
