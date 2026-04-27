@@ -19,7 +19,10 @@ public class CaLamDAO {
         } catch (SQLException e) {
             System.err.println("Lỗi khi lấy danh sách ca làm:");
             e.printStackTrace();
+        } finally {
+            closeResultSet(rs);
         }
+
         return list;
     }
 
@@ -55,7 +58,9 @@ public class CaLamDAO {
         } catch (SQLException e) {
             System.err.println("Lỗi khi lấy ca làm theo mã:");
             e.printStackTrace();
-        } 
+        } finally {
+            closeResultSet(rs);
+        }
 
         return null;
     }

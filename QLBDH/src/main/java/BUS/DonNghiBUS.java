@@ -1,15 +1,16 @@
 package BUS;
 
-import DAO.DonNghiDAO;
-import DTO.DonNghiDTO;
 import DAO.ChamCongDAO;
+import DAO.DonNghiDAO;
 import DTO.ChamCongDTO;
+import DTO.DonNghiDTO;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
 public class DonNghiBUS {
+
     private DonNghiDAO donNghiDAO;
     private ChamCongDAO chamCongDAO;
 
@@ -34,11 +35,14 @@ public class DonNghiBUS {
         if (dn.getNgayBatDau() == null || dn.getNgayKetThuc() == null || dn.getLyDo().trim().isEmpty()) {
             return "Vui lòng nhập đầy đủ thông tin!";
         }
+
         if (dn.getNgayKetThuc().before(dn.getNgayBatDau())) {
             return "Ngày kết thúc phải sau ngày bắt đầu!";
         }
+
         dn.setTrangThai("Chờ duyệt");
         int result = donNghiDAO.insert(dn);
+
         return result > 0 ? "Đã gửi đơn nghỉ, chờ duyệt!" : "Thêm đơn thất bại!";
     }
 
@@ -54,6 +58,7 @@ public class DonNghiBUS {
         }
 
         boolean ok = donNghiDAO.updateTrangThai(maDon, "Đã duyệt");
+
         if (!ok) {
             return "Duyệt thất bại!";
         }
@@ -73,11 +78,13 @@ public class DonNghiBUS {
         if (!"Chờ duyệt".equals(don.getTrangThai())) {
             return "Chỉ có thể từ chối đơn đang ở trạng thái Chờ duyệt!";
         }
+
         boolean ok = donNghiDAO.updateTrangThai(maDon, "Từ chối");
+
         return ok ? "Đã từ chối đơn!" : "Từ chối thất bại!";
     }
-    
-     private int taoChamCongNghiCoPhep(DonNghiDTO don) {
+
+    private int taoChamCongNghiCoPhep(DonNghiDTO don) {
         int count = 0;
 
         Calendar cal = Calendar.getInstance();

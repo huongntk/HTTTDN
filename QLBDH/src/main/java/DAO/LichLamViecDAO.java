@@ -217,4 +217,15 @@ public class LichLamViecDAO {
             }
         }
     }
-}
+    public int getTotalDaysInSchedule(int maNV, java.sql.Date ngayBatDau, java.sql.Date ngayKetThuc) {
+        String sql = "SELECT COUNT(*) FROM LichLamViec WHERE MaNV = ? AND NgayLam >= ? AND NgayLam <= ? AND TrangThai = 1";
+        try (ResultSet rs = DataProvider.executeQuery(sql, maNV, ngayBatDau, ngayKetThuc)) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    }

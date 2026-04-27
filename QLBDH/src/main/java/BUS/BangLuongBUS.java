@@ -184,18 +184,30 @@ public class BangLuongBUS {
     }
 
     public String luuBangLuong(BangLuongDTO bl) {
-        BangLuongDTO old = bangLuongDAO.getByMaNVAndMonth(bl.getMaNV(), bl.getThang(), bl.getNam());
+        BangLuongDTO old = bangLuongDAO.getByMaNVAndMonth(
+            bl.getMaNV(),
+            bl.getThang(),
+            bl.getNam()
+        );
+
         if (old != null) {
+            // Nếu bảng lương đã duyệt thì không cho tính lại
             if (old.getTrangThai() == 1) {
                 return "Bảng lương tháng này đã được duyệt, không thể tính lại!";
             }
+
+            // Gán MaBL cũ để update đúng dòng cũ
             bl.setMaBL(old.getMaBL());
+
+            // Nếu ghi chú mới rỗng thì giữ ghi chú cũ
             if (bl.getGhiChu() == null || bl.getGhiChu().trim().isEmpty()) {
                 bl.setGhiChu(old.getGhiChu());
             }
+
             boolean ok = bangLuongDAO.update(bl);
             return ok ? "Cập nhật bảng lương thành công!" : "Cập nhật thất bại!";
         }
+
         boolean ok = bangLuongDAO.insert(bl);
         return ok ? "Thêm bảng lương thành công!" : "Thêm thất bại!";
     }
@@ -228,5 +240,24 @@ public class BangLuongBUS {
 
     public ArrayList<BangLuongDTO> getByMaNVAndYear(int maNV, int nam) {
         return bangLuongDAO.getByMaNVAndYear(maNV, nam);
+    }
+    public String duyetLuong(int maNV, int thang, int nam) {
+        BangLuongDTO bl = bangLuongDAO.getByMaNVAndMonth(maNV, thang, nam);
+
+        if (bl == null) {
+            return "Chưa có bảng lương tháng này để duyệt!";
+        }
+
+        if (bl.getTrangThai() == 1) {
+            return "Bảng lương tháng này đã được duyệt rồi!";
+        }
+
+        boolean ok = bangLuongDAO.duyetLuong(maNV, thang, nam);
+
+        if (ok) {
+            return "Duyệt lương thành công!";
+        }
+
+        return "Duyệt lương thất bại!";
     }
 }

@@ -7,6 +7,7 @@ import java.awt.*;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
+import java.util.Calendar;
 
 public class FrmInBangLuong extends JFrame {
     private int maNV;
@@ -15,16 +16,25 @@ public class FrmInBangLuong extends JFrame {
     private DefaultTableModel model;
     private JComboBox<Integer> cbThang, cbNam;
 
-    public FrmInBangLuong(int maNV) {
+    public FrmInBangLuong(int maNV, int thang, int nam) {
         this.maNV = maNV;
         this.bangLuongBUS = new BangLuongBUS();
+
         initComponents();
-//        cbThang.setSelectedItem(thang);
-//        cbNam.setSelectedItem(nam);
+
+        cbThang.setSelectedItem(thang);
+        cbNam.setSelectedItem(nam);
+
         loadData();
         setLocationRelativeTo(null);
     }
-
+    public FrmInBangLuong(int maNV) {
+        this(
+            maNV,
+            Calendar.getInstance().get(Calendar.MONTH) + 1,
+            Calendar.getInstance().get(Calendar.YEAR)
+        );
+    }
     private void initComponents() {
         setTitle("In bảng lương");
         setSize(700, 400);

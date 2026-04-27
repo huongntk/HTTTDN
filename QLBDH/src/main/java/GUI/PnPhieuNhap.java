@@ -880,7 +880,7 @@ private void tinhThanhTien(JTextField txtSL, JTextField txtGia, JTextField txtTh
 
         // 2. Lấy tên nhân viên đang đăng nhập 
         MainFrame mainFrame = (MainFrame) SwingUtilities.getWindowAncestor(this);
-        String tenNV = mainFrame.getTaiKhoan().getTenNV(); 
+        String tenNV = mainFrame.getTaiKhoan().getTaiKhoan(); 
 
         // 3. Khởi tạo Dialog với tham số tên nhân viên ở cuối
         PnCTPhieuNhap detailDlg = new PnCTPhieuNhap(

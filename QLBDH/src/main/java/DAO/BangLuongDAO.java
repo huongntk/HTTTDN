@@ -276,4 +276,17 @@ public class BangLuongDAO {
 
         return new double[]{luongCoBan, phuCap};
     }
+    public boolean duyetLuong(int maNV, int thang, int nam) {
+        String sql = "UPDATE BangLuong "
+                   + "SET TrangThai = 1 "
+                   + "WHERE MaNV = ? AND Thang = ? AND Nam = ? AND TrangThai = 0";
+
+        try {
+            int rows = DataProvider.executeUpdate(sql, maNV, thang, nam);
+            return rows > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+}
 }

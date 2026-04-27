@@ -686,7 +686,11 @@ public class MainFrame extends javax.swing.JFrame {
                 main.setVisible(true);
             }
         });
-}
+    }
+    public TaiKhoan getTaiKhoan() {
+        return this.taiKhoan;
+    }
+
 
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
