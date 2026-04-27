@@ -59,7 +59,19 @@ public class LichLamViecDAO {
             return false;
         }
     }
-
+    
+    public int getTotalDaysInSchedule(int maNV, Date fromDate, Date toDate) {
+        String sql = "SELECT COUNT(*) AS TotalDays FROM LichLamViec WHERE MaNV = ? AND NgayLam BETWEEN ? AND ?";
+        try (ResultSet rs = DataProvider.executeQuery(sql, maNV, new java.sql.Date(fromDate.getTime()), new java.sql.Date(toDate.getTime()))) {
+            if (rs.next()) {
+                return rs.getInt("TotalDays");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    
     public boolean exists(int maNV, Date ngayLam) {
         String sql = "SELECT 1 FROM LichLamViec WHERE MaNV = ? AND NgayLam = ?";
         ResultSet rs = null;

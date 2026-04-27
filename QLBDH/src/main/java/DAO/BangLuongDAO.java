@@ -2,7 +2,10 @@ package DAO;
 
 import DTO.BangLuongDTO;
 import java.sql.*;
-import java.util.ArrayList;
+import DTO.LichSuChucVu;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.*;
 
 public class BangLuongDAO {
 
@@ -155,5 +158,122 @@ public class BangLuongDAO {
         bl.setGhiChu(rs.getString("GhiChu"));
         bl.setTrangThai(rs.getInt("TrangThai"));
         return bl;
+    }
+    
+    // Đã thay đổi sử dụng LocalDate cho chính xác
+    private static class DateRange {
+        LocalDate start;   
+        LocalDate end;     
+        String maCV;
+
+        public DateRange(LocalDate start, LocalDate end, String maCV) {
+            this.start = start;
+            this.end = end;
+            this.maCV = maCV;
+        }
+    }
+
+    /**
+     * HÀM BỔ SUNG: Lấy mã chức vụ hiện tại của nhân viên từ bảng NhanVien
+     */
+    private String getMaCVHienTai(int maNV) {
+        String sql = "SELECT MaCV FROM NhanVien WHERE MaNV = ?";
+        try (ResultSet rs = DataProvider.executeQuery(sql, maNV)) {
+            if (rs.next()) {
+                return rs.getString("MaCV");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * TÍNH LƯƠNG ĐÃ ĐƯỢC CẢI TIẾN: Sử dụng java.time.LocalDate
+     */
+    public double[] tinhLuongTheoChucVu(int maNV, int thang, int nam) {
+        double luongCoBan = 0.0;
+        double phuCap = 0.0;
+
+        LichSuChucVuDAO lichSuDAO = new LichSuChucVuDAO();
+        ChamCongDAO chamCongDAO = new ChamCongDAO();
+        LuongCoBanTheoChucVuDAO luongCVDAO = new LuongCoBanTheoChucVuDAO();
+        LichLamViecDAO lichLamViecDAO = new LichLamViecDAO();
+
+        ArrayList<LichSuChucVu> dsThayDoi = lichSuDAO.selectByMaNVAndMonth(maNV, thang, nam);
+
+        // Sử dụng LocalDate để tránh lỗi liên quan đến giờ/phút/giây
+        LocalDate startOfMonth = LocalDate.of(nam, thang, 1);
+        LocalDate endOfMonth = startOfMonth.withDayOfMonth(startOfMonth.lengthOfMonth());
+
+        ArrayList<DateRange> danhSachKhoang = new ArrayList<>();
+
+        if (dsThayDoi.isEmpty()) {
+            // Không có thay đổi: Cả tháng dùng chức vụ hiện tại
+            String maCV = getMaCVHienTai(maNV);
+            if (maCV != null && !maCV.trim().isEmpty()) {
+                danhSachKhoang.add(new DateRange(startOfMonth, endOfMonth, maCV));
+            }
+        } else {
+            // Chia khoảng thời gian khi có thay đổi chức vụ
+            LocalDate currentStart = startOfMonth;
+
+            for (int i = 0; i <= dsThayDoi.size(); i++) {
+                if (i < dsThayDoi.size()) {
+                    LichSuChucVu ls = dsThayDoi.get(i);
+                    // Chuyển java.sql.Date sang java.time.LocalDate
+                    LocalDate ngayThayDoi = new java.sql.Date(ls.getNgayThayDoi().getTime()).toLocalDate();
+
+                    // Nếu ngày thay đổi nằm sau ngày bắt đầu của khoảng hiện tại
+                    if (ngayThayDoi.isAfter(currentStart) && !ngayThayDoi.isAfter(endOfMonth)) {
+                        LocalDate endOfRange = ngayThayDoi.minusDays(1);
+                        String maCV = (i == 0) ? ls.getMaCVCu() : dsThayDoi.get(i - 1).getMaCVMoi();
+                        danhSachKhoang.add(new DateRange(currentStart, endOfRange, maCV));
+                    }
+                    
+                    // Cập nhật mốc bắt đầu mới
+                    // Nếu ngayThayDoi < startOfMonth (bản ghi rác), ép nó về startOfMonth để an toàn
+                    currentStart = ngayThayDoi.isBefore(startOfMonth) ? startOfMonth : ngayThayDoi;
+
+                } else {
+                    // Khoảng cuối cùng: từ lần thay đổi cuối đến hết tháng
+                    if (!currentStart.isAfter(endOfMonth)) {
+                        String maCV = dsThayDoi.get(dsThayDoi.size() - 1).getMaCVMoi();
+                        danhSachKhoang.add(new DateRange(currentStart, endOfMonth, maCV));
+                    }
+                }
+            }
+        }
+
+        // Tính toán lương cho từng khoảng
+        for (DateRange khoang : danhSachKhoang) {
+            if (khoang.maCV == null || khoang.maCV.trim().isEmpty()) continue;
+
+            // Chuyển lại LocalDate sang java.sql.Date để gọi DAO
+            java.sql.Date sqlStart = java.sql.Date.valueOf(khoang.start);
+            java.sql.Date sqlEnd = java.sql.Date.valueOf(khoang.end);
+
+            int congChuan = lichLamViecDAO.getTotalDaysInSchedule(maNV, sqlStart, sqlEnd);
+            double congThucTe = chamCongDAO.getTotalCongByDateRange(maNV, sqlStart, sqlEnd);
+            
+            double luongCB = luongCVDAO.getLuongCoBan(khoang.maCV);
+            double phuCapCV = luongCVDAO.getPhuCap(khoang.maCV);
+
+            if (congChuan > 0) {
+                // Tiền lương của khoảng = (Lương tháng / Tổng công chuẩn của khoảng) * Công thực tế của khoảng
+                luongCoBan += (luongCB / congChuan) * congThucTe;
+                phuCap += (phuCapCV / congChuan) * congThucTe;
+            } else if (congThucTe > 0) {
+                // XỬ LÝ EDGE CASE: Có đi làm nhưng không có lịch làm việc (Không có công chuẩn)
+                // Gợi ý: Có thể chia mặc định cho 26 ngày (hoặc số ngày của tháng) nếu không có lịch xếp trước.
+                System.err.println("Cảnh báo: Nhân viên " + maNV + " có " + congThucTe + " công thực tế nhưng không có lịch làm việc từ " + sqlStart + " đến " + sqlEnd);
+                
+                // Giải pháp tạm thời (Tính theo số ngày chuẩn mặc định là 26):
+                // luongCoBan += (luongCB / 26.0) * congThucTe;
+                // phuCap += (phuCapCV / 26.0) * congThucTe;
+            }
+        }
+
+        return new double[]{luongCoBan, phuCap};
     }
 }
