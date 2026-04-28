@@ -61,7 +61,9 @@ public class LichLamViecDAO {
     }
     
     public int getTotalDaysInSchedule(int maNV, Date fromDate, Date toDate) {
-        String sql = "SELECT COUNT(*) AS TotalDays FROM LichLamViec WHERE MaNV = ? AND NgayLam BETWEEN ? AND ?";
+        String sql = "SELECT COALESCE(SUM(cl.SoCong),0) AS TotalDays FROM LichLamViec llv"
+                + " JOIN CaLam cl ON llv.MaCa = cl.MaCa"
+                + " WHERE llv.MaNV = ? AND llv.NgayLam BETWEEN ? AND ?";
         try (ResultSet rs = DataProvider.executeQuery(sql, maNV, new java.sql.Date(fromDate.getTime()), new java.sql.Date(toDate.getTime()))) {
             if (rs.next()) {
                 return rs.getInt("TotalDays");
@@ -217,4 +219,6 @@ public class LichLamViecDAO {
             }
         }
     }
+    
+    
 }

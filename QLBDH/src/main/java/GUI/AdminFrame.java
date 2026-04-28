@@ -31,14 +31,14 @@ public class AdminFrame extends JFrame {
 
         // ===== Menu bên trái =====
         pnlMenu = new JPanel();
-        pnlMenu.setBackground(new Color(244, 164, 96));
+        pnlMenu.setBackground(new Color(0, 153, 153));
         pnlMenu.setPreferredSize(new Dimension(220, 0));
         pnlMenu.setLayout(new BoxLayout(pnlMenu, BoxLayout.Y_AXIS));
 
         // Tiêu đề chào mừng
         JLabel lblWelcome = new JLabel("Xin chào Admin", SwingConstants.CENTER);
-        lblWelcome.setForeground(Color.BLACK);
-        lblWelcome.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        lblWelcome.setForeground(Color.ORANGE);
+        lblWelcome.setFont(new Font("Segoe UI", Font.BOLD, 17));
         lblWelcome.setAlignmentX(Component.CENTER_ALIGNMENT);
         lblWelcome.setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
         pnlMenu.add(lblWelcome);
@@ -47,10 +47,11 @@ public class AdminFrame extends JFrame {
         JButton btnNhanSu = createMenuButton("Quản lý nhân sự", "/icon/multiple-users.png");
         JButton btnKho = createMenuButton("Quản lý kho", "/icon/boxes.png");
         JButton btnBanHang = createMenuButton("Quản lý bán hàng", "/icon/pay.png");
-        JButton btnTaiKhoan = createMenuButton("Quản lý tài khoản", "/icon/user.png");
+        JButton btnTaiKhoan = createMenuButton("Quản lý tài khoản", "/icon/account.png");
+        JButton btnSanPham = createMenuButton("Quản lý sản phẩm", "/icon/watch.png");
         JButton btnKhachHang = createMenuButton("Quản lý khách hàng", "/icon/user.png");
         JButton btnGiamGia = createMenuButton("Quản lý khuyến mãi", "/icon/tag.png");
-        JButton btnPhanQuyen = createMenuButton("Phân quyền", "/icon/account.png");
+        JButton btnPhanQuyen = createMenuButton("Phân quyền", "/icon/settings.png");
         JButton btnThongKe = createMenuButton("Báo cáo tổng hợp", "/icon/bar-char.png");
         JButton btnDoiMatKhau = createMenuButton("Đổi mật khẩu", "/icon/undo.png");
         JButton btnDangXuat = createMenuButton("Đăng xuất", "/icon/logout.png");
@@ -59,6 +60,7 @@ public class AdminFrame extends JFrame {
         pnlMenu.add(btnKho);
         pnlMenu.add(btnBanHang);
         pnlMenu.add(btnTaiKhoan);
+        pnlMenu.add(btnSanPham);
         pnlMenu.add(btnKhachHang);
         pnlMenu.add(btnGiamGia);
         pnlMenu.add(btnPhanQuyen);
@@ -79,6 +81,7 @@ public class AdminFrame extends JFrame {
         pnlContent.add(new PnNhapHang(phanQuyen), "kho");
         pnlContent.add(new PnBanHang(phanQuyen), "banHang");
         pnlContent.add(new PnTaiKhoan(phanQuyen), "taiKhoan");
+         pnlContent.add(new PnSanPham(phanQuyen), "sanPham");
         pnlContent.add(new PnKhachHang(phanQuyen), "khachHang");
         pnlContent.add(new PnKhuyenMai(phanQuyen), "giamGia");
         // PnPhanQuyen cần nhận PhanQuyen, nhưng admin có thể truyền null và xử lý trong panel
@@ -91,6 +94,7 @@ public class AdminFrame extends JFrame {
         menuButtons.add(btnKho);
         menuButtons.add(btnBanHang);
         menuButtons.add(btnTaiKhoan);
+        menuButtons.add(btnSanPham);
         menuButtons.add(btnKhachHang);
         menuButtons.add(btnGiamGia);
         menuButtons.add(btnPhanQuyen);
@@ -112,6 +116,10 @@ public class AdminFrame extends JFrame {
         btnTaiKhoan.addActionListener(e -> {
             cardLayout.show(pnlContent, "taiKhoan");
             setActiveMenuButton(btnTaiKhoan);
+        });
+        btnSanPham.addActionListener(e -> {
+            cardLayout.show(pnlContent, "sanPham");
+            setActiveMenuButton(btnSanPham);
         });
         btnKhachHang.addActionListener(e -> {
             cardLayout.show(pnlContent, "khachHang");
@@ -140,8 +148,8 @@ public class AdminFrame extends JFrame {
     private JButton createMenuButton(String text, String iconPath) {
         JButton btn = new JButton(text);
         btn.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        btn.setForeground(Color.DARK_GRAY);
-        btn.setBackground(new Color(244, 164, 96));
+        btn.setForeground(Color.WHITE);
+        btn.setBackground(new Color(0, 153, 153));
         btn.setFocusPainted(false);
         btn.setBorderPainted(false);
         btn.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -200,14 +208,18 @@ public class AdminFrame extends JFrame {
         for (JButton btn : menuButtons) {
             if (btn == activeButton) {
                 // Đổi màu nền (ví dụ: xanh dương nhạt) và đóng khung viền trắng dày 2px
-                btn.setBackground(new Color(205, 55, 0));
+                btn.setBackground(new Color(151, 255, 255));
+                btn.setFont(btn.getFont().deriveFont(java.awt.Font.BOLD, 15f));
+                btn.setForeground(java.awt.Color.BLACK);
                 btn.setBorder(BorderFactory.createCompoundBorder(
-                        BorderFactory.createLineBorder(Color.WHITE, 2),
+                        BorderFactory.createLineBorder(Color.BLACK, 2),
                         BorderFactory.createEmptyBorder(8, 8, 8, 8)
                 ));
             } else {
-                // Trả về màu nền xám tối và bỏ khung viền
-                btn.setBackground(new Color(244, 164, 96));
+                // Trả về màu nền  và bỏ khung viền
+                btn.setBackground(new Color(0, 153, 153));
+                btn.setForeground(java.awt.Color.WHITE);
+                btn.setFont(btn.getFont().deriveFont(java.awt.Font.PLAIN, 15f));
                 btn.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
             }
         }

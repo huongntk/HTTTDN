@@ -63,6 +63,7 @@ public class FrmDoiMatKhau extends javax.swing.JDialog {
         jLabel1.setText("ĐỔI MẬT KHẨU");
 
         btnConfirm.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnConfirm.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/xacnhan.png"))); // NOI18N
         btnConfirm.setText("Xác nhận");
         btnConfirm.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -110,6 +111,7 @@ public class FrmDoiMatKhau extends javax.swing.JDialog {
         });
 
         btnCancel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnCancel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/close.png"))); // NOI18N
         btnCancel.setText("Hủy");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);

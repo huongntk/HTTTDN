@@ -184,7 +184,11 @@ public class BangLuongBUS {
     }
 
     public String luuBangLuong(BangLuongDTO bl) {
-        BangLuongDTO old = bangLuongDAO.getByMaNVAndMonth(bl.getMaNV(), bl.getThang(), bl.getNam());
+        BangLuongDTO old = bangLuongDAO.getByMaNVAndMonth(
+            bl.getMaNV(),
+            bl.getThang(),
+            bl.getNam()
+        );
         if (old != null) {
             if (old.getTrangThai() == 1) {
                 return "Bảng lương tháng này đã được duyệt, không thể tính lại!";
@@ -228,5 +232,25 @@ public class BangLuongBUS {
 
     public ArrayList<BangLuongDTO> getByMaNVAndYear(int maNV, int nam) {
         return bangLuongDAO.getByMaNVAndYear(maNV, nam);
+    }
+    
+    public String duyetLuong(int maNV, int thang, int nam) {
+        BangLuongDTO bl = bangLuongDAO.getByMaNVAndMonth(maNV, thang, nam);
+
+        if (bl == null) {
+            return "Chưa có bảng lương tháng này để duyệt!";
+        }
+
+        if (bl.getTrangThai() == 1) {
+            return "Bảng lương tháng này đã được duyệt rồi!";
+        }
+
+        boolean ok = bangLuongDAO.duyetLuong(maNV, thang, nam);
+
+        if (ok) {
+            return "Duyệt lương thành công!";
+        }
+
+        return "Duyệt lương thất bại!";
     }
 }

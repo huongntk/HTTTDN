@@ -15,6 +15,7 @@ import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.ItemEvent;
+import java.awt.Dimension;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -43,6 +44,7 @@ public class PnLuong extends JPanel {
     private JButton btnTinhLuong;
     private JButton btnXemLuong;
     private JButton btnInLuong;
+    private JButton btnDuyetLuong;
     private JButton btnLamMoi;
     private JButton btnCauHinhLuong;
     private JButton btnLuuThuongPhat;
@@ -87,23 +89,23 @@ public class PnLuong extends JPanel {
         pnlTop.add(cboNam);
 
         btnTinhLuong = new JButton("Tính lương tháng");
-        btnTinhLuong.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/caculator.png")));
-//        btnXemLuong = new JButton("Xem lương");
+        btnTinhLuong.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/caculator.png")));      
         btnInLuong = new JButton("In lương");
         btnInLuong.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/print.png")));
+        btnDuyetLuong = new JButton("Duyệt lương");
+        btnDuyetLuong.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/xacnhan.png")));
         btnLamMoi = new JButton("Làm mới");
         btnLamMoi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/refresh.png")));
         btnCauHinhLuong = new JButton ("Cấu hình lương");
         btnCauHinhLuong.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/settings.png")));
-        btnLuuThuongPhat = new JButton ("Sửa thưởng/phạt");
+        btnLuuThuongPhat = new JButton ("Lưu thưởng/phạt");
         btnLuuThuongPhat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/undo.png")));
 
         pnlTop.add(btnTinhLuong);
-//        pnlTop.add(btnXemLuong);
         pnlTop.add(btnInLuong);
         pnlTop.add(btnLamMoi);
         pnlTop.add(btnCauHinhLuong);
-        pnlTop.add(btnLuuThuongPhat);
+
 
    
 
@@ -141,7 +143,7 @@ public class PnLuong extends JPanel {
         pnlChiTiet.setBorder(BorderFactory.createTitledBorder("Chi tiết lương tháng"));
 
         // Form thông tin
-        JPanel pnlForm = new JPanel(new GridLayout(7, 3, 10, 10));
+        JPanel pnlForm = new JPanel(new GridLayout(8, 2, 10, 10));
         pnlForm.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         pnlForm.add(new JLabel("Họ tên:"));
         lblHoTen = new JLabel("---");
@@ -164,7 +166,16 @@ public class PnLuong extends JPanel {
         pnlForm.add(new JLabel("Tổng lương thực lĩnh:"));
         lblTongLuong = new JLabel("0");
         pnlForm.add(lblTongLuong);
-
+        
+        JPanel pnlBtn = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
+        btnLuuThuongPhat.setPreferredSize(new Dimension(160, 30));
+        btnDuyetLuong.setPreferredSize(new Dimension(150, 30)); // làm nhỏ lại
+        pnlBtn.add(btnLuuThuongPhat);
+        pnlBtn.add(btnDuyetLuong);
+        
+        pnlForm.add(new JLabel());
+        pnlForm.add(pnlBtn);
+//        pnlForm.add(pnlBtn, BorderLayout.SOUTH);
         pnlChiTiet.add(pnlForm, BorderLayout.NORTH);
 
         // Tabbed pane: Lịch sử chức vụ + Lịch sử lương
@@ -373,7 +384,29 @@ public class PnLuong extends JPanel {
             return;
         }
         int maNV = (int) modelNhanVien.getValueAt(selectedRow, 0);
-        new FrmInBangLuong(maNV).setVisible(true);
+        int[] thangNam = getThangNamLuongDangChon();
+        int thang = thangNam[0];
+        int nam = thangNam[1];
+
+        BangLuongDTO bl = bangLuongBUS.getByMaNVAndMonth(maNV, thang, nam);
+
+//        if (bl == null) {
+//            JOptionPane.showMessageDialog(this, "Nhân viên này chưa có bảng lương tháng " + thang + "/" + nam + ".");
+//            return;
+//        }
+
+        if (bl.getTrangThai() != 1) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Bảng lương tháng " + thang + "/" + nam + " đang ở trạng thái Tạm tính.\n"
+                            + "Vui lòng duyệt lương trước khi in.",
+                    "Chưa thể in lương",
+                    JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
+        new FrmInBangLuong(maNV, thang, nam).setVisible(true);
     }
     private void moDialogCauHinhLuong() {
     FrmSuaLuongCoBan dialog = new FrmSuaLuongCoBan((JFrame) SwingUtilities.getWindowAncestor(this));
@@ -414,7 +447,7 @@ public class PnLuong extends JPanel {
         });
 
         btnTinhLuong.addActionListener(e -> tinhLuongChoNhanVien());
-//        btnXemLuong.addActionListener(e -> xemLuongNhanVien());
+        btnDuyetLuong.addActionListener(e -> duyetLuongDangChon());
         btnInLuong.addActionListener(e -> inLuong());
         btnLamMoi.addActionListener(e -> {
             loadData();
@@ -458,36 +491,166 @@ public class PnLuong extends JPanel {
     }
     private void luuThuongPhatXuongDB() {
         int selectedRow = tblNhanVien.getSelectedRow();
-        if (selectedRow == -1) return;
+
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn nhân viên cần lưu thưởng/phạt.");
+            return;
+        }
+
         int maNV = (int) modelNhanVien.getValueAt(selectedRow, 0);
         int thang = (int) cboThang.getSelectedItem();
         int nam = (int) cboNam.getSelectedItem();
 
         BangLuongDTO bl = bangLuongBUS.getByMaNVAndMonth(maNV, thang, nam);
+
         if (bl == null) {
-            JOptionPane.showMessageDialog(this, "Chưa có bảng lương tháng này. Vui lòng tính lương trước.");
+            JOptionPane.showMessageDialog(this, "Chưa có bảng lương tháng này.\nVui lòng tính lương trước.");
             return;
         }
+
+        if (bl.getTrangThai() == 1) {
+            JOptionPane.showMessageDialog(this, "Bảng lương đã được duyệt, không thể sửa thưởng/phạt.");
+            return;
+        }
+
         try {
-            double thuong = Double.parseDouble(txtThuong.getText().trim());
-            double phat = Double.parseDouble(txtPhat.getText().trim());
-            bl.setThuong(thuong);
-            bl.setPhat(phat);
-            // Tính lại tổng lương dựa trên lương cơ bản và phụ cấp đã lưu (nên dùng đúng giá trị đã lưu)
-            double tong = bl.getLuongCoBan() + bl.getPhuCap() + thuong - phat;
-            if (tong < 0) tong = 0;
-            bl.setTongLuong(tong);
-            bangLuongBUS.luuBangLuong(bl);
-            lblTongLuong.setText(String.format("%,.0f", tong));
-            JOptionPane.showMessageDialog(this, "Đã lưu thưởng/phạt thành công.");
+            double thuongMoi = parseTien(txtThuong.getText());
+            double phatMoi = parseTien(txtPhat.getText());
+
+            /*
+             * Công thức đúng:
+             * Tổng lương hiện tại = Lương theo công + Thưởng cũ - Phạt cũ
+             * => Lương theo công = Tổng lương hiện tại - Thưởng cũ + Phạt cũ
+             *
+             * Sau đó:
+             * Tổng mới = Lương theo công + Thưởng mới - Phạt mới
+             *
+             * Cách này không làm mất phần lương đã tính theo công thực tế.
+             */
+            double luongTheoCong = bl.getTongLuong() - bl.getThuong() + bl.getPhat();
+
+            double tongMoi = luongTheoCong + thuongMoi - phatMoi;
+
+            if (tongMoi < 0) {
+                tongMoi = 0;
+            }
+
+            tongMoi = Math.round(tongMoi);
+
+            bl.setThuong(thuongMoi);
+            bl.setPhat(phatMoi);
+            bl.setTongLuong(tongMoi);
+
+            String result = bangLuongBUS.luuBangLuong(bl);
+
+            if (result.contains("thành công")) {
+                lblTongLuong.setText(String.format("%,.0f", tongMoi));
+
+                /*
+                 * Quan trọng:
+                 * Load lại bảng lịch sử lương để thấy Thưởng/Phạt/Thực lĩnh mới.
+                 */
+                xemLuongNhanVien();
+
+                JOptionPane.showMessageDialog(this, "Đã lưu thưởng/phạt thành công.");
+            } else {
+                JOptionPane.showMessageDialog(this, result);
+            }
+
         } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Số không hợp lệ.");
+            JOptionPane.showMessageDialog(this, "Số thưởng/phạt không hợp lệ.");
         }
     }
-    
+    private double parseTien(String text) {
+        if (text == null || text.trim().isEmpty()) {
+            return 0;
+        }
+
+        return Double.parseDouble(
+                text.trim()
+                    .replace(",", "")
+                    .replace(" ", "")
+        );
+    }
+    private void duyetLuongDangChon() {
+        int selectedRow = tblNhanVien.getSelectedRow();
+
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn nhân viên cần duyệt lương!");
+            return;
+        }
+
+        int maNV = (int) modelNhanVien.getValueAt(selectedRow, 0);
+
+        int[] thangNam = getThangNamLuongDangChon();
+        int thang = thangNam[0];
+        int nam = thangNam[1];
+
+        BangLuongDTO bl = bangLuongBUS.getByMaNVAndMonth(maNV, thang, nam);
+
+        if (bl == null) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Nhân viên này chưa có bảng lương tháng " + thang + "/" + nam + "."
+            );
+            return;
+        }
+
+        if (bl.getTrangThai() == 1) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Bảng lương tháng " + thang + "/" + nam + " đã được duyệt rồi."
+            );
+            return;
+        }
+
+    int confirm = JOptionPane.showConfirmDialog(
+            this,
+            "Bạn có chắc muốn duyệt bảng lương tháng " + thang + "/" + nam + " không?\n"
+                    + "Sau khi duyệt, bảng lương sẽ không được tính lại hoặc sửa thưởng/phạt.",
+            "Xác nhận duyệt lương",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE
+    );
+
+    if (confirm != JOptionPane.YES_OPTION) {
+        return;
+    }
+
+    String result = bangLuongBUS.duyetLuong(maNV, thang, nam);
+    JOptionPane.showMessageDialog(this, result);
+
+    // Load lại bảng lịch sử lương để thấy trạng thái đổi từ Tạm tính -> Đã duyệt
+    xemLuongNhanVien();
+
+    // Đồng bộ lại dữ liệu tháng/năm đang xử lý
+    cboThang.setSelectedItem(thang);
+    cboNam.setSelectedItem(nam);
+    loadThuongPhatForCurrentMonth(maNV);
+}
+    private int[] getThangNamLuongDangChon() {
+        int rowLuong = tblLuongChiTiet.getSelectedRow();
+
+        if (rowLuong != -1) {
+            String thangNam = modelLuong.getValueAt(rowLuong, 0).toString().trim();
+
+            if (thangNam.contains("/")) {
+                String[] parts = thangNam.split("/");
+                int thang = Integer.parseInt(parts[0].trim());
+                int nam = Integer.parseInt(parts[1].trim());
+                return new int[]{thang, nam};
+            }
+        }
+
+        int thang = (int) cboThang.getSelectedItem();
+        int nam = (int) cboNam.getSelectedItem();
+
+        return new int[]{thang, nam};
+    }
 
     private void configureByPermission() {
         btnTinhLuong.setVisible(phanQuyen.isNsTinhLuong());
+        btnDuyetLuong.setVisible(phanQuyen.isNsTinhLuong());
         btnInLuong.setVisible(phanQuyen.isNsInBangLuong());
         btnLuuThuongPhat.setVisible(phanQuyen.isNsTinhLuong());
         if (!phanQuyen.isNsXemDanhSach()) {
@@ -505,6 +668,7 @@ public class PnLuong extends JPanel {
                 txtThuong.setEditable(false);
                 txtPhat.setEditable(false);
                 btnTinhLuong.setEnabled(false);
+                btnDuyetLuong.setEnabled(false);
             }
         }
     }
