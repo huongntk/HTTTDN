@@ -78,7 +78,7 @@ public class PnChamCong extends JPanel {
         this.nhanVienBUS = new NhanVienBUS();
         this.lichLamViecBUS = new LichLamViecBUS();
 
-        this.isQuanLy = pq.isNsXemDanhSach() || pq.isNsThem() || pq.isNsSua() || pq.isNsXoa();
+        this.isQuanLy = laQuanLyChamCong();
 
         DANH_SACH_CA.put("Ca sáng", new CaLamInfo("Ca sáng", "08:00:00", "12:00:00"));
         DANH_SACH_CA.put("Ca chiều", new CaLamInfo("Ca chiều", "13:00:00", "17:00:00"));
@@ -96,6 +96,22 @@ public class PnChamCong extends JPanel {
         loadData();
         addEvents();
         configureByPermission();
+    }
+    private boolean laQuanLyChamCong() {
+        if (phanQuyen == null) {
+            return false;
+        }
+
+        /*
+         * Chỉ nhóm quản lý nhân sự thật sự mới được xem/sửa/xóa chấm công người khác.
+         * Nhân viên bán hàng dù có quyền chấm công cũng chỉ xem của chính mình.
+         */
+        return phanQuyen.isNsDuyetNghi()
+                || phanQuyen.isNsThayDoiChucVu()
+                || phanQuyen.isNsTinhLuong()
+                || phanQuyen.isNsXoa()
+                || phanQuyen.isAdminQuanLyUser()
+                || phanQuyen.isPqQuanLyPhanQuyen();
     }
 
     private void initComponents() {
@@ -403,15 +419,19 @@ public class PnChamCong extends JPanel {
     }
 
     private int getSelectedMaNV() {
-        if (isQuanLy) {
-            NhanVienDTO nv = (NhanVienDTO) cboNhanVien.getSelectedItem();
-            return nv != null ? nv.getMaNV() : -1;
+        if (!isQuanLy) {
+            return maNVHienTai;
         }
 
-        return maNVHienTai;
+        NhanVienDTO nv = (NhanVienDTO) cboNhanVien.getSelectedItem();
+        return nv != null ? nv.getMaNV() : -1;
     }
 
     private int getMaNVCanChamCong() {
+        if (!isQuanLy) {
+            return maNVHienTai;
+        }
+
         return getSelectedMaNV();
     }
 
@@ -467,32 +487,32 @@ public class PnChamCong extends JPanel {
         }
 
         LocalTime gioHienTai = LocalTime.now().withNano(0);
-        LocalTime gioBatDau = gioBatDauCa.toLocalTime();
+        LocalTime batDauCa = gioBatDauCa.toLocalTime();
+        LocalTime ketThucCa = gioKetThucCa.toLocalTime();
 
-        // 4. Nếu chưa đến giờ bắt đầu ca thì không cho chấm công
-        if (gioHienTai.isBefore(gioBatDau)) {
+        /*
+         * Chỉ cho chấm công trong thời gian ca làm.
+         * Ngoài thời gian ca thì báo lỗi và không lưu chấm công.
+         */
+        if (!isTrongThoiGianCa(gioHienTai, batDauCa, ketThucCa)) {
             JOptionPane.showMessageDialog(
                     this,
-                    "Chưa đến giờ chấm công.\n\n"
-                            + "Ca làm: " + tenCa + "\n"
-                            + "Giờ bắt đầu ca: " + formatTime(gioBatDauCa) + "\n"
-                            + "Giờ hiện tại: " + gioHienTai,
-                    "Chưa đến giờ chấm công",
+                    "Ngoài thời gian chấm công.\n\n"
+                    + "Ca làm: " + tenCa + "\n"
+                    + "Thời gian ca: " + formatTime(gioBatDauCa) + " - " + formatTime(gioKetThucCa),
+                    "Không thể chấm công",
                     JOptionPane.WARNING_MESSAGE
             );
             return;
         }
 
         Time gioVao = Time.valueOf(gioHienTai);
-
-        /*
-         * Hiện tại chỉ có 1 nút chấm công.
-         * Vì chưa có nút chấm ra, tạm thời lưu giờ ra bằng giờ kết thúc ca.
-         */
         Time gioRa = gioKetThucCa;
 
+        /*
+         * Nếu đang trong ca nhưng vào sau giờ bắt đầu thì tự set Đi trễ.
+         */
         String trangThai = xacDinhTrangThaiTheoLich(gioVao, gioBatDauCa);
-
         int confirm = JOptionPane.showConfirmDialog(
                 this,
                 "Xác nhận chấm công hôm nay?\n\n"
@@ -535,6 +555,10 @@ public class PnChamCong extends JPanel {
     }
 
     private void suaChamCong() {
+        if (!isQuanLy) {
+        JOptionPane.showMessageDialog(this, "Bạn chỉ được xem và chấm công của chính mình.");
+        return;
+    }
         if (!phanQuyen.isNsSua()) {
             JOptionPane.showMessageDialog(this, "Bạn không có quyền sửa chấm công!");
             return;
@@ -738,6 +762,10 @@ public class PnChamCong extends JPanel {
     }
 
     private void xoaChamCong() {
+        if (!isQuanLy) {
+        JOptionPane.showMessageDialog(this, "Bạn không có quyền xóa chấm công.");
+        return;
+    }
         if (!phanQuyen.isNsXoa()) {
             JOptionPane.showMessageDialog(this, "Bạn không có quyền xóa chấm công!");
             return;
@@ -830,11 +858,18 @@ public class PnChamCong extends JPanel {
 
     private void configureByPermission() {
         if (isQuanLy) {
-            btnChamCong.setVisible(phanQuyen.isNsThem());
+            btnChamCong.setVisible(phanQuyen.isNsChamCong() || phanQuyen.isNsThem());
             btnSua.setVisible(phanQuyen.isNsSua());
             btnXoa.setVisible(phanQuyen.isNsXoa());
         } else {
-            btnChamCong.setVisible(phanQuyen.isNsChamCong());
+            /*
+             * Nhân viên bán hàng:
+             * - Được chấm công hôm nay
+             * - Không được sửa
+             * - Không được xóa
+             * - Không được xem/chọn nhân viên khác
+             */
+            btnChamCong.setVisible(true);
             btnSua.setVisible(false);
             btnXoa.setVisible(false);
         }
@@ -908,5 +943,18 @@ public class PnChamCong extends JPanel {
         }
 
         return time.toLocalTime().toString();
+    }
+    private boolean isTrongThoiGianCa(LocalTime hienTai, LocalTime gioBatDau, LocalTime gioKetThuc) {
+        if (hienTai == null || gioBatDau == null || gioKetThuc == null) {
+            return false;
+        }
+
+        // Ca bình thường trong cùng ngày, ví dụ 08:00 - 17:00
+        if (!gioKetThuc.isBefore(gioBatDau)) {
+            return !hienTai.isBefore(gioBatDau) && !hienTai.isAfter(gioKetThuc);
+        }
+
+        // Trường hợp ca qua đêm, ví dụ 22:00 - 06:00
+        return !hienTai.isBefore(gioBatDau) || !hienTai.isAfter(gioKetThuc);
     }
 }
