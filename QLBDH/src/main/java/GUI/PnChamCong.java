@@ -498,9 +498,9 @@ public class PnChamCong extends JPanel {
                 "Xác nhận chấm công hôm nay?\n\n"
                         + "Ca làm: " + tenCa + "\n"
                         + "Giờ bắt đầu ca: " + formatTime(gioBatDauCa) + "\n"
-                        + "Giờ kết thúc ca: " + formatTime(gioKetThucCa) + "\n"
-                        + "Giờ vào hiện tại: " + formatTime(gioVao) + "\n"
-                        + "Trạng thái dự kiến: " + trangThai,
+                        + "Giờ kết thúc ca: " + formatTime(gioKetThucCa),
+//                        + "Giờ vào hiện tại: " + formatTime(gioVao) + "\n"
+//                        + "Trạng thái dự kiến: " + trangThai,
                 "Xác nhận chấm công",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE
@@ -592,88 +592,112 @@ public class PnChamCong extends JPanel {
     }
 
     private void hienThiDialogSua(ChamCongDTO cc) {
-        JDialog dialog =
-                new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Sửa chấm công", true);
+        JDialog dialog = new JDialog(
+                (Frame) SwingUtilities.getWindowAncestor(this),
+                "Sửa chấm công",
+                true
+        );
 
         dialog.setLayout(new GridBagLayout());
-        dialog.setSize(450, 380);
+        dialog.setSize(480, 300);
         dialog.setLocationRelativeTo(this);
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-        JComboBox<String> cboCaLam =
-                new JComboBox<>(DANH_SACH_CA.keySet().toArray(new String[0]));
-        cboCaLam.setSelectedItem(cc.getCaLam());
+        int maNV = cc.getMaNV();
+        java.sql.Date ngayLamSql = new java.sql.Date(cc.getNgayLam().getTime());
 
-        JTextField txtGioVao =
-                new JTextField(cc.getGioVao() != null ? cc.getGioVao().toString() : "");
-        JTextField txtGioRa =
-                new JTextField(cc.getGioRa() != null ? cc.getGioRa().toString() : "");
+        /*
+         * Lấy ca làm theo lịch làm việc.
+         * Không cho chọn tay ca làm.
+         */
+        LichLamViecDTO lich = lichLamViecBUS.layLichTheoNhanVienVaNgay(maNV, ngayLamSql);
 
-        JComboBox<String> cboTrangThai =
-                new JComboBox<>(new String[]{
-                    "Đủ công",
-                    "Đi trễ",
-                    "Về sớm",
-                    "Nghỉ có phép",
-                    "Nghỉ không phép"
-                });
-        cboTrangThai.setSelectedItem(cc.getTrangThai());
+        if (lich == null) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Ngày này chưa có lịch làm việc.\nKhông thể sửa chấm công theo lịch.",
+                    "Chưa có lịch làm",
+                    JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
 
-        JTextField txtGhiChu =
-                new JTextField(cc.getGhiChu() != null ? cc.getGhiChu() : "");
+        String tenCaTheoLich = lich.getTenCa();
+        Time gioBatDauCa = lich.getGioBatDau();
+        Time gioKetThucCa = lich.getGioKetThuc();
 
-        cboCaLam.addActionListener(e -> {
-            String caLam = (String) cboCaLam.getSelectedItem();
-            CaLamInfo caInfo = DANH_SACH_CA.get(caLam);
+        if (tenCaTheoLich == null || gioBatDauCa == null || gioKetThucCa == null) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Dữ liệu ca làm trong lịch chưa đầy đủ.\nVui lòng kiểm tra lại lịch làm việc.",
+                    "Lỗi dữ liệu lịch làm",
+                    JOptionPane.ERROR_MESSAGE
+            );
+            return;
+        }
 
-            if (caInfo != null) {
-                txtGioVao.setText(caInfo.gioVao);
-                txtGioRa.setText(caInfo.gioRa);
-            }
-        });
+        JLabel lblNgayValue = new JLabel(sdf.format(cc.getNgayLam()));
+
+        JTextField txtCaLamTheoLich = new JTextField(tenCaTheoLich);
+        txtCaLamTheoLich.setEditable(false);
+        txtCaLamTheoLich.setFocusable(false);
+        txtCaLamTheoLich.setBackground(new Color(240, 240, 240));
+
+        JTextField txtGioBatDauCa = new JTextField(gioBatDauCa.toString());
+        txtGioBatDauCa.setEditable(false);
+        txtGioBatDauCa.setFocusable(false);
+        txtGioBatDauCa.setBackground(new Color(240, 240, 240));
+
+        JTextField txtGioKetThucCa = new JTextField(gioKetThucCa.toString());
+        txtGioKetThucCa.setEditable(false);
+        txtGioKetThucCa.setFocusable(false);
+        txtGioKetThucCa.setBackground(new Color(240, 240, 240));
+
+        JTextField txtGhiChu = new JTextField(
+                cc.getGhiChu() != null ? cc.getGhiChu() : ""
+        );
 
         gbc.gridx = 0;
         gbc.gridy = 0;
         dialog.add(new JLabel("Ngày:"), gbc);
+
         gbc.gridx = 1;
-        dialog.add(new JLabel(sdf.format(cc.getNgayLam())), gbc);
+        dialog.add(lblNgayValue, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 1;
-        dialog.add(new JLabel("Ca làm:*"), gbc);
+        dialog.add(new JLabel("Ca làm theo lịch:"), gbc);
+
         gbc.gridx = 1;
-        dialog.add(cboCaLam, gbc);
+        dialog.add(txtCaLamTheoLich, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 2;
-        dialog.add(new JLabel("Giờ vào:*"), gbc);
+        dialog.add(new JLabel("Giờ bắt đầu ca:"), gbc);
+
         gbc.gridx = 1;
-        dialog.add(txtGioVao, gbc);
+        dialog.add(txtGioBatDauCa, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 3;
-        dialog.add(new JLabel("Giờ ra:*"), gbc);
+        dialog.add(new JLabel("Giờ kết thúc ca:"), gbc);
+
         gbc.gridx = 1;
-        dialog.add(txtGioRa, gbc);
+        dialog.add(txtGioKetThucCa, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 4;
-        dialog.add(new JLabel("Trạng thái:"), gbc);
-        gbc.gridx = 1;
-        dialog.add(cboTrangThai, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 5;
         dialog.add(new JLabel("Ghi chú:"), gbc);
+
         gbc.gridx = 1;
         dialog.add(txtGhiChu, gbc);
 
         JPanel pnlButtons = new JPanel(new FlowLayout());
-
         JButton btnSave = new JButton("Lưu");
         JButton btnCancel = new JButton("Hủy");
 
@@ -681,45 +705,30 @@ public class PnChamCong extends JPanel {
         pnlButtons.add(btnCancel);
 
         gbc.gridx = 0;
-        gbc.gridy = 6;
+        gbc.gridy = 5;
         gbc.gridwidth = 2;
         dialog.add(pnlButtons, gbc);
 
         btnSave.addActionListener(e -> {
-            String caLam = (String) cboCaLam.getSelectedItem();
-            String gioVaoStr = txtGioVao.getText().trim();
-            String gioRaStr = txtGioRa.getText().trim();
+            /*
+             * Form sửa chấm công bây giờ chỉ cho sửa ghi chú.
+             * Ca làm vẫn đồng bộ theo lịch.
+             * Giờ vào, giờ ra, trạng thái giữ nguyên dữ liệu cũ.
+             */
+            cc.setCaLam(tenCaTheoLich);
+            cc.setGhiChu(txtGhiChu.getText().trim());
 
-            if (!kiemTraGioHopLe(gioVaoStr, gioRaStr)) {
-                return;
-            }
-
-            try {
-                cc.setCaLam(caLam);
-                cc.setGioVao(Time.valueOf(gioVaoStr));
-                cc.setGioRa(Time.valueOf(gioRaStr));
-
-                String trangThaiTuDong =
-                        xacDinhTrangThaiTuDong(caLam, gioVaoStr, gioRaStr);
-                cc.setTrangThai(trangThaiTuDong);
-
-                cc.setGhiChu(txtGhiChu.getText());
-
-                if (chamCongBUS.suaChamCong(cc)) {
-                    JOptionPane.showMessageDialog(dialog, "Cập nhật thành công");
-                    loadData();
-                    dialog.dispose();
-                } else {
-                    JOptionPane.showMessageDialog(
-                            dialog,
-                            "Cập nhật thất bại!\n"
-                                    + "Dữ liệu có thể bị trùng chấm công theo nhân viên và ngày làm.",
-                            "Không thể cập nhật",
-                            JOptionPane.WARNING_MESSAGE
-                    );
-                }
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(dialog, "Lỗi nhập giờ: " + ex.getMessage());
+            if (chamCongBUS.suaChamCong(cc)) {
+                JOptionPane.showMessageDialog(dialog, "Cập nhật ghi chú thành công");
+                loadData();
+                dialog.dispose();
+            } else {
+                JOptionPane.showMessageDialog(
+                        dialog,
+                        "Cập nhật thất bại!",
+                        "Không thể cập nhật",
+                        JOptionPane.WARNING_MESSAGE
+                );
             }
         });
 
