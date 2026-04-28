@@ -34,7 +34,7 @@ public class PnSanPham extends javax.swing.JPanel {
     private java.util.Map<Integer, String> loaiMap = new java.util.HashMap<>();
     private java.util.Map<Integer, String> nccMap = new java.util.HashMap<>();
     private PhanQuyen phanQuyen;
-    private boolean isSortAscending = true; 
+    private boolean isSortAscending = true;
 
     public PnSanPham(PhanQuyen pq) {
         initComponents();
@@ -45,12 +45,34 @@ public class PnSanPham extends javax.swing.JPanel {
     }
 
     private void configureByPermission() {
-        btnThem.setVisible(phanQuyen.isKhoThemSanPham());
-        btnSua.setVisible(phanQuyen.isKhoSuaSanPham());
-        btnXoa.setVisible(phanQuyen.isKhoXoaSanPham());
-        btnCapNhat.setVisible(phanQuyen.isKhoSuaSanPham());
-        btnLuu.setVisible(phanQuyen.isKhoSuaSanPham());
+        boolean isKho = phanQuyen.isKhoSuaSanPham();
+        boolean isKinhDoanh = phanQuyen.isBhLapPhieuXuat()
+                || phanQuyen.isBhThongKeDoanhThu()
+                || phanQuyen.isBhThongKeLoiNhuan();
+
+        // Kho: full quyền
+        if (isKho) {
+            btnThem.setVisible(true);
+            btnXoa.setVisible(true);
+        } // Kinh doanh: không thêm, không xóa
+        else if (isKinhDoanh) {
+            btnThem.setVisible(false);
+            btnXoa.setVisible(false);
+        }
+
+        // chung
+        btnSua.setVisible(true);
+        btnLamMoi.setVisible(true);
+        btnSortAZ.setVisible(true);
+        btnXuatExcel.setVisible(true);
+
         btnXuatExcel.setVisible(phanQuyen.isKhoXemSanPham());
+//        btnThem.setVisible(phanQuyen.isKhoThemSanPham());
+//        btnSua.setVisible(phanQuyen.isKhoSuaSanPham());
+//        btnXoa.setVisible(phanQuyen.isKhoXoaSanPham());
+//        btnCapNhat.setVisible(phanQuyen.isKhoSuaSanPham());
+//        btnLuu.setVisible(phanQuyen.isKhoSuaSanPham());
+//        btnXuatExcel.setVisible(phanQuyen.isKhoXemSanPham());
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -934,6 +956,30 @@ public class PnSanPham extends javax.swing.JPanel {
             }
         }
 
+        // Phân quyền form sửa
+        boolean isKho = phanQuyen.isKhoSuaSanPham();
+        boolean isKinhDoanh = phanQuyen.isBhLapPhieuXuat()
+                || phanQuyen.isBhThongKeDoanhThu()
+                || phanQuyen.isBhThongKeLoiNhuan();
+
+        if (isKho) {
+            // Kho: sửa tất cả TRỪ giá
+            txtGiaBan.setEditable(false);
+        } else if (isKinhDoanh) {
+            // Kinh doanh: chỉ sửa giá
+            txtTenSP.setEditable(false);
+            txtThuongHieu.setEditable(false);
+            txtXuatXu.setEditable(false);
+            cbLoai.setEnabled(false);
+            txtGioiTinh.setEditable(false);
+            txtSoLuong.setEditable(false);
+            txtHinhAnh.setEditable(false);
+            txtMoTa.setEditable(false);
+            cbNCC.setEnabled(false);
+
+            txtGiaBan.setEditable(true);
+        }
+
         dialog.add(new JLabel("T\u00ean s\u1ea3n ph\u1ea9m:"));
         dialog.add(txtTenSP);
         dialog.add(new JLabel("Th\u01b0\u01a1ng hi\u1ec7u:"));
@@ -968,10 +1014,10 @@ public class PnSanPham extends javax.swing.JPanel {
         btnSave.setIcon(new ImageIcon("src/main/resources/icon/xacnhan.png"));
         JButton btnCancel = new JButton("H\u1ee7y");
         btnCancel.setIcon(new ImageIcon("src/main/resources/icon/close.png"));
-        
+
         dialog.add(btnSave);
         dialog.add(btnCancel);
-        
+
         btnChonAnh.addActionListener(e -> {
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setDialogTitle("Chọn hình ảnh");
@@ -999,7 +1045,7 @@ public class PnSanPham extends javax.swing.JPanel {
                 }
             }
         });
-        
+
         btnCancel.addActionListener(e -> dialog.dispose());
         btnSave.addActionListener(e -> {
             try {
@@ -1047,12 +1093,13 @@ public class PnSanPham extends javax.swing.JPanel {
 
         JTextField txtGioiTinh = new JTextField();
         JTextField txtGiaBan = new JTextField();
+        txtGiaBan.setEditable(false);
         JTextField txtSoLuong = new JTextField();
-        JTextField txtHinhAnh = new JTextField();        
+        JTextField txtHinhAnh = new JTextField();
         txtHinhAnh.setEditable(false);
-        
+
         JTextField txtMoTa = new JTextField();
-        
+
         ArrayList<DTO.NhaCungCapDTO> dsNCC = new NhaCungCapDAO().getAll();
         JComboBox<DTO.NhaCungCapDTO> cbNCC = new JComboBox<>();
         for (DTO.NhaCungCapDTO n : dsNCC) {
@@ -1082,7 +1129,7 @@ public class PnSanPham extends javax.swing.JPanel {
         panelAnh.add(btnChonAnh, BorderLayout.EAST);
 
         dialog.add(panelAnh);
-        
+
         dialog.add(new JLabel("M\u00f4 t\u1ea3:"));
         dialog.add(txtMoTa);
         dialog.add(new JLabel("Nh\u00e0 cung c\u1ea5p:"));
@@ -1092,7 +1139,7 @@ public class PnSanPham extends javax.swing.JPanel {
         btnAdd.setIcon(new ImageIcon("src/main/resources/icon/xacnhan.png"));
         JButton btnCancel = new JButton("H\u1ee7y");
         btnCancel.setIcon(new ImageIcon("src/main/resources/icon/close.png"));
-        
+
         dialog.add(btnAdd);
         dialog.add(btnCancel);
 
@@ -1128,11 +1175,11 @@ public class PnSanPham extends javax.swing.JPanel {
                 }
             }
         });
-        
+
         btnCancel.addActionListener(e -> dialog.dispose());
         btnAdd.addActionListener(e -> {
             try {
-                if (txtTenSP.getText().isEmpty() || txtGiaBan.getText().isEmpty() || txtSoLuong.getText().isEmpty()) {
+                if (txtTenSP.getText().isEmpty() || txtSoLuong.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(dialog, "Vui l\u00f2ng nh\u1eadp \u0111\u1ea7y \u0111\u1ee7 T\u00ean, Gi\u00e1 v\u00e0 S\u1ed1 l\u01b0\u1ee3ng!");
                     return;
                 }
@@ -1143,7 +1190,7 @@ public class PnSanPham extends javax.swing.JPanel {
                 p.setMaLoai(((Loai) cbLoai.getSelectedItem()).getMaLoai());
                 p.setGioiTinh(txtGioiTinh.getText());
                 String giaBanStr = txtGiaBan.getText().trim().replace(".", "");
-                p.setGiaBan(new BigDecimal(giaBanStr));
+                p.setGiaBan(BigDecimal.ZERO);
                 p.setSoLuong(Integer.parseInt(txtSoLuong.getText()));
                 p.setHinhAnh(txtHinhAnh.getText());
                 p.setMoTa(txtMoTa.getText());
@@ -1166,7 +1213,7 @@ public class PnSanPham extends javax.swing.JPanel {
                 JOptionPane.showMessageDialog(dialog, "L\u1ed7i h\u1ec7 th\u1ed1ng: " + ex.getMessage());
             }
         });
-        
+
         dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
     }

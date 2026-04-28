@@ -134,15 +134,13 @@ public class MainFrame extends javax.swing.JFrame {
 
         // 4. Phân quyền cho nhóm Kho
         // Cho phép hiện nút Nhập hàng nếu có quyền Nhập hàng hoặc Quản lý NCC
-        boolean isKhoAccess = phanQuyen.isKhoNhapHang() || phanQuyen.isKhoQuanLyNCC() || phanQuyen.isKhoXemSanPham();
+        boolean isKhoAccess = phanQuyen.isKhoNhapHang() || phanQuyen.isKhoQuanLyNCC() && phanQuyen.isKhoXemSanPham();
         btnNhapHang.setVisible(isKhoAccess);
         btnSanPham.setVisible(phanQuyen.isKhoXemSanPham());
 
         // 5. Phân quyền cho nhóm Khách hàng & Khuyến mãi
         // (Nếu bạn chưa tách chi tiết các quyền này, có thể dùng các thuộc tính cũ hoặc mặc định)
 
-         System.out.println("QLKhachHang: " + phanQuyen.isQLKhachHang());
-    System.out.println("QLKhuyenMai: " + phanQuyen.isQLKhuyenMai());
         btnKhachHang.setVisible(phanQuyen.isQLKhachHang());
         btnKhuyenMai.setVisible(phanQuyen.isQLKhuyenMai());
         // 6. Phân quyền hệ thống (Admin)
