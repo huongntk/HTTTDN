@@ -94,8 +94,6 @@ public class PnNhanVien extends javax.swing.JPanel {
 
         btnThayDoiChucVu.setVisible(isQLNS || isAdmin );
         btnXemLuong.setVisible(phanQuyen.isNsXemLuongCaNhan());
-        btnInLuong.setVisible(phanQuyen.isNsInBangLuong() && !isQLNS);
-
     
         boolean coQuyenXemDanhSach = phanQuyen.isNsXemDanhSach();
         
@@ -602,34 +600,9 @@ public class PnNhanVien extends javax.swing.JPanel {
             }
         });
         
-                btnXemLuong.addActionListener(e -> {
-            int maNV;
-            // Nếu người dùng không có quyền xem danh sách (chỉ xem được của mình)
-            if (!phanQuyen.isNsXemDanhSach()) {
-                maNV = Auth.getUser().getMaNV();
-            } else {
-                // Nếu có quyền xem danh sách, ưu tiên lấy mã NV từ form (nếu đang chọn)
-                if (txtMaNV.getText().isEmpty()) {
-                    maNV = Auth.getUser().getMaNV();
-                } else {
-                    maNV = Integer.parseInt(txtMaNV.getText());
-                }
-            }
+        btnXemLuong.addActionListener(e -> {
+            int maNV = Auth.getUser().getMaNV(); // luôn lấy của chính mình
             new FrmXemLuong(maNV, phanQuyen).setVisible(true);
-        });
-
-        btnInLuong.addActionListener(e -> {
-            int maNV;
-            if (!phanQuyen.isNsXemDanhSach()) {
-                maNV = Auth.getUser().getMaNV();
-            } else {
-                if (txtMaNV.getText().isEmpty()) {
-                    maNV = Auth.getUser().getMaNV();
-                } else {
-                    maNV = Integer.parseInt(txtMaNV.getText());
-                }
-            }
-            new FrmInBangLuong(maNV).setVisible(true);
         });
         
         btnThayDoiChucVu.addActionListener(e -> {
@@ -744,7 +717,6 @@ public class PnNhanVien extends javax.swing.JPanel {
         txtTenTaiKhoan = new javax.swing.JTextField();
         
         btnXemLuong = new javax.swing.JButton();
-        btnInLuong = new javax.swing.JButton();
         btnThayDoiChucVu = new javax.swing.JButton();
         btnTaoDonNghi = new javax.swing.JButton();
         btnXemDonCuaToi = new javax.swing.JButton();
@@ -844,10 +816,6 @@ public class PnNhanVien extends javax.swing.JPanel {
         btnXemLuong.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/search.png")));
         btnXemLuong.setText("Xem lương");
 
-        btnInLuong.setFont(new java.awt.Font("Segoe UI", 0, 14));
-        btnInLuong.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/print.png")));
-        btnInLuong.setText("In lương");
-
         btnThayDoiChucVu.setFont(new java.awt.Font("Segoe UI", 0, 14));
         btnThayDoiChucVu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/multiple-users.png")));
         btnThayDoiChucVu.setText("Thay đổi chức vụ");
@@ -904,8 +872,6 @@ public class PnNhanVien extends javax.swing.JPanel {
                                 .addComponent(btnXemDonCuaToi))
                             .addGroup(pnlThongTinLayout.createSequentialGroup()
                                 .addComponent(btnXemLuong)
-                                .addGap(18)
-                                .addComponent(btnInLuong)
                                 .addGap(18)
                                 .addComponent(btnThayDoiChucVu)))))
                             
@@ -967,7 +933,6 @@ public class PnNhanVien extends javax.swing.JPanel {
                 // Hàng nút thứ hai
                 .addGroup(pnlThongTinLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnXemLuong)
-                    .addComponent(btnInLuong)
                     .addComponent(btnThayDoiChucVu))
                                  
              .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -1198,7 +1163,6 @@ public class PnNhanVien extends javax.swing.JPanel {
     private javax.swing.JTextField txtTenTaiKhoan;
     private javax.swing.JTextField txtTimKiem;
     private javax.swing.JButton btnXemLuong;
-    private javax.swing.JButton btnInLuong;
     private javax.swing.JButton btnThayDoiChucVu;
     private javax.swing.JPanel pnlRight;
 }

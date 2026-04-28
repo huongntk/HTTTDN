@@ -140,9 +140,11 @@ public class MainFrame extends javax.swing.JFrame {
 
         // 5. Phân quyền cho nhóm Khách hàng & Khuyến mãi
         // (Nếu bạn chưa tách chi tiết các quyền này, có thể dùng các thuộc tính cũ hoặc mặc định)
+
+         System.out.println("QLKhachHang: " + phanQuyen.isQLKhachHang());
+    System.out.println("QLKhuyenMai: " + phanQuyen.isQLKhuyenMai());
         btnKhachHang.setVisible(phanQuyen.isQLKhachHang());
         btnKhuyenMai.setVisible(phanQuyen.isQLKhuyenMai());
-
         // 6. Phân quyền hệ thống (Admin)
         btnPhanQuyen.setVisible(phanQuyen.isPqQuanLyPhanQuyen());
         btnThongKe.setVisible(phanQuyen.isAdminBaoCaoTongHop() || phanQuyen.isBhThongKeDoanhThu() || phanQuyen.isBhThongKeLoiNhuan() || phanQuyen.isKhoBaoCaoTonKho());

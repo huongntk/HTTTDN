@@ -191,8 +191,8 @@ public boolean isBhThongKeLoiNhuan() { return bhThongKeLoiNhuan; }
     public void setQLSanPham(boolean value) { this.qlSanPham = value; }
     public boolean isQLKhachHang() { return qlKhachHang; }
     public void setQLKhachHang(boolean value) { this.qlKhachHang = value; }
-    public boolean isQLPhanQuyen() { return qlKhachHang; }
-    public void setQLPhanQuyen(boolean value) { this.qlKhachHang = value; }
+    public boolean isQLPhanQuyen() { return qlPhanQuyen; }
+    public void setQLPhanQuyen(boolean value) { this.qlPhanQuyen = value; }
     public boolean isQLKhuyenMai() { return qlKhuyenMai; }
     public void setQLKhuyenMai(boolean value) { this.qlKhuyenMai = value; }
     public boolean isQLThongKe() { return qlThongKe; }

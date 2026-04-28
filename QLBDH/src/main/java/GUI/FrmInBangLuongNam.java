@@ -1,5 +1,7 @@
 package GUI;
 
+import BUS.NhanVienBUS;
+import DTO.NhanVienDTO;
 import BUS.BangLuongBUS;
 import DTO.BangLuongDTO;
 import javax.swing.*;
@@ -20,13 +22,11 @@ public class FrmInBangLuongNam extends JFrame {
     private JComboBox<Integer> cbThang, cbNam;
     private NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
 
-    public FrmInBangLuongNam(int maNV,int thang, int nam) {
+    public FrmInBangLuongNam(int maNV, int nam) {
         this.maNV = maNV;
         this.nam = nam;
         bangLuongBUS = new BangLuongBUS();
         initComponents();
-        cbThang.setSelectedItem(thang);
-        cbNam.setSelectedItem(nam);
         loadData();
         setLocationRelativeTo(null);
     }
@@ -68,9 +68,17 @@ public class FrmInBangLuongNam extends JFrame {
 
     private void inTable() {
         try {
-            MessageFormat header = new MessageFormat("BẢNG LƯƠNG NĂM " + nam);
+            NhanVienDTO nv = new NhanVienBUS().layNhanVienTheoMa(maNV);
+            String tenNV = (nv != null) ? nv.getHo() + " " + nv.getTen() : "Nhân viên";
+
+            MessageFormat header = new MessageFormat(
+                    "BẢNG LƯƠNG NĂM " + nam + " - " + tenNV
+            );
+
             MessageFormat footer = new MessageFormat("Trang {0}");
+
             table.print(JTable.PrintMode.FIT_WIDTH, header, footer);
+
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Lỗi in: " + e.getMessage());
         }

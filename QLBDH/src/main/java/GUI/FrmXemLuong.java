@@ -1,5 +1,7 @@
 package GUI;
 
+import BUS.NhanVienBUS;
+import DTO.NhanVienDTO;
 import BUS.BangLuongBUS;
 import DTO.BangLuongDTO;
 import DTO.PhanQuyen;
@@ -7,6 +9,7 @@ import UTIL.Auth;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.text.MessageFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -49,23 +52,28 @@ public class FrmXemLuong extends JFrame {
         pnlFilter.add(cbNam);
 
         btnXem = new JButton("Xem");
+        btnXem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/search.png")));
         btnXem.addActionListener(e -> loadData());
         pnlFilter.add(btnXem);
 
         btnIn = new JButton("In bảng lương");
+        btnIn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/print.png")));
         btnIn.addActionListener(e -> inBangLuong());
         if (!phanQuyen.isNsInBangLuong()) btnIn.setEnabled(false);
         pnlFilter.add(btnIn);
         
         JButton btnCachTinh = new JButton("Cách tính lương");
+        btnCachTinh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/caculator.png")));
         btnCachTinh.addActionListener(e -> hienThiCachTinh());
         pnlFilter.add(btnCachTinh);
 
         JButton btnInNam = new JButton("In lương năm");
+        btnInNam.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/print.png")));
         btnInNam.addActionListener(e -> inLuongNam());
         pnlFilter.add(btnInNam);                                                                                                
 
         btnClose = new JButton("Đóng");
+        btnClose.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/close.png")));
         btnClose.addActionListener(e -> dispose());
         pnlFilter.add(btnClose);
 
@@ -98,9 +106,34 @@ public class FrmXemLuong extends JFrame {
     }
 
     private void inBangLuong() {
-        // In trực tiếp bảng lương hoặc gọi FrmInBangLuong
-        new FrmInBangLuong(maNV).setVisible(true);
+        if (tblLuong.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(this, "Không có dữ liệu để in.");
+            return;
+        }
+
+        try {
+            int thang = (int) cbThang.getSelectedItem();
+            int nam = (int) cbNam.getSelectedItem();
+
+            NhanVienDTO nv = new NhanVienBUS().layNhanVienTheoMa(maNV);
+            String tenNV = nv.getHo() + " " + nv.getTen();
+            
+            MessageFormat header = new MessageFormat(
+                    "BẢNG LƯƠNG - " + tenNV + " - THÁNG " + thang + "/" + nam
+            );
+
+            MessageFormat footer = new MessageFormat("Trang {0}");
+
+            tblLuong.print(JTable.PrintMode.FIT_WIDTH, header, footer);
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Lỗi in: " + e.getMessage());
+        }
     }
+//    private void inBangLuong() {
+//        // In trực tiếp bảng lương hoặc gọi FrmInBangLuong
+//        new FrmInBangLuong(maNV).setVisible(true);
+//    }
     
     private void hienThiCachTinh() {
         String msg = "CÁCH TÍNH LƯƠNG (áp dụng từ tháng có hỗ trợ thay đổi chức vụ):\n\n"
@@ -136,8 +169,11 @@ public class FrmXemLuong extends JFrame {
         JOptionPane.showMessageDialog(this, scrollPane, "Cách tính lương", JOptionPane.INFORMATION_MESSAGE);
     }
     private void inLuongNam() {
-        int nam = Integer.parseInt(JOptionPane.showInputDialog(this, "Nhập năm:", cbNam.getSelectedItem()));
-        int thang = Integer.parseInt(JOptionPane.showInputDialog(this, "Nhập thang:", cbThang.getSelectedItem()));
-        new FrmInBangLuongNam(maNV, thang, nam).setVisible(true);
+        int nam = Integer.parseInt(
+                JOptionPane.showInputDialog(this, "Nhập năm:", cbNam.getSelectedItem())
+        );
+
+        // chỉ truyền năm, bỏ tháng
+        new FrmInBangLuongNam(maNV, nam).setVisible(true);
     }
 }

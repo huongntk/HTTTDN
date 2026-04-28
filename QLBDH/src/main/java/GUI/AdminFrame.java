@@ -81,6 +81,7 @@ public class AdminFrame extends JFrame {
         pnlContent.add(new PnNhapHang(phanQuyen), "kho");
         pnlContent.add(new PnBanHang(phanQuyen), "banHang");
         pnlContent.add(new PnTaiKhoan(phanQuyen), "taiKhoan");
+         pnlContent.add(new PnSanPham(phanQuyen), "sanPham");
         pnlContent.add(new PnKhachHang(phanQuyen), "khachHang");
         pnlContent.add(new PnKhuyenMai(phanQuyen), "giamGia");
         // PnPhanQuyen cần nhận PhanQuyen, nhưng admin có thể truyền null và xử lý trong panel

@@ -15,6 +15,7 @@ import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.ItemEvent;
+import java.awt.Dimension;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -97,11 +98,11 @@ public class PnLuong extends JPanel {
         btnLamMoi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/refresh.png")));
         btnCauHinhLuong = new JButton ("Cấu hình lương");
         btnCauHinhLuong.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/settings.png")));
-        btnLuuThuongPhat = new JButton ("Sửa thưởng/phạt");
+        btnLuuThuongPhat = new JButton ("Lưu thưởng/phạt");
         btnLuuThuongPhat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/undo.png")));
 
         pnlTop.add(btnTinhLuong);
-        pnlTop.add(btnDuyetLuong);
+//        pnlTop.add(btnDuyetLuong);
         pnlTop.add(btnInLuong);
         pnlTop.add(btnLamMoi);
         pnlTop.add(btnCauHinhLuong);
@@ -143,7 +144,7 @@ public class PnLuong extends JPanel {
         pnlChiTiet.setBorder(BorderFactory.createTitledBorder("Chi tiết lương tháng"));
 
         // Form thông tin
-        JPanel pnlForm = new JPanel(new GridLayout(7, 3, 10, 10));
+        JPanel pnlForm = new JPanel(new GridLayout(8, 2, 10, 10));
         pnlForm.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         pnlForm.add(new JLabel("Họ tên:"));
         lblHoTen = new JLabel("---");
@@ -166,7 +167,14 @@ public class PnLuong extends JPanel {
         pnlForm.add(new JLabel("Tổng lương thực lĩnh:"));
         lblTongLuong = new JLabel("0");
         pnlForm.add(lblTongLuong);
-
+        
+        JPanel pnlBtn = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+        btnDuyetLuong.setPreferredSize(new Dimension(150, 30)); // làm nhỏ lại
+        pnlBtn.add(btnDuyetLuong);
+        
+        pnlForm.add(new JLabel());
+        pnlForm.add(pnlBtn);
+//        pnlForm.add(pnlBtn, BorderLayout.SOUTH);
         pnlChiTiet.add(pnlForm, BorderLayout.NORTH);
 
         // Tabbed pane: Lịch sử chức vụ + Lịch sử lương
