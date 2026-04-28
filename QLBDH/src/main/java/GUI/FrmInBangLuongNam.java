@@ -9,6 +9,7 @@ import java.text.MessageFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Calendar;
 
 public class FrmInBangLuongNam extends JFrame {
     private int maNV;
@@ -16,16 +17,20 @@ public class FrmInBangLuongNam extends JFrame {
     private BangLuongBUS bangLuongBUS;
     private JTable table;
     private DefaultTableModel model;
+    private JComboBox<Integer> cbThang, cbNam;
     private NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
 
-    public FrmInBangLuongNam(int maNV, int nam) {
+    public FrmInBangLuongNam(int maNV,int thang, int nam) {
         this.maNV = maNV;
         this.nam = nam;
         bangLuongBUS = new BangLuongBUS();
         initComponents();
+        cbThang.setSelectedItem(thang);
+        cbNam.setSelectedItem(nam);
         loadData();
         setLocationRelativeTo(null);
     }
+    
 
     private void initComponents() {
         setTitle("Bảng lương năm " + nam);

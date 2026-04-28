@@ -12,7 +12,7 @@ import javax.swing.*;
 import GUI.PnChamCong;
 
 public class MainFrame extends javax.swing.JFrame {
-       
+
     private TaiKhoan taiKhoan;
     private PhanQuyen phanQuyen;
     // Biến lưu nút hiện đang được chọn
@@ -21,7 +21,7 @@ public class MainFrame extends javax.swing.JFrame {
     private JButton btnLichLamViec;
     private JButton btnCaLam;
 
-    public MainFrame( TaiKhoan tk, PhanQuyen pq) {
+    public MainFrame(TaiKhoan tk, PhanQuyen pq) {
         setTitle("Quản lý Bán Đồng Hồ Cơ");
         initComponents();
         initLichLamViecButton();
@@ -37,74 +37,75 @@ public class MainFrame extends javax.swing.JFrame {
         menuButtons.add(btnLichLamViec);
         menuButtons.add(btnChamCong);
         menuButtons.add(btnDuyetNghi);
-        
+
         setExtendedState(MAXIMIZED_BOTH); // Mở toàn màn hình
         setLocationRelativeTo(null);             // Căn giữa
         this.taiKhoan = tk;
         this.phanQuyen = pq;
         txtaccount.setText(tk.getTaiKhoan());
         loadMenuByRole();
-        
+
         // KÍCH HOẠT CHỨC NĂNG ĐẦU TIÊN
         openFirstAccessiblePanel();
 
     }
-    
+
     private void initLichLamViecButton() {
-            btnLichLamViec = new javax.swing.JButton();
+        btnLichLamViec = new javax.swing.JButton();
 
-            btnLichLamViec.setBackground(new java.awt.Color(0, 204, 204));
-            btnLichLamViec.setFont(new java.awt.Font("Segoe UI", 1, 14));
+        btnLichLamViec.setBackground(new java.awt.Color(0, 204, 204));
+        btnLichLamViec.setFont(new java.awt.Font("Segoe UI", 1, 14));
 
-            // Dùng tạm icon clock vì project đã có icon này.
-            // Nếu sau này có icon calendar.png thì đổi lại đường dẫn icon.
-            btnLichLamViec.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/calendar.png")));
+        // Dùng tạm icon clock vì project đã có icon này.
+        // Nếu sau này có icon calendar.png thì đổi lại đường dẫn icon.
+        btnLichLamViec.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/calendar.png")));
 
-            btnLichLamViec.setText("Lịch làm việc");
-            btnLichLamViec.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-            btnLichLamViec.setBorderPainted(false);
-            btnLichLamViec.setContentAreaFilled(false);
-            btnLichLamViec.setHideActionText(true);
-            btnLichLamViec.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
-            btnLichLamViec.setMaximumSize(new java.awt.Dimension(200, 45));
-            btnLichLamViec.setPreferredSize(new java.awt.Dimension(200, 30));
-            btnLichLamViec.setSelected(true);
+        btnLichLamViec.setText("Lịch làm việc");
+        btnLichLamViec.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        btnLichLamViec.setBorderPainted(false);
+        btnLichLamViec.setContentAreaFilled(false);
+        btnLichLamViec.setHideActionText(true);
+        btnLichLamViec.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
+        btnLichLamViec.setMaximumSize(new java.awt.Dimension(200, 45));
+        btnLichLamViec.setPreferredSize(new java.awt.Dimension(200, 30));
+        btnLichLamViec.setSelected(true);
 
-            btnLichLamViec.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent evt) {
-                    btnLichLamViecActionPerformed(evt);
-                }
-            });
-            btnCaLam = new JButton();
-            btnCaLam.setBackground(new java.awt.Color(0, 204, 204));
-            btnCaLam.setFont(new java.awt.Font("Segoe UI", 1, 14));
-            btnCaLam.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/working.png")));
-            btnCaLam.setText("Ca l\u00e0m");
-            btnCaLam.setBorderPainted(false);
-            btnCaLam.setContentAreaFilled(false);
-            btnCaLam.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
-            btnCaLam.setMaximumSize(new java.awt.Dimension(200, 45));
-            btnCaLam.setPreferredSize(new java.awt.Dimension(200, 30));
-            btnCaLam.addActionListener(e -> {
-                pnContent.removeAll();
-                PnCaLam pn = new PnCaLam(taiKhoan);
-                pnContent.add(pn);
-                pnContent.revalidate();
-                pnContent.repaint();
-                setButtonActive(btnCaLam);
-            });
-            menuButtons.add(btnCaLam);
-            pnMenu.add(btnCaLam);
-            ;
+        btnLichLamViec.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLichLamViecActionPerformed(evt);
+            }
+        });
+        btnCaLam = new JButton();
+        btnCaLam.setBackground(new java.awt.Color(0, 204, 204));
+        btnCaLam.setFont(new java.awt.Font("Segoe UI", 1, 14));
+        btnCaLam.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/working.png")));
+        btnCaLam.setText("Ca l\u00e0m");
+        btnCaLam.setBorderPainted(false);
+        btnCaLam.setContentAreaFilled(false);
+        btnCaLam.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
+        btnCaLam.setMaximumSize(new java.awt.Dimension(200, 45));
+        btnCaLam.setPreferredSize(new java.awt.Dimension(200, 30));
+        btnCaLam.addActionListener(e -> {
+            pnContent.removeAll();
+            PnCaLam pn = new PnCaLam(taiKhoan);
+            pnContent.add(pn);
+            pnContent.revalidate();
+            pnContent.repaint();
+            setButtonActive(btnCaLam);
+        });
+        menuButtons.add(btnCaLam);
+        pnMenu.add(btnCaLam);
+        ;
 
-            // Chèn nút Lịch làm việc trước nút Chấm công
-            pnMenu.remove(btnChamCong);
-            pnMenu.add(btnLichLamViec);
-            pnMenu.add(btnChamCong);
+        // Chèn nút Lịch làm việc trước nút Chấm công
+        pnMenu.remove(btnChamCong);
+        pnMenu.add(btnLichLamViec);
+        pnMenu.add(btnChamCong);
 
-            pnMenu.revalidate();
-            pnMenu.repaint();
-        }
+        pnMenu.revalidate();
+        pnMenu.repaint();
+    }
+
     private void btnLichLamViecActionPerformed(java.awt.event.ActionEvent evt) {
         pnContent.removeAll();
 
@@ -116,9 +117,9 @@ public class MainFrame extends javax.swing.JFrame {
 
         setButtonActive(btnLichLamViec);
     }
-    
+
     public void loadMenuByRole() {
-    // 1. Kiểm tra nếu đối tượng phanQuyen chưa được load từ DB
+        // 1. Kiểm tra nếu đối tượng phanQuyen chưa được load từ DB
         if (this.phanQuyen == null) {
             JOptionPane.showMessageDialog(this, "Không thể tải thông tin phân quyền!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
@@ -139,7 +140,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         // 5. Phân quyền cho nhóm Khách hàng & Khuyến mãi
         // (Nếu bạn chưa tách chi tiết các quyền này, có thể dùng các thuộc tính cũ hoặc mặc định)
-        btnKhachHang.setVisible(phanQuyen.isQLKhachHang()); 
+        btnKhachHang.setVisible(phanQuyen.isQLKhachHang());
         btnKhuyenMai.setVisible(phanQuyen.isQLKhuyenMai());
 
         // 6. Phân quyền hệ thống (Admin)
@@ -152,11 +153,12 @@ public class MainFrame extends javax.swing.JFrame {
         boolean isAdmin = taiKhoan.getMaQuyen().equals("ADMIN");
         btnDuyetNghi.setVisible(phanQuyen.isNsDuyetNghi() && !isAdmin);
         btnChamCong.setVisible(phanQuyen.isNsChamCong());
-        
+
         // 7. Refresh lại giao diện thanh menu sau khi ẩn/hiện các nút
         pnMenu.revalidate();
         pnMenu.repaint();
     }
+
     public TaiKhoan getTaiKhoan() {
         return this.taiKhoan;
     }
@@ -468,9 +470,11 @@ public class MainFrame extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    
+
     private void openFirstAccessiblePanel() {
-        if (phanQuyen == null) return;
+        if (phanQuyen == null) {
+            return;
+        }
 
         // Tùy chọn 1: Ưu tiên mở chức năng Bán Hàng
         if (phanQuyen.isBhLapPhieuXuat()) {
@@ -510,12 +514,12 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_btnDoiMatKhauActionPerformed
 
     private void btnDangXuatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDangXuatActionPerformed
-        int confirm = JOptionPane.showConfirmDialog(this, 
+        int confirm = JOptionPane.showConfirmDialog(this,
                 "Bạn có chắc chắn muốn đăng xuất không?",
                 "Xác nhận",
                 JOptionPane.YES_NO_OPTION
         );
-        if (confirm == JOptionPane.YES_OPTION){
+        if (confirm == JOptionPane.YES_OPTION) {
             this.dispose();
             new FrmDangNhap().setVisible(true);
         }
@@ -568,7 +572,7 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_btnNhanVienActionPerformed
 
     private void btnKhachHangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKhachHangActionPerformed
-       pnContent.removeAll();
+        pnContent.removeAll();
         PnKhachHang pn = new PnKhachHang(phanQuyen);
         pnContent.add(pn);
         pnContent.revalidate();
@@ -595,23 +599,23 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_btnBanHangActionPerformed
 
     private void txtaccountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtaccountActionPerformed
-        
+
     }//GEN-LAST:event_txtaccountActionPerformed
 
     private void btnQuanLyLuongActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQuanLyLuongActionPerformed
-         pnContent.removeAll();
+        pnContent.removeAll();
         PnLuong pn = new PnLuong(phanQuyen);
         pnContent.add(pn);
         pnContent.revalidate();
         pnContent.repaint();
         setButtonActive(btnQuanLyLuong);
-        
+
     }//GEN-LAST:event_btnQuanLyLuongActionPerformed
 
     private void btnDuyetNghiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDuyetNghiActionPerformed
-         pnContent.removeAll();
+        pnContent.removeAll();
         FrmDuyetNghi pn = new FrmDuyetNghi(phanQuyen);
-        
+
         pnContent.add(pn, java.awt.BorderLayout.CENTER);
         pnContent.revalidate();
         pnContent.repaint();
@@ -627,41 +631,40 @@ public class MainFrame extends javax.swing.JFrame {
         pnContent.repaint();
         setButtonActive(btnChamCong);
     }//GEN-LAST:event_btnChamCongActionPerformed
-   
-    
-   private void setButtonActive(javax.swing.JButton active) {
-    for (javax.swing.JButton btn : menuButtons) {
-        if (btn == active) {
-            // Tạo hiệu ứng gradient
-            btn.setBackground(new java.awt.Color(0, 120, 215)); // Xanh sáng hơn
-            btn.setForeground(java.awt.Color.WHITE);
-            btn.setFont(btn.getFont().deriveFont(java.awt.Font.BOLD, 15f));
-            
-            // Thêm icon mũi tên chỉ bên trái để nổi bật
-            btn.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-            btn.setIconTextGap(15);
-            
-            btn.setBorder(javax.swing.BorderFactory.createCompoundBorder(
-                javax.swing.BorderFactory.createMatteBorder(0, 5, 0, 0, new java.awt.Color(255, 100, 0)), // Viền cam bên trái
-                javax.swing.BorderFactory.createEmptyBorder(8, 10, 8, 10)
-            ));
-            
-            // Thêm hiệu ứng shadow nhẹ
-            btn.setOpaque(true);
-        } else {
-            btn.setBackground(new java.awt.Color(170, 222, 215)); // Màu nền gốc của pnMenu
-            btn.setForeground(new java.awt.Color(50, 50, 50)); // Xám đậm
-            btn.setFont(btn.getFont().deriveFont(java.awt.Font.PLAIN, 14f));
-            btn.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 15, 8, 15));
-            btn.setIconTextGap(10);
+
+    private void setButtonActive(javax.swing.JButton active) {
+        for (javax.swing.JButton btn : menuButtons) {
+            if (btn == active) {
+                // Tạo hiệu ứng gradient
+                btn.setBackground(new java.awt.Color(0, 120, 215)); // Xanh sáng hơn
+                btn.setForeground(java.awt.Color.WHITE);
+                btn.setFont(btn.getFont().deriveFont(java.awt.Font.BOLD, 15f));
+
+                // Thêm icon mũi tên chỉ bên trái để nổi bật
+                btn.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+                btn.setIconTextGap(15);
+
+                btn.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                        javax.swing.BorderFactory.createMatteBorder(0, 5, 0, 0, new java.awt.Color(255, 100, 0)), // Viền cam bên trái
+                        javax.swing.BorderFactory.createEmptyBorder(8, 10, 8, 10)
+                ));
+
+                // Thêm hiệu ứng shadow nhẹ
+                btn.setOpaque(true);
+            } else {
+                btn.setBackground(new java.awt.Color(170, 222, 215)); // Màu nền gốc của pnMenu
+                btn.setForeground(new java.awt.Color(50, 50, 50)); // Xám đậm
+                btn.setFont(btn.getFont().deriveFont(java.awt.Font.PLAIN, 14f));
+                btn.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 15, 8, 15));
+                btn.setIconTextGap(10);
+            }
         }
     }
-}
-    
+
     public javax.swing.JPanel getPnContent() {
         return pnContent;
     }
-    
+
 //    JPanel QLBanHang = new PnBanHang(phanQuyen);
 //    JPanel QLSanPham = new PnSanPham(phanQuyen);
 //    JPanel QLKhachHang = new PnKhachHang(phanQuyen);
@@ -670,25 +673,26 @@ public class MainFrame extends javax.swing.JFrame {
 //    JPanel QLNhapHang = new PnNhapHang(phanQuyen);
 //    JPanel QLPhanQuyen = new PnPhanQuyen(phanQuyen);
 //    JPanel QLThongKe = new PnThongKe(phanQuyen);
-    
     public static void main(String[] args) {
         // Khởi chạy MainFrame mà không cần đăng nhập
         TaiKhoan tk = new TaiKhoan(1, "admin", "admin", "ADMIN", 1);
         BUS.PhanQuyenBUS pqBUS = new BUS.PhanQuyenBUS();
         DTO.PhanQuyen pq = pqBUS.getPhanQuyenByTen(tk.getMaQuyen());
-        if (pq == null){
+        if (pq == null) {
             JOptionPane.showConfirmDialog(null, "Không tìm thấy quyền 'admin' trong csdl", "Lỗi khởi tạo", JOptionPane.ERROR_MESSAGE);
             return;
         }
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                MainFrame main = new MainFrame(tk,pq);
+                MainFrame main = new MainFrame(tk, pq);
                 main.setVisible(true);
             }
         });
-}
-
+    }
     
+    
+
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBanHang;
     private javax.swing.JButton btnChamCong;

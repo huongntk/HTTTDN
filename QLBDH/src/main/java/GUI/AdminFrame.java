@@ -31,14 +31,14 @@ public class AdminFrame extends JFrame {
 
         // ===== Menu bên trái =====
         pnlMenu = new JPanel();
-        pnlMenu.setBackground(new Color(244, 164, 96));
+        pnlMenu.setBackground(new Color(0, 153, 153));
         pnlMenu.setPreferredSize(new Dimension(220, 0));
         pnlMenu.setLayout(new BoxLayout(pnlMenu, BoxLayout.Y_AXIS));
 
         // Tiêu đề chào mừng
         JLabel lblWelcome = new JLabel("Xin chào Admin", SwingConstants.CENTER);
-        lblWelcome.setForeground(Color.BLACK);
-        lblWelcome.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        lblWelcome.setForeground(Color.ORANGE);
+        lblWelcome.setFont(new Font("Segoe UI", Font.BOLD, 17));
         lblWelcome.setAlignmentX(Component.CENTER_ALIGNMENT);
         lblWelcome.setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
         pnlMenu.add(lblWelcome);
@@ -147,8 +147,8 @@ public class AdminFrame extends JFrame {
     private JButton createMenuButton(String text, String iconPath) {
         JButton btn = new JButton(text);
         btn.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        btn.setForeground(Color.DARK_GRAY);
-        btn.setBackground(new Color(244, 164, 96));
+        btn.setForeground(Color.WHITE);
+        btn.setBackground(new Color(0, 153, 153));
         btn.setFocusPainted(false);
         btn.setBorderPainted(false);
         btn.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -207,14 +207,18 @@ public class AdminFrame extends JFrame {
         for (JButton btn : menuButtons) {
             if (btn == activeButton) {
                 // Đổi màu nền (ví dụ: xanh dương nhạt) và đóng khung viền trắng dày 2px
-                btn.setBackground(new Color(205, 55, 0));
+                btn.setBackground(new Color(151, 255, 255));
+                btn.setFont(btn.getFont().deriveFont(java.awt.Font.BOLD, 15f));
+                btn.setForeground(java.awt.Color.BLACK);
                 btn.setBorder(BorderFactory.createCompoundBorder(
-                        BorderFactory.createLineBorder(Color.WHITE, 2),
+                        BorderFactory.createLineBorder(Color.BLACK, 2),
                         BorderFactory.createEmptyBorder(8, 8, 8, 8)
                 ));
             } else {
-                // Trả về màu nền xám tối và bỏ khung viền
-                btn.setBackground(new Color(244, 164, 96));
+                // Trả về màu nền  và bỏ khung viền
+                btn.setBackground(new Color(0, 153, 153));
+                btn.setForeground(java.awt.Color.WHITE);
+                btn.setFont(btn.getFont().deriveFont(java.awt.Font.PLAIN, 15f));
                 btn.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
             }
         }

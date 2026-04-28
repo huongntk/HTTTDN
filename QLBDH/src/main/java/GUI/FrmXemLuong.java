@@ -137,6 +137,7 @@ public class FrmXemLuong extends JFrame {
     }
     private void inLuongNam() {
         int nam = Integer.parseInt(JOptionPane.showInputDialog(this, "Nhập năm:", cbNam.getSelectedItem()));
-        new FrmInBangLuongNam(maNV, nam).setVisible(true);
+        int thang = Integer.parseInt(JOptionPane.showInputDialog(this, "Nhập thang:", cbThang.getSelectedItem()));
+        new FrmInBangLuongNam(maNV, thang, nam).setVisible(true);
     }
 }

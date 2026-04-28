@@ -43,6 +43,7 @@ public class PnLuong extends JPanel {
     private JButton btnTinhLuong;
     private JButton btnXemLuong;
     private JButton btnInLuong;
+    private JButton btnDuyetLuong;
     private JButton btnLamMoi;
     private JButton btnCauHinhLuong;
     private JButton btnLuuThuongPhat;
@@ -87,10 +88,11 @@ public class PnLuong extends JPanel {
         pnlTop.add(cboNam);
 
         btnTinhLuong = new JButton("Tính lương tháng");
-        btnTinhLuong.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/caculator.png")));
-//        btnXemLuong = new JButton("Xem lương");
+        btnTinhLuong.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/caculator.png")));      
         btnInLuong = new JButton("In lương");
         btnInLuong.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/print.png")));
+        btnDuyetLuong = new JButton("Duyệt lương");
+        btnDuyetLuong.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/xacnhan.png")));
         btnLamMoi = new JButton("Làm mới");
         btnLamMoi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/refresh.png")));
         btnCauHinhLuong = new JButton ("Cấu hình lương");
@@ -99,7 +101,7 @@ public class PnLuong extends JPanel {
         btnLuuThuongPhat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/undo.png")));
 
         pnlTop.add(btnTinhLuong);
-//        pnlTop.add(btnXemLuong);
+        pnlTop.add(btnDuyetLuong);
         pnlTop.add(btnInLuong);
         pnlTop.add(btnLamMoi);
         pnlTop.add(btnCauHinhLuong);
@@ -373,7 +375,29 @@ public class PnLuong extends JPanel {
             return;
         }
         int maNV = (int) modelNhanVien.getValueAt(selectedRow, 0);
-        new FrmInBangLuong(maNV).setVisible(true);
+        int[] thangNam = getThangNamLuongDangChon();
+        int thang = thangNam[0];
+        int nam = thangNam[1];
+
+        BangLuongDTO bl = bangLuongBUS.getByMaNVAndMonth(maNV, thang, nam);
+
+//        if (bl == null) {
+//            JOptionPane.showMessageDialog(this, "Nhân viên này chưa có bảng lương tháng " + thang + "/" + nam + ".");
+//            return;
+//        }
+
+        if (bl.getTrangThai() != 1) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Bảng lương tháng " + thang + "/" + nam + " đang ở trạng thái Tạm tính.\n"
+                            + "Vui lòng duyệt lương trước khi in.",
+                    "Chưa thể in lương",
+                    JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
+        new FrmInBangLuong(maNV, thang, nam).setVisible(true);
     }
     private void moDialogCauHinhLuong() {
     FrmSuaLuongCoBan dialog = new FrmSuaLuongCoBan((JFrame) SwingUtilities.getWindowAncestor(this));
@@ -414,7 +438,7 @@ public class PnLuong extends JPanel {
         });
 
         btnTinhLuong.addActionListener(e -> tinhLuongChoNhanVien());
-//        btnXemLuong.addActionListener(e -> xemLuongNhanVien());
+        btnDuyetLuong.addActionListener(e -> duyetLuongDangChon());
         btnInLuong.addActionListener(e -> inLuong());
         btnLamMoi.addActionListener(e -> {
             loadData();
@@ -468,6 +492,10 @@ public class PnLuong extends JPanel {
             JOptionPane.showMessageDialog(this, "Chưa có bảng lương tháng này. Vui lòng tính lương trước.");
             return;
         }
+        if (bl.getTrangThai() == 1) {
+            JOptionPane.showMessageDialog(this, "Bảng lương đã được duyệt, không thể sửa thưởng/phạt.");
+            return;
+        }
         try {
             double thuong = Double.parseDouble(txtThuong.getText().trim());
             double phat = Double.parseDouble(txtPhat.getText().trim());
@@ -484,10 +512,85 @@ public class PnLuong extends JPanel {
             JOptionPane.showMessageDialog(this, "Số không hợp lệ.");
         }
     }
-    
+    private void duyetLuongDangChon() {
+        int selectedRow = tblNhanVien.getSelectedRow();
+
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn nhân viên cần duyệt lương!");
+            return;
+        }
+
+        int maNV = (int) modelNhanVien.getValueAt(selectedRow, 0);
+
+        int[] thangNam = getThangNamLuongDangChon();
+        int thang = thangNam[0];
+        int nam = thangNam[1];
+
+        BangLuongDTO bl = bangLuongBUS.getByMaNVAndMonth(maNV, thang, nam);
+
+        if (bl == null) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Nhân viên này chưa có bảng lương tháng " + thang + "/" + nam + "."
+            );
+            return;
+        }
+
+        if (bl.getTrangThai() == 1) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Bảng lương tháng " + thang + "/" + nam + " đã được duyệt rồi."
+            );
+            return;
+        }
+
+    int confirm = JOptionPane.showConfirmDialog(
+            this,
+            "Bạn có chắc muốn duyệt bảng lương tháng " + thang + "/" + nam + " không?\n"
+                    + "Sau khi duyệt, bảng lương sẽ không được tính lại hoặc sửa thưởng/phạt.",
+            "Xác nhận duyệt lương",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE
+    );
+
+    if (confirm != JOptionPane.YES_OPTION) {
+        return;
+    }
+
+    String result = bangLuongBUS.duyetLuong(maNV, thang, nam);
+    JOptionPane.showMessageDialog(this, result);
+
+    // Load lại bảng lịch sử lương để thấy trạng thái đổi từ Tạm tính -> Đã duyệt
+    xemLuongNhanVien();
+
+    // Đồng bộ lại dữ liệu tháng/năm đang xử lý
+    cboThang.setSelectedItem(thang);
+    cboNam.setSelectedItem(nam);
+    loadThuongPhatForCurrentMonth(maNV);
+}
+    private int[] getThangNamLuongDangChon() {
+        int rowLuong = tblLuongChiTiet.getSelectedRow();
+
+        if (rowLuong != -1) {
+            String thangNam = modelLuong.getValueAt(rowLuong, 0).toString().trim();
+
+            if (thangNam.contains("/")) {
+                String[] parts = thangNam.split("/");
+                int thang = Integer.parseInt(parts[0].trim());
+                int nam = Integer.parseInt(parts[1].trim());
+                return new int[]{thang, nam};
+            }
+        }
+
+        int thang = (int) cboThang.getSelectedItem();
+        int nam = (int) cboNam.getSelectedItem();
+
+        return new int[]{thang, nam};
+    }
 
     private void configureByPermission() {
         btnTinhLuong.setVisible(phanQuyen.isNsTinhLuong());
+        btnDuyetLuong.setVisible(phanQuyen.isNsTinhLuong());
         btnInLuong.setVisible(phanQuyen.isNsInBangLuong());
         btnLuuThuongPhat.setVisible(phanQuyen.isNsTinhLuong());
         if (!phanQuyen.isNsXemDanhSach()) {
@@ -505,6 +608,7 @@ public class PnLuong extends JPanel {
                 txtThuong.setEditable(false);
                 txtPhat.setEditable(false);
                 btnTinhLuong.setEnabled(false);
+                btnDuyetLuong.setEnabled(false);
             }
         }
     }

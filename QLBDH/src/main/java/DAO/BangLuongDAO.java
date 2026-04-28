@@ -12,11 +12,11 @@ public class BangLuongDAO {
     public ArrayList<Object[]> selectAllNhanVienWithLuong() {
         ArrayList<Object[]> list = new ArrayList<>();
         String sql = "SELECT nv.MaNV, nv.Ho, nv.Ten, nv.MaCV, "
-                   + "ISNULL(lcb.LuongCoBan, 0) AS LuongCoBan, "
-                   + "ISNULL(lcb.PhuCapChucVu, 0) AS PhuCap "
-                   + "FROM NhanVien nv "
-                   + "LEFT JOIN LuongCoBanTheoChucVu lcb ON nv.MaCV = lcb.MaCV "
-                   + "WHERE nv.TrangThai = 1"; // chỉ lấy nhân viên đang làm việc
+                + "ISNULL(lcb.LuongCoBan, 0) AS LuongCoBan, "
+                + "ISNULL(lcb.PhuCapChucVu, 0) AS PhuCap "
+                + "FROM NhanVien nv "
+                + "LEFT JOIN LuongCoBanTheoChucVu lcb ON nv.MaCV = lcb.MaCV "
+                + "WHERE nv.TrangThai = 1"; // chỉ lấy nhân viên đang làm việc
         try (ResultSet rs = DataProvider.executeQuery(sql)) {
             while (rs.next()) {
                 list.add(new Object[]{
@@ -36,12 +36,12 @@ public class BangLuongDAO {
     // Thêm mới bảng lương
     public boolean insert(BangLuongDTO bl) {
         String sql = "INSERT INTO BangLuong (MaNV, Thang, Nam, LuongCoBan, PhuCap, Thuong, Phat, TongLuong, NgayTinh, GhiChu, TrangThai) "
-                   + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try {
             int rows = DataProvider.executeUpdate(sql,
-                bl.getMaNV(), bl.getThang(), bl.getNam(), bl.getLuongCoBan(), bl.getPhuCap(),
-                bl.getThuong(), bl.getPhat(), bl.getTongLuong(),
-                new java.sql.Date(bl.getNgayTinh().getTime()), bl.getGhiChu(), bl.getTrangThai());
+                    bl.getMaNV(), bl.getThang(), bl.getNam(), bl.getLuongCoBan(), bl.getPhuCap(),
+                    bl.getThuong(), bl.getPhat(), bl.getTongLuong(),
+                    new java.sql.Date(bl.getNgayTinh().getTime()), bl.getGhiChu(), bl.getTrangThai());
             return rows > 0;
         } catch (Exception e) {
             e.printStackTrace();
@@ -52,12 +52,12 @@ public class BangLuongDAO {
     // Cập nhật bảng lương
     public boolean update(BangLuongDTO bl) {
         String sql = "UPDATE BangLuong SET LuongCoBan=?, PhuCap=?, Thuong=?, Phat=?, TongLuong=?, NgayTinh=?, GhiChu=?, TrangThai=? "
-                   + "WHERE MaBL=?";
+                + "WHERE MaBL=?";
         try {
             int rows = DataProvider.executeUpdate(sql,
-                bl.getLuongCoBan(), bl.getPhuCap(), bl.getThuong(), bl.getPhat(), bl.getTongLuong(),
-                new java.sql.Date(bl.getNgayTinh().getTime()), bl.getGhiChu(), bl.getTrangThai(),
-                bl.getMaBL());
+                    bl.getLuongCoBan(), bl.getPhuCap(), bl.getThuong(), bl.getPhat(), bl.getTongLuong(),
+                    new java.sql.Date(bl.getNgayTinh().getTime()), bl.getGhiChu(), bl.getTrangThai(),
+                    bl.getMaBL());
             return rows > 0;
         } catch (Exception e) {
             e.printStackTrace();
@@ -159,11 +159,12 @@ public class BangLuongDAO {
         bl.setTrangThai(rs.getInt("TrangThai"));
         return bl;
     }
-    
+
     // Đã thay đổi sử dụng LocalDate cho chính xác
     private static class DateRange {
-        LocalDate start;   
-        LocalDate end;     
+
+        LocalDate start;
+        LocalDate end;
         String maCV;
 
         public DateRange(LocalDate start, LocalDate end, String maCV) {
@@ -230,7 +231,7 @@ public class BangLuongDAO {
                         String maCV = (i == 0) ? ls.getMaCVCu() : dsThayDoi.get(i - 1).getMaCVMoi();
                         danhSachKhoang.add(new DateRange(currentStart, endOfRange, maCV));
                     }
-                    
+
                     // Cập nhật mốc bắt đầu mới
                     // Nếu ngayThayDoi < startOfMonth (bản ghi rác), ép nó về startOfMonth để an toàn
                     currentStart = ngayThayDoi.isBefore(startOfMonth) ? startOfMonth : ngayThayDoi;
@@ -247,7 +248,9 @@ public class BangLuongDAO {
 
         // Tính toán lương cho từng khoảng
         for (DateRange khoang : danhSachKhoang) {
-            if (khoang.maCV == null || khoang.maCV.trim().isEmpty()) continue;
+            if (khoang.maCV == null || khoang.maCV.trim().isEmpty()) {
+                continue;
+            }
 
             // Chuyển lại LocalDate sang java.sql.Date để gọi DAO
             java.sql.Date sqlStart = java.sql.Date.valueOf(khoang.start);
@@ -255,7 +258,7 @@ public class BangLuongDAO {
 
             int congChuan = lichLamViecDAO.getTotalDaysInSchedule(maNV, sqlStart, sqlEnd);
             double congThucTe = chamCongDAO.getTotalCongByDateRange(maNV, sqlStart, sqlEnd);
-            
+
             double luongCB = luongCVDAO.getLuongCoBan(khoang.maCV);
             double phuCapCV = luongCVDAO.getPhuCap(khoang.maCV);
 
@@ -267,7 +270,7 @@ public class BangLuongDAO {
                 // XỬ LÝ EDGE CASE: Có đi làm nhưng không có lịch làm việc (Không có công chuẩn)
                 // Gợi ý: Có thể chia mặc định cho 26 ngày (hoặc số ngày của tháng) nếu không có lịch xếp trước.
                 System.err.println("Cảnh báo: Nhân viên " + maNV + " có " + congThucTe + " công thực tế nhưng không có lịch làm việc từ " + sqlStart + " đến " + sqlEnd);
-                
+
                 // Giải pháp tạm thời (Tính theo số ngày chuẩn mặc định là 26):
                 // luongCoBan += (luongCB / 26.0) * congThucTe;
                 // phuCap += (phuCapCV / 26.0) * congThucTe;
@@ -276,5 +279,18 @@ public class BangLuongDAO {
 
         return new double[]{luongCoBan, phuCap};
     }
-    
+
+    public boolean duyetLuong(int maNV, int thang, int nam) {
+        String sql = "UPDATE BangLuong "
+                + "SET TrangThai = 1 "
+                + "WHERE MaNV = ? AND Thang = ? AND Nam = ? AND TrangThai = 0";
+
+        try {
+            int rows = DataProvider.executeUpdate(sql, maNV, thang, nam);
+            return rows > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
